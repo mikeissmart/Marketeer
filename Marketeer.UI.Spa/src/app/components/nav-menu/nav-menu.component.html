@@ -1,0 +1,22 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/">Marketeer</a>
+    <div>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/login" *ngIf="clientToken === null">
+            Login
+          </a>
+          <a
+            class="nav-link"
+            href="#"
+            *ngIf="clientToken !== null"
+            (click)="logout()"
+          >
+            {{ clientToken.userName!! }} Logout
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

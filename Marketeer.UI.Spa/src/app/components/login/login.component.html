@@ -1,0 +1,33 @@
+<div class="vh-100 d-flex justify-content-center align-items-center">
+  <div class="">
+    <div class="card">
+      <div class="card-header">
+        <div class="text-center">
+          <h5>Login</h5>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row" *ngIf="showErrorMessage">
+          <p class="text-danger text-center">Invalid UserName/Password.</p>
+        </div>
+        <div class="mb-3 row">
+          <label for="userName">UserName</label>
+          <div class="col-12">
+            <input class="form-control" id="userName" type="text" [(ngModel)]="userName">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <label for="password">Password</label>
+          <div class="col-12">
+            <input class="form-control" id="password" type="password" [(ngModel)]="password" (keyup.enter)="login()">
+          </div>
+        </div>
+        <div class="mb-3 row">
+          <div class="col-12">
+            <button class="form-control btn btn-success" (click)="login()">Login</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
