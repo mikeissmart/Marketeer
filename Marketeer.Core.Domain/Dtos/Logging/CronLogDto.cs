@@ -2,7 +2,7 @@
 
 namespace Marketeer.Core.Domain.Dtos.Logging
 {
-    public class CronLogDto : IMapFrom<CronLog>
+    public class CronLogDto : IRefactorType, IMapFrom<CronLog>
     {
         public int Id { get; set; }
         public string Name { get; set; }

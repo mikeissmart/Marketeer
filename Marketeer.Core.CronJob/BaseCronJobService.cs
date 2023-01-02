@@ -1,6 +1,6 @@
 ﻿using Cronos;
-using Marketeer.Core.Domain.Dtos.Logging;
-using Marketeer.Core.Service.Logging;
+using Marketeer.Core.Domain.Entities.Logging;
+using Marketeer.Persistance.Database.Repositories.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -30,7 +30,7 @@ namespace Marketeer.Core.CronJob
 
         public virtual void Dispose() => _timer?.Dispose();
 
-        protected abstract Task<string?> DoWork(IServiceScope scope, CancellationToken cancellationToken);
+        protected abstract Task<string?> DoWorkAsync(IServiceScope scope, CancellationToken cancellationToken);
 
         private async Task ScheduleJob(CancellationToken cancellationToken)
         {
@@ -48,19 +48,20 @@ namespace Marketeer.Core.CronJob
                     _timer = null;
                     if (!cancellationToken.IsCancellationRequested)
                     {
-                        var log = new CronLogDto()
+                        var log = new CronLog()
                         {
                             Name = GetType().Name,
                             StartDate = DateTime.UtcNow,
                         };
                         using (var scope = _services.CreateScope())
                         {
-                            log.Message = await DoWork(scope, cancellationToken);
+                            log.Message = await DoWorkAsync(scope, cancellationToken);
                             log.EndDate = DateTime.UtcNow;
                             log.IsCanceled = cancellationToken.IsCancellationRequested;
 
-                            var cronLogService = scope.ServiceProvider.GetRequiredService<ICronLogService>();
-                            await cronLogService.AddCronLogAsync(log);
+                            var cronLogRepository = scope.ServiceProvider.GetRequiredService<ICronLogRepository>();
+                            await cronLogRepository.AddAsync(log);
+                            await cronLogRepository.SaveChangesAsync();
                         }
                     }
                     if (!cancellationToken.IsCancellationRequested)

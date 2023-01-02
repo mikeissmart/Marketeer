@@ -1,4 +1,5 @@
 ﻿using Marketeer.Core.Domain.Dtos;
+using Marketeer.Core.Domain.Enums;
 using Microsoft.Extensions.Logging;
 using Reinforced.Typings.Ast.TypeNames;
 using Reinforced.Typings.Fluent;
@@ -23,7 +24,8 @@ namespace Marketeer.UI.Spa.ViewModels
 
             builder.ExportAsEnums(new[]
                 {
-                    typeof(LogLevel)
+                    typeof(LogLevel),
+                    typeof(HistoryDataIntervalEnum)
                 }, c => c.ExportTo("model.enums.ts")
                     .DontIncludeToNamespace());
 

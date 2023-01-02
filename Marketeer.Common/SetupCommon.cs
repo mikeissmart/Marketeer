@@ -20,8 +20,10 @@ namespace Marketeer.Common
             foreach (var type in types)
             {
                 var config = configuration.GetSection(type.Name).Get(type);
-                if (config != null)
-                    services.AddSingleton(type, config);
+                if (config == null)
+                    throw new Exception($"Missing config in appsettings: {type}");
+
+                services.AddSingleton(type, config);
             }
 
             return services;

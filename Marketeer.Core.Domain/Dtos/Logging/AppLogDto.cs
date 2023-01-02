@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Marketeer.Core.Domain.Dtos.Logging
 {
-    public class AppLogDto : IMapFrom<AppLog>
+    public class AppLogDto : IRefactorType, IMapFrom<AppLog>
     {
         public LogLevel LogLevel { get; set; }
         public int EventId { get; set; }

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Marketeer.Core.Domain;
 using Marketeer.Core.Domain.Dtos;
-using System.Reflection;
 
 namespace Marketeer.Common.Mapper
 {
@@ -9,17 +8,20 @@ namespace Marketeer.Common.Mapper
     {
         public MappingProfile()
         {
-            ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+            ApplyMappingsFromAssembly();
             ApplyMappingsManually();
         }
 
         private void ApplyMappingsManually() => CreateMap(typeof(Paginate<>), typeof(PaginateDto<>));
 
-        private void ApplyMappingsFromAssembly(Assembly assembly)
+        private void ApplyMappingsFromAssembly()
         {
-            var mapFromTypes = assembly.GetTypes()
-                .Where(x => x.GetInterfaces().Any(y =>
-                    y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IMapFrom<>)))
+            var mapFromTypes = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(x => x.GetTypes())
+                .Where(x => !x.IsAbstract &&
+                    x.IsClass &&
+                    x.GetInterfaces().Any(y =>
+                        y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IMapFrom<>)))
                 .Select(x => new KeyValuePair<Type, IEnumerable<Type>>(
                     x,
                     x.GetInterfaces().Where(i => i.IsGenericType &&
@@ -39,9 +41,11 @@ namespace Marketeer.Common.Mapper
                 }
             }
 
-            var mapToTypes = assembly.GetExportedTypes()
-                .Where(x => x.GetInterfaces().Any(y =>
-                    y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IMapTo<>)))
+            var mapToTypes = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(x => x.GetTypes())
+                .Where(x => !x.IsAbstract &&
+                    x.IsClass && x.GetInterfaces().Any(y =>
+                        y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IMapTo<>)))
                 .Select(x => new KeyValuePair<Type, IEnumerable<Type>>(
                     x,
                     x.GetInterfaces().Where(i => i.IsGenericType &&

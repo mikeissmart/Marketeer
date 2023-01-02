@@ -1,6 +1,7 @@
 ﻿namespace Marketeer.Core.Domain.Dtos
 {
-    public class PaginateDto<T> where T : class, IRefactorType
+    // Map is defined in Common.Mapper.MappingProfile
+    public class PaginateDto<T> : IRefactorType where T : class
     {
         public int PageIndex { get; set; }
         public int PageItemCount { get; set; }

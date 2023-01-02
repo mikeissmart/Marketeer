@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Entities\Logging\" />
-    <Folder Include="Enums\" />
   </ItemGroup>
 
   <ItemGroup>

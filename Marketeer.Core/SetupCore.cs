@@ -1,6 +1,9 @@
 ﻿using AutoMapper.Internal;
+using Marketeer.Common;
+using Marketeer.Common.Configs;
 using Marketeer.Common.Mapper;
 using Marketeer.Core.CronJob;
+using Marketeer.Core.CronJob.Market;
 using Marketeer.Core.Service;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,17 +20,12 @@ namespace Marketeer.Core
 
             #region CronJobServices
 
-            /*var cronConfig = configuration.GetSection("CronConfig").Get<CronConfig>();
-            services.AddCronJobService<CleanAppLogCronJobService>(x =>
+            var cronConfig = configuration.GetSection("CronConfig").Get<CronConfig>()!;
+            services.AddCronJobService<ClearDisabledFetchHistoryDataCronJob>(x =>
                 {
-                    x.CronExpression = cronConfig.CleanAppLog;
-                    x.TimeZoneInfo = TimeZoneInfo.Local;
-                })
-                .AddCronJobService<CleanCronLogCronJobService>(x =>
-                {
-                    x.CronExpression = cronConfig.CleanCronLog;
-                    x.TimeZoneInfo = TimeZoneInfo.Local;
-                });*/
+                    x.CronExpression = cronConfig.ClearDisabledFetchHistoryData;
+                    x.TimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time");
+                });
 
             #endregion
 
@@ -36,31 +34,10 @@ namespace Marketeer.Core
 
         private static IServiceCollection AddServices(this IServiceCollection services)
         {
-            var iServiceType = typeof(IService);
-            var serviceType = typeof(BaseService);
-            var iSTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(x => x.GetTypes())
-                .Where(x => iServiceType.IsAssignableFrom(x) &&
-                    x != iServiceType);
-            var sTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(x => x.GetTypes())
-                .Where(x => serviceType.IsAssignableFrom(x) &&
-                    x != serviceType);
-
-            var addRepoMethod = typeof(SetupCore).GetStaticMethod("AddService");
-            foreach (var service in sTypes)
-            {
-                var iService = iSTypes.FirstOrDefault(x => service.IsAssignableTo(x) &&
-                    x.IsInterface &&
-                    x != service);
-                if (iService == null)
-                    throw new Exception($"Unknown IService type {service}");
-                else
-                {
-                    addRepoMethod.MakeGenericMethod(iService, service)
-                        .Invoke(null, new[] { services });
-                }
-            }
+            SetupHelper.ReflectionServiceRegister(services,
+                typeof(ICoreService),
+                typeof(BaseCoreService),
+                typeof(SetupCore).GetStaticMethod("AddService"));
 
             return services;
         }

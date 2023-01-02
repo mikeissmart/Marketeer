@@ -1,6 +1,7 @@
 using Marketeer.Common;
 using Marketeer.Core;
 using Marketeer.Core.Service.Loggers;
+using Marketeer.Infrastructure;
 using Marketeer.Persistance;
 using Marketeer.Persistance.Database.DbContexts;
 using Marketeer.UI.Api;
@@ -17,6 +18,7 @@ builder.Logging.AddProvider(new DbLoggerProvider(configuration.GetConnectionStri
 services.AddCommonServices(configuration)
     .AddPersistanceServices(configuration)
     .AddCoreServices(configuration)
+    .AddInfrastructureServices(configuration)
     .AddApiServices(configuration);
 
 services.AddControllers()

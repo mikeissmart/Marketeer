@@ -1,4 +1,5 @@
 ﻿using AutoMapper.Internal;
+using Marketeer.Common;
 using Marketeer.Persistance.Database.DbContexts;
 using Marketeer.Persistance.Database.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -22,48 +23,26 @@ namespace Marketeer.Persistance
         {
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
-                    configuration.GetConnectionString("DefaultConnection")));
+                    configuration.GetConnectionString("DefaultConnection")!));
             services.AddDbContext<LogDbContext>(options =>
                 options.UseSqlServer(
-                    configuration.GetConnectionString("DefaultConnection")));
+                    configuration.GetConnectionString("DefaultConnection")!));
 
             return services;
         }
 
         private static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            var iRepositoryType = typeof(IRepository);
-            var repositoryType = typeof(Repository);
-            var iRTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(x => x.GetTypes())
-                .Where(x => iRepositoryType.IsAssignableFrom(x) &&
-                    x != iRepositoryType);
-            var rTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(x => x.GetTypes())
-                .Where(x => repositoryType.IsAssignableFrom(x) &&
-                    x != repositoryType);
-
-            var addRepoMethod = typeof(SetupPersistance).GetStaticMethod("AddRepository");
-            foreach (var repo in rTypes)
-            {
-                var iRepo = iRTypes.FirstOrDefault(x => repo.IsAssignableTo(x) &&
-                    x.IsInterface &&
-                    x != repo);
-                if (iRepo == null)
-                    throw new Exception($"Unknown IRepository type {repo}");
-                else
-                {
-                    addRepoMethod.MakeGenericMethod(iRepo, repo)
-                        .Invoke(null, new[] { services });
-                }
-            }
+            SetupHelper.ReflectionServiceRegister(services,
+                typeof(IRepositorySetup),
+                typeof(IBaseRepositorySetup),
+                typeof(SetupPersistance).GetStaticMethod("AddRepository"));
 
             return services;
         }
 
         private static void AddRepository<TIRepository, TRepository>(IServiceCollection services)
             where TIRepository : class
-            where TRepository : class, TIRepository => services.AddScoped<TRepository>()
-                .AddTransient<TIRepository, TRepository>();
+            where TRepository : class, TIRepository => services.AddTransient<TIRepository, TRepository>();
     }
 }

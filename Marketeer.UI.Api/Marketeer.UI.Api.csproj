@@ -23,6 +23,7 @@
     <ProjectReference Include="..\Marketeer.Common\Marketeer.Common.csproj" />
     <ProjectReference Include="..\Marketeer.Core\Marketeer.Core.csproj" />
 	<ProjectReference Include="..\Marketeer.Core.Domain\Marketeer.Core.Domain.csproj" />
+	<ProjectReference Include="..\Marketeer.Infrastructure\Marketeer.Infrastructure.csproj" />
     <ProjectReference Include="..\Marketeer.Persistance\Marketeer.Persistance.csproj" />
   </ItemGroup>
 

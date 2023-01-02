@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketeer.UI.Api", "Marketeer.UI.Api\Marketeer.UI.Api.csproj", "{7372E442-1168-4272-95FE-664817DACAFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketeer.UI.Api", "Marketeer.UI.Api\Marketeer.UI.Api.csproj", "{7372E442-1168-4272-95FE-664817DACAFD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{35C0F4A9-D60A-464A-A4CE-1BF66AF20164}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketeer.UI.Spa.ViewModels", "Marketeer.UI.Spa.ViewModels\Marketeer.UI.Spa.ViewModels.csproj", "{116039BB-8050-48AD-85B5-2EC49AC5B4FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketeer.UI.Spa.ViewModels", "Marketeer.UI.Spa.ViewModels\Marketeer.UI.Spa.ViewModels.csproj", "{116039BB-8050-48AD-85B5-2EC49AC5B4FC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{14EDFAFC-0972-4BB6-85B5-F1A99874EB1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketeer.Common", "Marketeer.Common\Marketeer.Common.csproj", "{60077545-2E00-49D0-85FE-7445829E777F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketeer.Common", "Marketeer.Common\Marketeer.Common.csproj", "{60077545-2E00-49D0-85FE-7445829E777F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6BE8B69E-E3AA-449B-94AE-FE31B06B5B9E}"
 	ProjectSection(SolutionItems) = preProject
@@ -20,19 +20,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{2125E666-FBFE-4BFE-A998-D61B5B4FBBE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketeer.Core", "Marketeer.Core\Marketeer.Core.csproj", "{8AA85205-BA6B-4B77-8E70-5DEB1A194B80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketeer.Core", "Marketeer.Core\Marketeer.Core.csproj", "{8AA85205-BA6B-4B77-8E70-5DEB1A194B80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketeer.Core.CronJob", "Marketeer.Core.CronJob\Marketeer.Core.CronJob.csproj", "{38C70781-3073-4FD6-BF64-47938CD471C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketeer.Core.CronJob", "Marketeer.Core.CronJob\Marketeer.Core.CronJob.csproj", "{38C70781-3073-4FD6-BF64-47938CD471C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketeer.Core.Domain", "Marketeer.Core.Domain\Marketeer.Core.Domain.csproj", "{8F0E5935-5908-4079-A8A5-DCBE39F5A520}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketeer.Core.Domain", "Marketeer.Core.Domain\Marketeer.Core.Domain.csproj", "{8F0E5935-5908-4079-A8A5-DCBE39F5A520}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketeer.Core.Service", "Marketeer.Core.Service\Marketeer.Core.Service.csproj", "{AE8803DD-ACB6-4D34-B94D-AB1E577D567F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketeer.Core.Service", "Marketeer.Core.Service\Marketeer.Core.Service.csproj", "{AE8803DD-ACB6-4D34-B94D-AB1E577D567F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistance", "Persistance", "{AFF6A531-1134-46ED-BFEE-0B25449C8FAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketeer.Persistance", "Marketeer.Persistance\Marketeer.Persistance.csproj", "{3F833247-28B7-4489-83D4-6A3FDD425F82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketeer.Persistance", "Marketeer.Persistance\Marketeer.Persistance.csproj", "{3F833247-28B7-4489-83D4-6A3FDD425F82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketeer.Persistance.Database", "Marketeer.Persistance.Database\Marketeer.Persistance.Database.csproj", "{86D06002-D16D-41F4-BBCE-D50217066B36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketeer.Persistance.Database", "Marketeer.Persistance.Database\Marketeer.Persistance.Database.csproj", "{86D06002-D16D-41F4-BBCE-D50217066B36}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{2AAE2A18-1E06-461B-953E-CBD44C1D35E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketeer.Infrastructure", "Marketeer.Infrastructure\Marketeer.Infrastructure.csproj", "{F1BA5325-5AE1-4E12-9C00-15D9F639D315}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketeer.Infrastructure.Python", "Marketeer.Infrastructure.Python\Marketeer.Infrastructure.Python.csproj", "{C7ACA631-0ABD-4E9B-8C58-5190CD7737F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,6 +82,14 @@ Global
 		{86D06002-D16D-41F4-BBCE-D50217066B36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86D06002-D16D-41F4-BBCE-D50217066B36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86D06002-D16D-41F4-BBCE-D50217066B36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1BA5325-5AE1-4E12-9C00-15D9F639D315}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1BA5325-5AE1-4E12-9C00-15D9F639D315}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1BA5325-5AE1-4E12-9C00-15D9F639D315}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1BA5325-5AE1-4E12-9C00-15D9F639D315}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7ACA631-0ABD-4E9B-8C58-5190CD7737F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7ACA631-0ABD-4E9B-8C58-5190CD7737F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7ACA631-0ABD-4E9B-8C58-5190CD7737F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7ACA631-0ABD-4E9B-8C58-5190CD7737F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,6 +104,8 @@ Global
 		{AE8803DD-ACB6-4D34-B94D-AB1E577D567F} = {2125E666-FBFE-4BFE-A998-D61B5B4FBBE6}
 		{3F833247-28B7-4489-83D4-6A3FDD425F82} = {AFF6A531-1134-46ED-BFEE-0B25449C8FAC}
 		{86D06002-D16D-41F4-BBCE-D50217066B36} = {AFF6A531-1134-46ED-BFEE-0B25449C8FAC}
+		{F1BA5325-5AE1-4E12-9C00-15D9F639D315} = {2AAE2A18-1E06-461B-953E-CBD44C1D35E2}
+		{C7ACA631-0ABD-4E9B-8C58-5190CD7737F1} = {2AAE2A18-1E06-461B-953E-CBD44C1D35E2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F31E512A-092A-4916-A02D-F6F3C2EF33D9}

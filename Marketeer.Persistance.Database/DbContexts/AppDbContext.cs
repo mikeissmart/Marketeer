@@ -1,5 +1,7 @@
 ﻿using Marketeer.Core.Domain.Entities.Auth;
 using Marketeer.Core.Domain.Entities.Logging;
+using Marketeer.Core.Domain.Entities.Market;
+using Marketeer.Persistance.Database.EntityConfig;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +26,14 @@ namespace Marketeer.Persistance.Database.DbContexts
 
         #endregion
 
+        #region Market
+
+        public DbSet<Ticker> Tickers => Set<Ticker>();
+        public DbSet<HistoryData> HistoryDatas => Set<HistoryData>();
+        public DbSet<TempDisabledFetchHistoryData> TempDisabledFetchHistoryDatas => Set<TempDisabledFetchHistoryData>();
+
+        #endregion
+
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             int? userId = null;
@@ -40,6 +50,25 @@ namespace Marketeer.Persistance.Database.DbContexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             DbContextCommon.ConvertToUtc(modelBuilder);
+
+            var efConfig = typeof(IEntityTypeConfiguration<>);
+            var iConfig = typeof(IEntityConfig);
+            var types = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(x => x.GetTypes())
+                .Where(x => iConfig.IsAssignableFrom(x) &&
+                    x != iConfig);
+
+            var applyConfig = typeof(ModelBuilder).GetMethod("ApplyConfiguration")!;
+            foreach (var type in types)
+            {
+                var generics = type
+                    .GetInterfaces()
+                    .First(x => x.Name == efConfig.Name)
+                    .GetGenericArguments()[0];
+                var genericApplyConfig = applyConfig.MakeGenericMethod(generics);
+
+                genericApplyConfig.Invoke(modelBuilder, new[] { Activator.CreateInstance(type) });
+            }
 
             base.OnModelCreating(modelBuilder);
         }

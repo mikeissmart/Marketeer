@@ -1,0 +1,13 @@
+﻿using Marketeer.Core.Domain.Entities.Market;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Marketeer.Persistance.Database.EntityConfig.Market
+{
+    public class TickerConfig : IEntityConfig, IEntityTypeConfiguration<Ticker>
+    {
+        public void Configure(EntityTypeBuilder<Ticker> builder) => builder
+                .HasIndex(x => x.Symbol)
+                .IsUnique();
+    }
+}
