@@ -1,0 +1,30 @@
+<div class="row">
+  <div class="col-4">
+    <label for="logType" class="form-label">Log Type:</label>
+    <select
+      name="logType"
+      id="logType"
+      class="form-control"
+      [ngModel]="currentLogType"
+      (ngModelChange)="logTypeChange($event)"
+    >
+      <option value="0">Select</option>
+      <option
+        *ngFor="let item of logTypeEnum | enumToArray"
+        [ngValue]="item.id"
+      >
+        {{ item.name.replace("_", " ") }}
+      </option>
+    </select>
+  </div>
+</div>
+<hr />
+<app-app-log-details
+  *ngIf="currentLogType == logTypeEnum.App_Log"
+></app-app-log-details>
+<app-cron-log-details
+  *ngIf="currentLogType == logTypeEnum.Cron_Log"
+></app-cron-log-details>
+<app-python-log-details
+  *ngIf="currentLogType == logTypeEnum.Python_Log"
+></app-python-log-details>

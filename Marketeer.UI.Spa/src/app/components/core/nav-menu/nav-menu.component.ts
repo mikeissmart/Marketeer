@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { IClientTokenDto } from 'src/app/models/models';
-import { SecurityApiService } from '../../services/api/security-api.service';
+import { IClientToken } from 'src/app/models/model';
+import { SecurityApiService } from 'src/app/services/api/security-api.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -13,7 +13,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
   private clientTokenSub: Subscription | null = null;
 
   isCollapsed = true;
-  clientToken: IClientTokenDto | null = null;
+  clientToken: IClientToken | null = null;
 
   constructor(
     private readonly securityStore: SecurityApiService,
@@ -24,10 +24,8 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     this.clientTokenSub = this.securityStore
       .observable()
       .subscribe((x) => (this.clientToken = x));
-    /*this.securityStore.subscribe(this, (clientToken) => {
-      this.clientToken = clientToken;
-    });*/
   }
+
   ngOnDestroy(): void {
     this.clientTokenSub!.unsubscribe();
     this.clientTokenSub = null;

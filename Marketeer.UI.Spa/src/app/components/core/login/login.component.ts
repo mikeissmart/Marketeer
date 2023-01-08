@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SecurityApiService } from '../../services/api/security-api.service';
-import { ToasterService } from '../../services/toaster/toaster.service';
+import { SecurityApiService } from 'src/app/services/api/security-api.service';
 
 @Component({
   selector: 'app-login',

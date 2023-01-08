@@ -1,0 +1,17 @@
+<ng-template #modal>
+  <div class="modal-header bg-light">
+    <ng-content select="header"></ng-content>
+    <button
+      type="button"
+      class="btn-close bg-white"
+      (click)="closeModal()"
+      *ngIf="showCloseBtn"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <ng-content select="body"></ng-content>
+  </div>
+  <div class="modal-footer">
+    <ng-content select="footer"></ng-content>
+  </div>
+</ng-template>

@@ -1,0 +1,136 @@
+<div class="row">
+  <div class="col-4">
+    <label for="logLevel" class="form-label">Log Level:</label>
+    <select
+      name="logLevel"
+      id="logLevel"
+      class="form-control"
+      [ngModel]="paginateFilter.filter.logLevel"
+      (ngModelChange)="setLogLevel($event)"
+    >
+      <option [ngValue]="undefined">Any</option>
+      <option
+        *ngFor="let item of logLevelEnums | enumToArray"
+        [ngValue]="item.id"
+      >
+        {{ getLogLevel(item.id) }}
+      </option>
+    </select>
+  </div>
+  <div class="col-4">
+    <label for="eventId" class="form-label">Event Id:</label>
+    <select
+      name="eventId"
+      id="eventId"
+      class="form-control"
+      [(ngModel)]="paginateFilter.filter.eventId"
+    >
+      <option [ngValue]="undefined">Any</option>
+      <option *ngFor="let item of eventIds" [ngValue]="item">
+        {{ item }}
+      </option>
+    </select>
+  </div>
+</div>
+<div class="d-flex justify-content-end">
+  <button class="btn btn-danger" (click)="clear()">Clear</button>
+  &nbsp;
+  <button class="btn btn-primary" (click)="fetchLogs()">Search</button>
+</div>
+<br />
+<div class="row">
+  <app-table
+    [paginateFilter]="paginateFilter"
+    [paginate]="logs"
+    [tableHeaders]="getTableHeaders()"
+    (refetchData)="fetchLogs()"
+  >
+    <tr *ngFor="let item of logs.items">
+      <td>{{ getLogLevel(item.logLevel) }}</td>
+      <td>{{ item.eventName | truncate }}</td>
+      <td>{{ item.source | truncate }}</td>
+      <td>{{ item.createdDate | date : "short" }}</td>
+      <td>
+        <button class="btn btn-sm btn-primary" (click)="onViewLog(item)">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </td>
+    </tr>
+  </app-table>
+</div>
+<app-modal [isOpen]="viewLog != null" (onClose)="onViewLogClose()">
+  <header>App Log</header>
+  <body>
+    <div class="row" *ngIf="viewLog != null">
+      <div class="col-4">
+        <label class="form-label" for="logLevel">Log Level:</label>
+        <input
+          class="form-control"
+          id="logLevel"
+          name="logLevel"
+          type="text"
+          [value]="getLogLevel(viewLog.logLevel)"
+          disabled
+        />
+      </div>
+      <div class="col-4">
+        <label class="form-label">Date:</label>
+        <input
+          class="form-control"
+          type="text"
+          [value]="viewLog.createdDate | date : 'short'"
+          disabled
+        />
+      </div>
+      <div class="col-4">
+        <label class="form-label">Event Id:</label>
+        <input
+          class="form-control"
+          type="text"
+          [value]="viewLog.eventId"
+          disabled
+        />
+      </div>
+      <div class="col-12">
+        <label class="form-label">Event Name:</label>
+        <textarea
+          class="form-control"
+          type="text"
+          rows="4"
+          [value]="viewLog.eventName"
+          disabled
+        ></textarea>
+      </div>
+      <div class="col-12">
+        <label class="form-label">Source:</label>
+        <textarea
+          class="form-control"
+          type="text"
+          rows="4"
+          [value]="viewLog.source"
+          disabled
+        ></textarea>
+      </div>
+      <div class="col-12">
+        <label class="form-label">Stack:</label>
+        <textarea
+          class="form-control"
+          type="text"
+          rows="4"
+          [value]="viewLog.stackTrace"
+          disabled
+        ></textarea>
+      </div>
+      <div class="col-12">
+        <label class="form-label">Message:</label>
+        <textarea
+          class="form-control"
+          type="text"
+          rows="4"
+          [value]="viewLog.message"
+          disabled
+        ></textarea>
+      </div>
+    </div>
+  </body>
+</app-modal>

@@ -22,7 +22,7 @@ namespace Marketeer.Persistance.Database.Repositories
         EntityEntry<T> Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);
         void Detach(T entity);
-        Task SaveChangesAsync();
+        Task<int> SaveChangesAsync();
     }
 
     public interface IBaseRepositorySetup
@@ -60,7 +60,7 @@ namespace Marketeer.Persistance.Database.Repositories
         public void Detach(T entity)
             => _dbContext.Entry(entity).State = EntityState.Detached;
 
-        public async Task SaveChangesAsync()
+        public async Task<int> SaveChangesAsync()
             => await _dbContext.SaveChangesAsync();
 
         protected async Task<T?> GetFirstOrDefaultAsync(IQueryable<T> query)

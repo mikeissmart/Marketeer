@@ -11,4 +11,9 @@ namespace Marketeer.Core.Domain.Dtos
         public bool IsOrderAsc { get; set; }
         public bool IsPaginated { get; set; } = true;
     }
+
+    public class PaginateFilterDto<T> : PaginateFilterDto where T : class
+    {
+        public T Filter { get; set; }
+    }
 }

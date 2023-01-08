@@ -1,9 +1,4 @@
 import { Injectable } from '@angular/core';
-import {
-  IClientTokenDto,
-  ILoginDto,
-  IStringDataDto,
-} from 'src/app/models/models';
 
 import { environment } from 'src/environments/environment';
 import {
@@ -13,6 +8,7 @@ import {
 } from '@angular/common/http';
 import { LoadingService } from '../loading/loading.service';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { IClientToken, IStringData, ILogin } from 'src/app/models/model';
 
 @Injectable({
   providedIn: 'root',
@@ -24,15 +20,15 @@ export class SecurityApiService {
     }),
   };
   private jwtToken: string | null = null;
-  private readonly stateBehSub$: BehaviorSubject<IClientTokenDto | null>;
-  private stateObs$: Observable<IClientTokenDto | null>;
+  private readonly stateBehSub$: BehaviorSubject<IClientToken | null>;
+  private stateObs$: Observable<IClientToken | null>;
   private baseUri = '';
 
   constructor(
     private readonly httpClient: HttpClient,
     private readonly loadingService: LoadingService
   ) {
-    this.stateBehSub$ = new BehaviorSubject<IClientTokenDto | null>(null);
+    this.stateBehSub$ = new BehaviorSubject<IClientToken | null>(null);
     this.stateObs$ = this.stateBehSub$.asObservable();
     this.baseUri = environment.apiUrl + 'security/';
     this.getClientToken();
@@ -64,7 +60,7 @@ export class SecurityApiService {
     return roles.length === has;
   }
 
-  getClientToken(): IClientTokenDto | null {
+  getClientToken(): IClientToken | null {
     var clientToken = this.getState();
     if (clientToken === null) {
       clientToken = this.parseJwtToken();
@@ -85,14 +81,14 @@ export class SecurityApiService {
     return this.getClientToken() !== null ? this.jwtToken : null;
   }
 
-  observable(): Observable<IClientTokenDto | null> {
+  observable(): Observable<IClientToken | null> {
     return this.stateObs$;
   }
 
   login(
     userName: string,
     password: string,
-    callback: (result: IClientTokenDto | null) => void,
+    callback: (result: IClientToken | null) => void,
     errorCallback?: () => void
   ): void {
     const token = this.getClientToken();
@@ -101,9 +97,9 @@ export class SecurityApiService {
     } else {
       const loadingDone = this.loadingService.show();
       this.httpClient
-        .post<IStringDataDto>(
+        .post<IStringData>(
           this.baseUri + 'Login',
-          { UserName: userName, Password: password } as ILoginDto,
+          { userName: userName, password: password } as ILogin,
           this.headerOptions
         )
         .subscribe({
@@ -133,15 +129,15 @@ export class SecurityApiService {
     if (callback) callback();
   }
 
-  private getState(): IClientTokenDto | null {
+  private getState(): IClientToken | null {
     return this.stateBehSub$.getValue();
   }
 
-  protected setState(state: IClientTokenDto | null): void {
-    this.stateBehSub$.next(JSON.parse(JSON.stringify(state)));
+  protected setState(state: IClientToken | null): void {
+    this.stateBehSub$.next(state);
   }
 
-  private parseJwtToken(): IClientTokenDto | null {
+  private parseJwtToken(): IClientToken | null {
     this.jwtToken = localStorage.getItem('userToken');
     if (this.jwtToken === null) return null;
 
@@ -164,7 +160,7 @@ export class SecurityApiService {
       exp: new Date(Number.parseInt(jToken['exp']) * 1000),
       iat: new Date(Number.parseInt(jToken['iat']) * 1000),
       nbf: new Date(Number.parseInt(jToken['nbf']) * 1000),
-    } as IClientTokenDto;
+    } as IClientToken;
 
     return clientToken;
   }

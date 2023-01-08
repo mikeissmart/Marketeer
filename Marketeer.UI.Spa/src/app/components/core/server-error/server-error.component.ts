@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ApiHttpService } from '../../services/http/api-http/api-http.service';
+import { ApiHttpService } from 'src/app/services/http/api-http/api-http.service';
 
 @Component({
   selector: 'app-server-error',

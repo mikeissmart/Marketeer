@@ -5,7 +5,7 @@ namespace Marketeer.Core.CronJob.Market
 {
     public class ClearDisabledFetchHistoryDataCronJob : BaseCronJobService
     {
-        public ClearDisabledFetchHistoryDataCronJob(CronJobConfig<ClearDisabledFetchHistoryDataCronJob> cronJobConfig,
+        public ClearDisabledFetchHistoryDataCronJob(ICronJobConfig<ClearDisabledFetchHistoryDataCronJob> cronJobConfig,
             IServiceProvider services) : base(cronJobConfig, services)
         {
 
@@ -13,7 +13,7 @@ namespace Marketeer.Core.CronJob.Market
 
         protected override async Task<string?> DoWorkAsync(IServiceScope scope, CancellationToken cancellationToken)
         {
-            var tempDisabledFetchHistoryDataRepository = scope.ServiceProvider.GetRequiredService<TempDisabledFetchHistoryDataRepository>();
+            var tempDisabledFetchHistoryDataRepository = scope.ServiceProvider.GetRequiredService<ITempDisabledFetchHistoryDataRepository>();
 
             var all = await tempDisabledFetchHistoryDataRepository.GetAll();
             tempDisabledFetchHistoryDataRepository.RemoveRange(all);

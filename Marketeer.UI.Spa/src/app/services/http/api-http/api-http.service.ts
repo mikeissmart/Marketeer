@@ -5,12 +5,12 @@ import {
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { IStringDataDto } from 'src/app/models/models';
 import { environment } from 'src/environments/environment';
 import { LoadingService } from '../../loading/loading.service';
 import { SecurityApiService } from '../../api/security-api.service';
 import { HttpService } from '../http/http.service';
 import { ModelStateError, ModelStateErrors } from '../ModelStateErrors';
+import { IStringData } from 'src/app/models/model';
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +36,7 @@ export class ApiHttpService extends HttpService<ModelStateErrors> {
   }
 
   testAuth(callback: (result: string) => void): void {
-    this.get('Security/TestAuth', (x: IStringDataDto) => {
+    this.get('Security/TestAuth', (x: IStringData) => {
       callback(x.data!!);
     });
   }
@@ -59,7 +59,6 @@ export class ApiHttpService extends HttpService<ModelStateErrors> {
 
   private handleErrors(httpError: HttpErrorResponse): ModelStateErrors | null {
     const appError = httpError.headers.get('Application-Error');
-    debugger;
     if (appError) {
       throw appError;
     }
@@ -90,7 +89,6 @@ export class ApiHttpService extends HttpService<ModelStateErrors> {
           });
           modelErrors.errors.push(modelError);
         });
-        debugger;
         return modelErrors;
     }
     return null;

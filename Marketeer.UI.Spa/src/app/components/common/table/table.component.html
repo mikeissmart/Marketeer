@@ -1,0 +1,21 @@
+<div class="table-responsive">
+  <table class="table table-sm table-striped table-bordered">
+    <thead>
+      <tr class="table-dark">
+        <th *ngFor="let item of tableHeaders" (click)="onOrderBy(item)">
+          {{ item.name }}&nbsp;
+          <i [class]="sortIcon(item)!"></i>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-content></ng-content>
+    </tbody>
+  </table>
+</div>
+<app-paginate
+  *ngIf="paginate != null"
+  [paginate]="paginate"
+  (changePage)="changePage($event)"
+  (changeItemCount)="changeItemCount($event)"
+></app-paginate>

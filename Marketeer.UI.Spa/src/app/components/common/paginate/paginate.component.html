@@ -1,0 +1,115 @@
+<nav
+  class="d-flex justify-content-between"
+  *ngIf="_paginate != null && _paginate.totalPages > 1"
+>
+  <div class="col-3">
+    <div class="input-group">
+      <input type="number" class="form-control" [(ngModel)]="pageIndex" />
+      <span class="input-group-text">/ {{ _paginate.totalPages }}</span>
+      <button class="btn btn-primary input-group-text" (click)="onChangePage()">
+        Change Page
+      </button>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="d-flex justify-content-center">
+      <ul class="pagination">
+        <li class="page-item">
+          <button
+            class="page-link"
+            type="button"
+            [disabled]="_paginate.pageIndex == 0"
+            (click)="changePage.emit(0)"
+          >
+            <span>&laquo;</span>
+          </button>
+        </li>
+        <li class="page-item">
+          <button
+            class="page-link"
+            type="button"
+            [disabled]="_paginate.pageIndex < 5"
+            (click)="changePage.emit(_paginate.pageIndex - 5)"
+          >
+            <span>...</span>
+          </button>
+        </li>
+        <li class="page-item" *ngIf="_paginate.pageIndex - 2 >= 0">
+          <button
+            class="page-link"
+            (click)="changePage.emit(_paginate.pageIndex - 2)"
+          >
+            {{ _paginate.pageIndex - 1 }}
+          </button>
+        </li>
+        <li class="page-item" *ngIf="_paginate.pageIndex - 1 >= 0">
+          <button
+            class="page-link"
+            (click)="changePage.emit(_paginate.pageIndex - 1)"
+          >
+            {{ _paginate.pageIndex }}
+          </button>
+        </li>
+        <li class="page-item">
+          <button class="page-link disabled btn-secondary">
+            {{ _paginate.pageIndex + 1 }}
+          </button>
+        </li>
+        <li
+          class="page-item"
+          *ngIf="_paginate.pageIndex + 1 < _paginate.totalPages"
+        >
+          <button
+            class="page-link"
+            (click)="changePage.emit(_paginate.pageIndex + 1)"
+          >
+            {{ _paginate.pageIndex + 2 }}
+          </button>
+        </li>
+        <li
+          class="page-item"
+          *ngIf="_paginate.pageIndex + 2 < _paginate.totalPages"
+        >
+          <button
+            class="page-link"
+            (click)="changePage.emit(_paginate.pageIndex + 2)"
+          >
+            {{ _paginate.pageIndex + 3 }}
+          </button>
+        </li>
+        <li class="page-item">
+          <button
+            class="page-link"
+            type="button"
+            [disabled]="_paginate.totalPages - _paginate.pageIndex < 5"
+            (click)="changePage.emit(_paginate.pageIndex + 5)"
+          >
+            <span>...</span>
+          </button>
+        </li>
+        <li class="page-item">
+          <button
+            class="page-link"
+            type="button"
+            [disabled]="_paginate.pageIndex == _paginate.totalPages"
+            (click)="changePage.emit(_paginate.totalPages - 1)"
+          >
+            <span>&raquo;</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-3">
+    <div class="input-group">
+      <input type="number" class="form-control" [(ngModel)]="pageItemCount" />
+      <span class="input-group-text">/ {{ _paginate.totalItemCount }}</span>
+      <button
+        class="input-group-text btn btn-primary"
+        (click)="onChangeItemCount()"
+      >
+        Item Count
+      </button>
+    </div>
+  </div>
+</nav>
