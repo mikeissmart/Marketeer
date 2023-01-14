@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Entities\Logging\" />
+    <Folder Include="InfrastructureDtos\External\Market\" />
   </ItemGroup>
 
   <ItemGroup>

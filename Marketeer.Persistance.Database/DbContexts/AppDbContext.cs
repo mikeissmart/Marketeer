@@ -27,10 +27,11 @@ namespace Marketeer.Persistance.Database.DbContexts
         #endregion
 
         #region Market
-
-        public DbSet<Ticker> Tickers => Set<Ticker>();
         public DbSet<HistoryData> HistoryDatas => Set<HistoryData>();
-        public DbSet<TempDisabledFetchHistoryData> TempDisabledFetchHistoryDatas => Set<TempDisabledFetchHistoryData>();
+        public DbSet<Ticker> Tickers => Set<Ticker>();
+        public DbSet<TickerInfo> TickerInfos => Set<TickerInfo>();
+        public DbSet<TickerSettingHistoryDisable> TickerSettingHistoryDisables => Set<TickerSettingHistoryDisable>();
+        public DbSet<TickerSetting> TickerSettings => Set<TickerSetting>();
 
         #endregion
 

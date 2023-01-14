@@ -20,6 +20,15 @@ namespace Marketeer.Persistance.Database.DbContexts
             {
                 p.HasConversion(dateTimeConverter);
             }
+
+            foreach (var p in modelBuilder.Model
+                .GetEntityTypes()
+                .SelectMany(x => x.GetProperties())
+                .Where(x => x.ClrType == typeof(decimal) || x.ClrType == typeof(decimal?))
+                .Select(x => modelBuilder.Entity(x.DeclaringEntityType.Name).Property(x.Name)))
+            {
+                p.HasPrecision(28, 10);
+            }
         }
 
         public static void ChangeAuditableEntities(ChangeTracker changeTracker, int? userId)

@@ -255,7 +255,7 @@ namespace Marketeer.Persistance.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppLogs");
+                    b.ToTable("AppLogs", (string)null);
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Logging.CronLog", b =>
@@ -286,7 +286,7 @@ namespace Marketeer.Persistance.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CronLogs");
+                    b.ToTable("CronLogs", (string)null);
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Logging.PythonLog", b =>
@@ -315,7 +315,7 @@ namespace Marketeer.Persistance.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PythonLogs");
+                    b.ToTable("PythonLogs", (string)null);
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.HistoryData", b =>
@@ -327,22 +327,26 @@ namespace Marketeer.Persistance.Database.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("Close")
-                        .HasColumnType("decimal(19,10)");
+                        .HasPrecision(28, 10)
+                        .HasColumnType("decimal(28,10)");
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("High")
-                        .HasColumnType("decimal(19,10)");
+                        .HasPrecision(28, 10)
+                        .HasColumnType("decimal(28,10)");
 
                     b.Property<int>("Interval")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Low")
-                        .HasColumnType("decimal(19,10)");
+                        .HasPrecision(28, 10)
+                        .HasColumnType("decimal(28,10)");
 
                     b.Property<decimal>("Open")
-                        .HasColumnType("decimal(19,10)");
+                        .HasPrecision(28, 10)
+                        .HasColumnType("decimal(28,10)");
 
                     b.Property<int>("TickerId")
                         .HasColumnType("int");
@@ -355,29 +359,7 @@ namespace Marketeer.Persistance.Database.Migrations
                     b.HasIndex("TickerId", "Interval", "DateTime")
                         .IsUnique();
 
-                    b.ToTable("HistoryDatas");
-                });
-
-            modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.TempDisabledFetchHistoryData", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("Interval")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TickerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TickerId")
-                        .IsUnique();
-
-                    b.ToTable("TempDisabledFetchHistoryDatas");
+                    b.ToTable("HistoryDatas", (string)null);
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.Ticker", b =>
@@ -388,20 +370,101 @@ namespace Marketeer.Persistance.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<bool>("IsDelisted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Symbol")
                         .IsRequired()
-                        .HasMaxLength(4)
-                        .HasColumnType("nvarchar(4)");
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Symbol")
                         .IsUnique();
 
-                    b.ToTable("Tickers");
+                    b.ToTable("Tickers", (string)null);
+                });
+
+            modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.TickerInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Industry")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDelisted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("QuoteType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Sector")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TickerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("Volume")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TickerId")
+                        .IsUnique();
+
+                    b.ToTable("TickerInfos", (string)null);
+                });
+
+            modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.TickerSetting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("TickerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TickerId")
+                        .IsUnique();
+
+                    b.ToTable("TickerSettings", (string)null);
+                });
+
+            modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.TickerSettingHistoryDisable", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("Interval")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TickerSettingId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TickerSettingId");
+
+                    b.ToTable("TickerSettingHistoryDisables", (string)null);
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Auth.AppRoleClaim", b =>
@@ -466,23 +529,53 @@ namespace Marketeer.Persistance.Database.Migrations
                     b.Navigation("Ticker");
                 });
 
-            modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.TempDisabledFetchHistoryData", b =>
+            modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.TickerInfo", b =>
                 {
                     b.HasOne("Marketeer.Core.Domain.Entities.Market.Ticker", "Ticker")
-                        .WithOne("TempDisabledFetchHistoryData")
-                        .HasForeignKey("Marketeer.Core.Domain.Entities.Market.TempDisabledFetchHistoryData", "TickerId")
+                        .WithOne("TickerInfo")
+                        .HasForeignKey("Marketeer.Core.Domain.Entities.Market.TickerInfo", "TickerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Ticker");
                 });
 
+            modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.TickerSetting", b =>
+                {
+                    b.HasOne("Marketeer.Core.Domain.Entities.Market.Ticker", "Ticker")
+                        .WithOne("TickerSetting")
+                        .HasForeignKey("Marketeer.Core.Domain.Entities.Market.TickerSetting", "TickerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ticker");
+                });
+
+            modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.TickerSettingHistoryDisable", b =>
+                {
+                    b.HasOne("Marketeer.Core.Domain.Entities.Market.TickerSetting", "TickerSettings")
+                        .WithMany("TempHistoryDisable")
+                        .HasForeignKey("TickerSettingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TickerSettings");
+                });
+
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.Ticker", b =>
                 {
                     b.Navigation("HistoryDatas");
 
-                    b.Navigation("TempDisabledFetchHistoryData")
+                    b.Navigation("TickerInfo")
                         .IsRequired();
+
+                    b.Navigation("TickerSetting")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.TickerSetting", b =>
+                {
+                    b.Navigation("TempHistoryDisable");
                 });
 #pragma warning restore 612, 618
         }

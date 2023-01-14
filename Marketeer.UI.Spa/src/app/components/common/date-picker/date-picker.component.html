@@ -1,0 +1,23 @@
+<div class="input-group">
+  <input
+    [ngClass]="class"
+    placeholder="yyyy-mm-dd"
+    id="dp"
+    name="dp"
+    type="text"
+    [(ngModel)]="dateStr"
+    (blur)="onBlur()"
+    [disabled]="disabled"
+    [readonly]="readonly"
+    ngbDatepicker
+    #d="ngbDatepicker"
+  />
+  <button
+    class="btn btn-outline-secondary calendar input-group-text"
+    (click)="d.toggle()"
+    type="button"
+    [disabled]="disabled || readonly"
+  >
+    <span class="fa fa-calendar"></span>
+  </button>
+</div>

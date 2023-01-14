@@ -2,6 +2,7 @@
 {
     public class CronConfig : IConfig
     {
-        public string ClearDisabledFetchHistoryData { get; set; }
+        public string ClearTickerSettingsTempHistoryDisable { get; set; }
+        public string RefreshTickersCronJob { get; set; }
     }
 }

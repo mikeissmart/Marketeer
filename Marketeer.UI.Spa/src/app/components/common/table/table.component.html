@@ -1,10 +1,12 @@
 <div class="table-responsive">
   <table class="table table-sm table-striped table-bordered">
     <thead>
-      <tr class="table-dark">
+      <tr class="table-primary">
         <th *ngFor="let item of tableHeaders" (click)="onOrderBy(item)">
-          {{ item.name }}&nbsp;
-          <i [class]="sortIcon(item)!"></i>
+          <u *ngIf="item.orderBy != null">{{ item.name }}</u>
+          <span *ngIf="item.orderBy == null">{{ item.name }}</span>
+          &nbsp;
+          <i [class]="sortIcon(item)"></i>
         </th>
       </tr>
     </thead>

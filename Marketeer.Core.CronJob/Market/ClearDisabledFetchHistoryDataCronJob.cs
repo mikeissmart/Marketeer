@@ -1,25 +1,23 @@
-﻿using Marketeer.Persistance.Database.Repositories.Market;
+﻿using Marketeer.Common.Configs;
+using Marketeer.Core.Service.Market;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Marketeer.Core.CronJob.Market
 {
-    public class ClearDisabledFetchHistoryDataCronJob : BaseCronJobService
+    public class ClearTickerSettingsTempHistoryDisableCronJob : BaseCronJobService
     {
-        public ClearDisabledFetchHistoryDataCronJob(ICronJobConfig<ClearDisabledFetchHistoryDataCronJob> cronJobConfig,
-            IServiceProvider services) : base(cronJobConfig, services)
+        public ClearTickerSettingsTempHistoryDisableCronJob(CronConfig cronConfig, IServiceProvider services) :
+            base(cronConfig, services, nameof(CronConfig.ClearTickerSettingsTempHistoryDisable))
         {
 
         }
 
         protected override async Task<string?> DoWorkAsync(IServiceScope scope, CancellationToken cancellationToken)
         {
-            var tempDisabledFetchHistoryDataRepository = scope.ServiceProvider.GetRequiredService<ITempDisabledFetchHistoryDataRepository>();
+            var tickerService = scope.ServiceProvider.GetRequiredService<ITickerService>();
+            await tickerService.ClearTickerSettingsTempHistoryDisableAsync();
 
-            var all = await tempDisabledFetchHistoryDataRepository.GetAll();
-            tempDisabledFetchHistoryDataRepository.RemoveRange(all);
-            await tempDisabledFetchHistoryDataRepository.SaveChangesAsync();
-
-            return $"Removed {all.Count}";
+            return null;
         }
     }
 }

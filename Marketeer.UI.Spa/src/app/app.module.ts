@@ -2,9 +2,9 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateAdapter, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -27,6 +27,11 @@ import { JsonDateInterceptor } from './services/http/http-interceptor/json-date.
 import { TableComponent } from './components/common/table/table.component';
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { ModalComponent } from './components/common/modal/modal.component';
+import { DatePickerComponent } from './components/common/date-picker/date-picker.component';
+import { NgbDatePickerAdapter } from './services/data/ngb-date-picker-adapter';
+import { DatePickerRangeComponent } from './components/common/date-picker-range/date-picker-range.component';
+import { TickerListComponent } from './components/market/ticker-list/ticker-list.component';
+import { AutoCompleteComponent } from './components/common/auto-complete/auto-complete.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +52,10 @@ import { ModalComponent } from './components/common/modal/modal.component';
     TableComponent,
     TruncatePipe,
     ModalComponent,
+    DatePickerComponent,
+    DatePickerRangeComponent,
+    TickerListComponent,
+    AutoCompleteComponent,
   ],
   imports: [
     ReactiveFormsModule,
@@ -60,6 +69,8 @@ import { ModalComponent } from './components/common/modal/modal.component';
     BrowserAnimationsModule,
   ],
   providers: [
+    DatePipe,
+    { provide: NgbDateAdapter, useClass: NgbDatePickerAdapter },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JsonDateInterceptor,

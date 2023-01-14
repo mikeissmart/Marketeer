@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Marketeer.Infrastructure.External\Marketeer.Infrastructure.External.csproj" />
     <ProjectReference Include="..\Marketeer.Infrastructure.Python\Marketeer.Infrastructure.Python.csproj" />
     <ProjectReference Include="..\Marketeer.Persistance.Database\Marketeer.Persistance.Database.csproj" />
   </ItemGroup>

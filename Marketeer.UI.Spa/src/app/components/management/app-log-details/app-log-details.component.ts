@@ -25,7 +25,7 @@ export class AppLogDetailsComponent implements OnInit {
   constructor(private readonly logApi: LogApiService) {}
 
   ngOnInit(): void {
-    this.logApi.getAppLogEventIds((result) => (this.eventIds = result));
+    this.logApi.getAppLogEventIds((x) => (this.eventIds = x));
     this.paginateFilter.orderBy = 'CreatedDate';
     this.paginateFilter.isOrderAsc = false;
     this.fetchLogs();

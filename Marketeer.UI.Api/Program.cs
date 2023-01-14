@@ -15,7 +15,9 @@ var services = builder.Services;
 builder.Logging.AddProvider(new DbLoggerProvider(configuration.GetConnectionString("DefaultConnection")!));
 
 // Add services to the container.
-services.AddCommonServices(configuration)
+services
+    .AddHttpClient()
+    .AddCommonServices(configuration)
     .AddPersistanceServices(configuration)
     .AddCoreServices(configuration)
     .AddInfrastructureServices(configuration)

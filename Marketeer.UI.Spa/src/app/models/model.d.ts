@@ -75,6 +75,20 @@ export interface IHistoryData
 export interface ITicker
 {
 	symbol: string;
+	id: number;
+}
+export interface ITickerFilter
+{
+	symbol?: string;
+}
+export interface ITickerInfo
+{
+	tickerId: number;
+	name: string;
+	quoteType: string;
+	sector: string;
+	industry: string;
+	volume: number;
 	isDelisted: boolean;
 	id: number;
 }

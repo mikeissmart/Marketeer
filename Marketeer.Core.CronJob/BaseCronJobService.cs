@@ -1,4 +1,5 @@
 ﻿using Cronos;
+using Marketeer.Common.Configs;
 using Marketeer.Core.Domain.Entities.Logging;
 using Marketeer.Persistance.Database.Repositories.Logging;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,12 +14,16 @@ namespace Marketeer.Core.CronJob
         private readonly CronExpression _cronExpression;
         private readonly TimeZoneInfo _timeZoneInfo;
 
-        public BaseCronJobService(ICronJobConfig cronJobConfig, IServiceProvider services)
+        public BaseCronJobService(CronConfig cronConfig, IServiceProvider services,
+            string expressionName)
         {
             _services = services;
-            _cronExpression = CronExpression.Parse(cronJobConfig.CronExpression);
-            _timeZoneInfo = cronJobConfig.TimeZoneInfo;
+            _cronExpression = CronExpression.Parse(typeof(CronConfig).GetProperty(expressionName)!.GetValue(cronConfig)!.ToString());
+            _timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("US Eastern Standard Time");
         }
+
+        public BaseCronJobService(CronConfig cronConfig, IServiceProvider services,
+            string expressionName, TimeZoneInfo timeZoneInfo) : this(cronConfig, services, expressionName) => _timeZoneInfo = timeZoneInfo;
 
         public virtual async Task StartAsync(CancellationToken cancellationToken) => await ScheduleJob(cancellationToken);
 

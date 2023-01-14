@@ -26,6 +26,16 @@
       <option [ngValue]="false">No</option>
     </select>
   </div>
+  <div class="col-8">
+    <app-date-picker-range
+      [class]="'form-control'"
+      minDateLabel="Min Date:"
+      maxDateLabel="Max Date:"
+      [(minDate)]="paginateFilter.filter.minDate"
+      [(maxDate)]="paginateFilter.filter.maxDate"
+    >
+    </app-date-picker-range>
+  </div>
 </div>
 <div class="d-flex justify-content-end">
   <button class="btn btn-danger" (click)="clear()">Clear</button>

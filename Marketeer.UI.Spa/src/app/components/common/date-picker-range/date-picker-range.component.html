@@ -1,0 +1,77 @@
+<div class="row">
+  <div class="col-6">
+    <label for="dpMinDate" class="form-label">{{ minDateLabel }}</label>
+    <div class="dp-hidden position-absolute">
+      <div class="input-group">
+        <input
+          name="datepicker"
+          [ngClass]="class"
+          ngbDatepicker
+          #datepicker="ngbDatepicker"
+          [autoClose]="'outside'"
+          (dateSelect)="onDateSelection($event)"
+          [displayMonths]="2"
+          [dayTemplate]="t"
+          outsideDays="hidden"
+          [startDate]="toNgbDate(minStr) ?? getToday()"
+          tabindex="-1"
+          [disabled]="disabled"
+          [readonly]="readonly"
+        />
+        <ng-template #t let-date let-focused="focused">
+          <span
+            class="custom-day"
+            [class.focused]="focused"
+            [class.range]="isRange(date)"
+            [class.faded]="isHovered(date) || isInside(date)"
+            (mouseenter)="hoveredDate = date"
+            (mouseleave)="hoveredDate = null"
+          >
+            {{ date.day }}
+          </span>
+        </ng-template>
+      </div>
+    </div>
+    <div class="input-group">
+      <input
+        #dpMinDate
+        [ngClass]="class"
+        placeholder="yyyy-mm-dd"
+        name="dpMinDate"
+        [(ngModel)]="minStr"
+        (blur)="onBlur()"
+      />
+      <button
+        class="btn btn-outline-secondary"
+        (click)="datepicker.toggle()"
+        type="button"
+        [disabled]="disabled || readonly"
+      >
+        <span class="fa fa-calendar"></span>
+      </button>
+    </div>
+  </div>
+  <div class="col-6">
+    <label for="dpMaxDate" class="form-label">{{ maxDateLabel }}</label>
+    <div class="input-group">
+      <input
+        #dpMaxDate
+        class="form-control"
+        placeholder="yyyy-mm-dd"
+        name="dpMaxDate"
+        [(ngModel)]="maxStr"
+        (blur)="onBlur()"
+        [disabled]="disabled"
+        [readonly]="readonly"
+      />
+      <button
+        class="btn btn-outline-secondary"
+        (click)="datepicker.toggle()"
+        type="button"
+        [disabled]="disabled || readonly"
+      >
+        <span class="fa fa-calendar"></span>
+      </button>
+    </div>
+  </div>
+</div>

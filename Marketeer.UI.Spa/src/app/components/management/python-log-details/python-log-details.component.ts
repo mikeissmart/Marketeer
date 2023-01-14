@@ -35,7 +35,7 @@ export class PythonLogDetailsComponent implements OnInit {
 
   getTableHeaders(): TableHeader[] {
     return [
-      new TableHeader('Name', 'Name'),
+      new TableHeader('File', 'File'),
       new TableHeader('Has Output'),
       new TableHeader('Has Error'),
       new TableHeader('Date', 'StartDate'),

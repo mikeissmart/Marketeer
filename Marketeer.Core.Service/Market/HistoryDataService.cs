@@ -18,21 +18,21 @@ namespace Marketeer.Core.Service.Market
         private readonly IMapper _mapper;
         private readonly ILogger<HistoryDataService> _logger;
         private readonly IHistoryDataRepository _historyDataRepository;
-        private readonly ITempDisabledFetchHistoryDataRepository _tempDisabledFetchHistoryDataRepository;
+        private readonly ITickerSettingsRepository _tickerSettingsRepository;
         private readonly ITickerRepository _tickerDataRepository;
         private readonly IYFinanceMarketData _yFinanceMarketData;
 
         public HistoryDataService(IMapper mapper,
             ILogger<HistoryDataService> logger,
             IHistoryDataRepository historyDataRepository,
-            ITempDisabledFetchHistoryDataRepository tempDisabledFetchHistoryDataRepository,
+            ITickerSettingsRepository tickerSettingsRepository,
             ITickerRepository tickerDataRepository,
             IYFinanceMarketData yFinanceMarketData)
         {
             _mapper = mapper;
             _logger = logger;
             _historyDataRepository = historyDataRepository;
-            _tempDisabledFetchHistoryDataRepository = tempDisabledFetchHistoryDataRepository;
+            _tickerSettingsRepository = tickerSettingsRepository;
             _tickerDataRepository = tickerDataRepository;
             _yFinanceMarketData = yFinanceMarketData;
         }
@@ -57,7 +57,7 @@ namespace Marketeer.Core.Service.Market
             if (ticker == null)
                 throw new Exception("No Ticker.");
 
-            if (await _tempDisabledFetchHistoryDataRepository.IsFetchHistDataDisabled(ticker.Id, interval))
+            if (await _tickerSettingsRepository.IsHistoryDisabled(ticker.Id, interval))
                 return;
 
             var curMaxDate = await _historyDataRepository.GetMaxDateTimeByTickerIntervalAsync(ticker.Id, interval);
@@ -95,11 +95,12 @@ namespace Marketeer.Core.Service.Market
 
                 if (disableFetch)
                 {
-                    await _tempDisabledFetchHistoryDataRepository.AddAsync(new TempDisabledFetchHistoryData
+                    ticker.TickerSetting.TempHistoryDisable.Add(new TickerSettingHistoryDisable
                     {
-                        TickerId = ticker.Id,
+                        TickerSettingId = ticker.TickerSetting.Id,
                         Interval = interval
                     });
+                    _tickerSettingsRepository.Update(ticker.TickerSetting);
                 }
 
                 await _historyDataRepository.SaveChangesAsync();
