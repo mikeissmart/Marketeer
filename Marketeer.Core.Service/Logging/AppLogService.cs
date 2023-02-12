@@ -60,7 +60,7 @@ namespace Marketeer.Core.Service.Logging
             try
             {
                 var cleanDate = DateTime.UtcNow.AddDays(-1 * daysOld);
-                var logs = await _appLogRepository.GetLogsBerforeDateAsync(cleanDate);
+                var logs = await _appLogRepository.GetLogsBerforeDate(cleanDate);
                 if (logs.Count > 0)
                 {
                     _appLogRepository.RemoveRange(logs);

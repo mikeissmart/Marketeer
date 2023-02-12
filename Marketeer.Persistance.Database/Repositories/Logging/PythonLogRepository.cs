@@ -37,7 +37,7 @@ namespace Marketeer.Persistance.Database.Repositories.Logging
                 orderBy: CalculateOrderBy(filter));
 
         public async Task<List<PythonLog>> GetLogsBerforeDateAsync(DateTime date) =>
-            await GetListAsync(x => x.StartDate < date);
+            await GetAsync(x => x.StartDate < date);
 
         private Func<IQueryable<PythonLog>, IOrderedQueryable<PythonLog>>? CalculateOrderBy(PaginateFilterDto filter)
         {

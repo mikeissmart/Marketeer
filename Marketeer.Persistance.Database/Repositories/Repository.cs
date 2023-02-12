@@ -75,10 +75,7 @@ namespace Marketeer.Persistance.Database.Repositories
         protected async Task<T?> GetSingleOrDefaultAsync(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, bool tracking = true)
             => await GenerateQuery(predicate, include, orderBy, tracking).SingleOrDefaultAsync();
 
-        protected async Task<List<T>> GetListAsync(IQueryable<T> query)
-            => await query.ToListAsync();
-
-        protected async Task<List<T>> GetListAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, bool tracking = true)
+        protected async Task<List<T>> GetAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, bool tracking = true)
             => await GenerateQuery(predicate, include, orderBy, tracking).ToListAsync();
 
         protected async Task<Paginate<T>> GetPaginateAsync(PaginateFilterDto paginateFilter, IQueryable<T> query)
@@ -97,16 +94,14 @@ namespace Marketeer.Persistance.Database.Repositories
                         ? 1
                         : 0);
 
-                paginate.Items = await query
+                paginate.Items = query
                     .Skip(paginateFilter.PageIndex * paginateFilter.PageItemCount)
-                    .Take(paginateFilter.PageItemCount)
-                    .ToListAsync();
+                    .Take(paginateFilter.PageItemCount);
             }
             else
             {
                 paginate.TotalPages = 1;
-                paginate.Items = await query
-                    .ToListAsync();
+                paginate.Items = query;
             }
 
             return paginate;
@@ -127,6 +122,8 @@ namespace Marketeer.Persistance.Database.Repositories
                 query = orderBy(query);
             if (!tracking)
                 query = query.AsNoTracking();
+
+            var a = query.ToQueryString();
 
             return query;
         }

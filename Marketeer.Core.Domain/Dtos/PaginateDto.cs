@@ -12,6 +12,6 @@
     // Map is defined in Common.Mapper.MappingProfile
     public class PaginateDto<T> : PaginateDto where T : class
     {
-        public List<T> Items { get; set; }
+        public IEnumerable<T> Items { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace Marketeer.Persistance.Database.Repositories.Market
 {
     public interface ITickerSettingsRepository : IRepository<TickerSetting>
     {
-        Task<List<TickerSetting>> GetAll();
+        Task<IEnumerable<TickerSetting>> GetAll();
         Task<bool> IsHistoryDisabled(int tickerId, HistoryDataIntervalEnum interval);
     }
     public class TickerSettingsRepository : BaseRepository<TickerSetting>, ITickerSettingsRepository
@@ -17,8 +17,8 @@ namespace Marketeer.Persistance.Database.Repositories.Market
 
         }
 
-        public async Task<List<TickerSetting>> GetAll() =>
-            await GetListAsync(
+        public async Task<IEnumerable<TickerSetting>> GetAll() =>
+            await GetAsync(
                 include: x => x
                     .Include(x => x.TempHistoryDisable));
 

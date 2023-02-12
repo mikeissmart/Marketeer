@@ -4,6 +4,7 @@ using Marketeer.Persistance.Database.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marketeer.Persistance.Database.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230118141626_Add_JsonTickerInfo")]
+    partial class Add_JsonTickerInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -255,7 +257,7 @@ namespace Marketeer.Persistance.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppLogs", (string)null);
+                    b.ToTable("AppLogs");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Logging.CronLog", b =>
@@ -286,7 +288,7 @@ namespace Marketeer.Persistance.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CronLogs", (string)null);
+                    b.ToTable("CronLogs");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Logging.PythonLog", b =>
@@ -315,7 +317,7 @@ namespace Marketeer.Persistance.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PythonLogs", (string)null);
+                    b.ToTable("PythonLogs");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.HistoryData", b =>
@@ -359,7 +361,7 @@ namespace Marketeer.Persistance.Database.Migrations
                     b.HasIndex("TickerId", "Interval", "DateTime")
                         .IsUnique();
 
-                    b.ToTable("HistoryDatas", (string)null);
+                    b.ToTable("HistoryDatas");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.JsonTickerInfo", b =>
@@ -381,7 +383,7 @@ namespace Marketeer.Persistance.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("JsonTickerInfos", (string)null);
+                    b.ToTable("JsonTickerInfos");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.Ticker", b =>
@@ -402,7 +404,7 @@ namespace Marketeer.Persistance.Database.Migrations
                     b.HasIndex("Symbol")
                         .IsUnique();
 
-                    b.ToTable("Tickers", (string)null);
+                    b.ToTable("Tickers");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.TickerInfo", b =>
@@ -454,7 +456,7 @@ namespace Marketeer.Persistance.Database.Migrations
                     b.HasIndex("TickerId")
                         .IsUnique();
 
-                    b.ToTable("TickerInfos", (string)null);
+                    b.ToTable("TickerInfos");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.TickerSetting", b =>
@@ -479,7 +481,7 @@ namespace Marketeer.Persistance.Database.Migrations
                     b.HasIndex("TickerId")
                         .IsUnique();
 
-                    b.ToTable("TickerSettings", (string)null);
+                    b.ToTable("TickerSettings");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.TickerSettingHistoryDisable", b =>
@@ -500,7 +502,7 @@ namespace Marketeer.Persistance.Database.Migrations
 
                     b.HasIndex("TickerSettingId");
 
-                    b.ToTable("TickerSettingHistoryDisables", (string)null);
+                    b.ToTable("TickerSettingHistoryDisables");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Auth.AppRoleClaim", b =>

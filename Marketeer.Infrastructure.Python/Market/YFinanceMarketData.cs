@@ -3,13 +3,14 @@ using Marketeer.Common.Configs;
 using Marketeer.Core.Domain.Dtos.Market;
 using Marketeer.Core.Domain.Enums;
 using Marketeer.Core.Domain.InfrastructureDto.Python.Market;
+using Marketeer.Core.Domain.InfrastructureDtos.Python.Market;
 using Marketeer.Persistance.Database.Repositories.Logging;
 
 namespace Marketeer.Infrastructure.Python.Market
 {
     public interface IYFinanceMarketData : IPythonService
     {
-        Task<List<TickerInfoDto>> GetTickerInfosAsync(IEnumerable<TickerInfoDto> tickerInfos);
+        Task DownloadYFinanceTickerInfoAsync(List<string> tickers);
         Task<List<HistoryDataDto>> GetHistoryDataAsync(TickerDto ticker,
             HistoryDataIntervalEnum interval, DateTime? startDate, DateTime? endData);
     }
@@ -27,27 +28,14 @@ namespace Marketeer.Infrastructure.Python.Market
             _mapper = mapper;
         }
 
-        public async Task<List<TickerInfoDto>> GetTickerInfosAsync(IEnumerable<TickerInfoDto> tickerInfos)
+        public async Task DownloadYFinanceTickerInfoAsync(List<string> tickers)
         {
-            var infos = new List<TickerInfoDto>();
-            var countPerBatch = 200;
-            var batchCount = tickerInfos.Count() / countPerBatch +
-                (tickerInfos.Count() % countPerBatch != 0 ? 1 : 0);
-
-            for (var i = 0; i < batchCount; i++)
+            var args = new PythonDownloadJsonInfoArgs
             {
-                var args = new PythonTickerInfosArgs
-                {
-                    TickerInfos = tickerInfos
-                        .Skip(i * countPerBatch)
-                        .Take(countPerBatch)
-                        .ToList()
-                };
-                infos.AddRange(await RunPythonScriptAsync<List<TickerInfoDto>, PythonTickerInfosArgs>(
-                    _yFinanceConfig.TickerInfosFile, args));
-            }
-
-            return infos;
+                Tickers = tickers
+            };
+            await RunPythonScriptArgsAsync(
+                _yFinanceConfig.DownloadTickerInfoJsonFile, args);
         }
 
         public async Task<List<HistoryDataDto>> GetHistoryDataAsync(TickerDto ticker,

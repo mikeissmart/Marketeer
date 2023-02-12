@@ -5,6 +5,8 @@ namespace Marketeer.Core.Domain.Entities.Market
     public class TickerSetting : Entity
     {
         public int TickerId { get; set; }
+        public bool IsDelisted { get; set; }
+        public bool UpdateDailyHistory { get; set; }
 
         #region Nav
 

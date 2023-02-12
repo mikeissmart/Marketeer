@@ -7,5 +7,8 @@ namespace Marketeer.Core.Domain.Dtos.Market
         IMapTo<Ticker>
     {
         public string Symbol { get; set; }
+
+        public TickerInfoDto TickerInfo { get; set; }
+        public TickerSettingDto TickerSetting { get; set; }
     }
 }

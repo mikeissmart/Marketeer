@@ -1,1 +1,19 @@
-<p>auto-complete works!</p>
+<label for="autoComplete" class="form-label">{{ label }}</label>
+<input
+  name="autoComplete"
+  [class]="class"
+  type="text"
+  matInput
+  [matAutocomplete]="matAC"
+  #autoSearchInput
+  [formControl]="ctrl"
+  [value]="searchText"
+/>
+<mat-autocomplete
+  #matAC="matAutocomplete"
+  (optionSelected)="onSelection($event)"
+>
+  <mat-option *ngFor="let item of options" [value]="getOptionValue(item)">
+    {{ getOptionDisplay(item) }}
+  </mat-option>
+</mat-autocomplete>

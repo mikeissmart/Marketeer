@@ -1,20 +1,87 @@
-<div class="row">
-  <!--<div class="col-4">
-    <label for="logLevel" class="form-label">Log Level:</label>
+<div class="row mb-3">
+  <div class="col-4">
+    <app-auto-complete
+      [label]="'Name:'"
+      [class]="'form-control'"
+      [searchStr]="paginateFilter.filter.name"
+      [searchResults]="searchNames"
+      (search)="onSearchName($event)"
+      (selected)="onSelectedName($event)"
+    ></app-auto-complete>
+  </div>
+  <div class="col-4">
+    <app-auto-complete
+      [label]="'Symbol:'"
+      [class]="'form-control'"
+      [searchStr]="paginateFilter.filter.symbol"
+      [searchResults]="searchSymbols"
+      (search)="onSearchSymbol($event)"
+      (selected)="onSelectedSymbol($event)"
+    ></app-auto-complete>
+  </div>
+  <div class="col-4">
+    <app-auto-complete
+      [label]="'Quote Type:'"
+      [class]="'form-control'"
+      [searchStr]="paginateFilter.filter.quoteType"
+      [searchResults]="searchQuotes"
+      (search)="onSearchQuote($event)"
+      (selected)="onSelectedQuote($event)"
+    ></app-auto-complete>
+  </div>
+  <div class="col-4">
+    <app-auto-complete
+      [label]="'Sector:'"
+      [class]="'form-control'"
+      [searchStr]="paginateFilter.filter.sector"
+      [searchResults]="searchSectors"
+      (search)="onSearchSector($event)"
+      (selected)="onSelectedSector($event)"
+    ></app-auto-complete>
+  </div>
+  <div class="col-4">
+    <app-auto-complete
+      [label]="'Industry:'"
+      [class]="'form-control'"
+      [searchStr]="paginateFilter.filter.industry"
+      [searchResults]="searchIndustries"
+      (search)="onSearchIndustry($event)"
+      (selected)="onSelectedIndustry($event)"
+    ></app-auto-complete>
+  </div>
+  <div class="col-4">
+    <label for="delisted" class="form-label">Is Delisted:</label>
     <select
-      name="logLevel"
-      id="logLevel"
+      name="delisted"
+      id="delisted"
       class="form-control"
-      [ngModel]="paginateFilter.filter.logLevel"
-      (ngModelChange)="setLogLevel($event)"
+      [(ngModel)]="paginateFilter.filter.isDelisted"
     >
       <option [ngValue]="undefined">Any</option>
-      <option
-        *ngFor="let item of logLevelEnums | enumToArray"
-        [ngValue]="item.id"
-      >
-        {{ getLogLevel(item.id) }}
-      </option>
+      <option [ngValue]="true">Yes</option>
+      <option [ngValue]="false">No</option>
     </select>
-  </div>-->
+  </div>
+</div>
+<div class="d-flex justify-content-end mb-3">
+  <button class="btn btn-danger" (click)="clear()">Clear</button>
+  &nbsp;
+  <button class="btn btn-primary" (click)="fetchTickers()">Search</button>
+</div>
+<div class="row">
+  <app-table
+    [paginateFilter]="paginateFilter"
+    [paginate]="tickers"
+    [tableHeaders]="getTableHeaders()"
+    (refetchData)="fetchTickers()"
+  >
+    <tr *ngFor="let item of tickers.items">
+      <td>{{ item.tickerInfo.name }}</td>
+      <td>{{ item.symbol }}</td>
+      <td>{{ item.tickerInfo.quoteType }}</td>
+      <td>{{ item.tickerInfo.sector }}</td>
+      <td>{{ item.tickerInfo.industry }}</td>
+      <td>{{ item.tickerSetting.isDelisted ? "Yes" : "No" }}</td>
+    </tr>
+  </app-table>
 </div>

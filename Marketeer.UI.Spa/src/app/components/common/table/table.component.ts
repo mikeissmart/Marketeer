@@ -27,7 +27,10 @@ export class TableComponent implements OnInit {
       return '';
     }
 
-    if (this.paginateFilter.orderBy == header.orderBy) {
+    if (
+      header.orderBy != undefined &&
+      this.paginateFilter.orderBy == header.orderBy
+    ) {
       return this.paginateFilter.isOrderAsc
         ? 'fa-solid fa-sort-up'
         : 'fa-solid fa-sort-down';

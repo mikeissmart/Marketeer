@@ -22,22 +22,65 @@ namespace Marketeer.Infrastructure.Python
             _config = config;
         }
 
-        protected async Task<TResut> RunPythonScriptAsync<TResut, TData>(string scriptFile, TData data)
+        protected async Task RunPythonScriptAsync(string scriptFile)
         {
-            var scriptFullPath = Path.Combine(_config.ScriptFolder, scriptFile);
+            await RunPythonScriptAsync(
+                scriptFile,
+                Path.Combine(_config.ScriptFolder, scriptFile),
+                null);
+        }
+
+        protected async Task<TResut> RunPythonScriptResultAsync<TResut>(string scriptFile)
+        {
+            var file = GetArgsFilePath();
+
+            await RunPythonScriptAsync(
+                scriptFile,
+                Path.Combine(_config.ScriptFolder, scriptFile),
+                file);
+
+            return await ReadResultFileAsync<TResut>(file);
+        }
+
+        protected async Task RunPythonScriptArgsAsync<TArgs>(string scriptFile, TArgs args)
+        {
+            var file = await WriteArgsFileAsync(args);
+
+            await RunPythonScriptAsync(
+                scriptFile,
+                Path.Combine(_config.ScriptFolder, scriptFile),
+                file);
+
+            DeleteResultFile(file);
+        }
+
+        protected async Task<TResut> RunPythonScriptAsync<TResut, TArgs>(string scriptFile, TArgs args)
+        {
+            var file = await WriteArgsFileAsync(args);
+
+            await RunPythonScriptAsync(
+                scriptFile,
+                Path.Combine(_config.ScriptFolder, scriptFile),
+                file);
+
+            return await ReadResultFileAsync<TResut>(file);
+        }
+
+        private async Task RunPythonScriptAsync(string scriptFile, string scriptFullPath, string? argsFile)
+        {
             var log = new PythonLog
             {
                 File = scriptFile,
                 StartDate = DateTime.Now
             };
-
-            var dataFile = await WriteDataFileAsync(data);
             try
             {
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = @"python.exe",
-                    Arguments = $"\"{scriptFullPath}\" \"{dataFile}\"",
+                    Arguments = argsFile != null
+                        ? $"\"{scriptFullPath}\" \"{argsFile}\""
+                        : $"\"{scriptFullPath}\"",
                     CreateNoWindow = true,
                     RedirectStandardError = true,
                     RedirectStandardOutput = true,
@@ -59,8 +102,6 @@ namespace Marketeer.Infrastructure.Python
                         log.Error = reader.ReadToEnd();
                     }
                 }
-
-                return await ReadDataFileAsync<TResut>(dataFile);
             }
             catch (Exception e)
             {
@@ -69,27 +110,39 @@ namespace Marketeer.Infrastructure.Python
             }
             finally
             {
-                File.Delete(dataFile);
+                if (argsFile != null)
+                    File.Delete(argsFile);
+
                 log.EndDate = DateTime.Now;
                 await _pythonLogRepository.AddAsync(log);
                 await _pythonLogRepository.SaveChangesAsync();
             }
         }
 
-        private async Task<string> WriteDataFileAsync<T>(T data)
+        private string GetArgsFilePath()
         {
-            var dataFile = $"{Path.Combine(_config.DataFolder, Guid.NewGuid().ToString())}.json";
-            await File.WriteAllTextAsync(dataFile, JsonConvert.SerializeObject(data));
+            return $"{Path.Combine(_config.DataFolder, Guid.NewGuid().ToString())}.json";
+        }
+
+        private async Task<string> WriteArgsFileAsync<TArgs>(TArgs args)
+        {
+            var dataFile = GetArgsFilePath();
+            await File.WriteAllTextAsync(dataFile, JsonConvert.SerializeObject(args));
 
             return dataFile;
         }
 
-        private async Task<T> ReadDataFileAsync<T>(string dataFile)
+        private async Task<TResult> ReadResultFileAsync<TResult>(string resultFile)
         {
-            var data = await File.ReadAllTextAsync(dataFile);
-            File.Delete(dataFile);
+            var data = await File.ReadAllTextAsync(resultFile);
+            File.Delete(resultFile);
 
-            return JsonConvert.DeserializeObject<T>(data)!;
+            return JsonConvert.DeserializeObject<TResult>(data)!;
+        }
+
+        private void DeleteResultFile(string resultFile)
+        {
+            File.Delete(resultFile);
         }
     }
 }

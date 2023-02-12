@@ -1,6 +1,7 @@
 ﻿using AutoMapper.Internal;
 using Marketeer.Common;
 using Marketeer.Infrastructure.External;
+using Marketeer.Infrastructure.External.Market;
 using Marketeer.Infrastructure.Python;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,8 @@ namespace Marketeer.Infrastructure
                 typeof(IPythonService),
                 typeof(BasePythonService),
                 typeof(InfrastructureSetup).GetStaticMethod("AddPythonService"));
+
+            AddHttpClientService<INasdaqApiClient, NasdaqApiClient>(services);
 
             return services;
         }

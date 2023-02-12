@@ -11,7 +11,7 @@ namespace Marketeer.Persistance.Database.Repositories.Logging
     {
         Task<List<int>> AllEventIdsAsync();
         Task<Paginate<AppLog>> GetAllPaginatedLogsAsync(PaginateFilterDto<AppLogFilterDto> filter);
-        Task<List<AppLog>> GetLogsBerforeDateAsync(DateTime date);
+        Task<List<AppLog>> GetLogsBerforeDate(DateTime date);
     }
 
     public class AppLogRepository : BaseRepository<AppLog>, IAppLogRepository
@@ -31,13 +31,13 @@ namespace Marketeer.Persistance.Database.Repositories.Logging
                 predicate: x =>
                     (filter.Filter.LogLevel == null || x.LogLevel == filter.Filter.LogLevel) &&
                     (filter.Filter.EventId == null || x.EventId == filter.Filter.EventId) &&
-                    (string.IsNullOrEmpty(filter.Filter.EventName) || x.EventName.Contains(filter.Filter.EventName)) &&
+                    (string.IsNullOrEmpty(filter.Filter.EventName) || x.EventName!.Contains(filter.Filter.EventName)) &&
                     (filter.Filter.MinDate == null || x.CreatedDate < filter.Filter.MinDate.Value) &&
                     (filter.Filter.MaxDate == null || x.CreatedDate >= filter.Filter.MaxDate.Value),
                 orderBy: CalculateOrderBy(filter));
 
-        public async Task<List<AppLog>> GetLogsBerforeDateAsync(DateTime date) =>
-            await GetListAsync(x => x.CreatedDate < date);
+        public async Task<List<AppLog>> GetLogsBerforeDate(DateTime date) =>
+            await GetAsync(x => x.CreatedDate < date);
 
         private Func<IQueryable<AppLog>, IOrderedQueryable<AppLog>>? CalculateOrderBy(PaginateFilterDto filter)
         {

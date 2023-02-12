@@ -1,19 +1,22 @@
 ﻿using FluentFTP;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace Marketeer.Infrastructure.External.Market
 {
-    public interface INasdaqApiHttpClient : IHttpClient
+    public interface INasdaqApiClient
     {
         Task<List<string>> AllSymbolsAsync();
     }
 
-    public class NasdaqApiHttpClient : BaseHttpClient, INasdaqApiHttpClient
+    public class NasdaqApiClient : INasdaqApiClient
     {
-        public NasdaqApiHttpClient(HttpClient client, ILogger<NasdaqApiHttpClient> logger)
-            : base(client, logger, @"https://google.com")
-        {
+        protected readonly ILogger _logger;
+        protected readonly string _baseUri;
 
+        public NasdaqApiClient(ILogger<NasdaqApiClient> logger)
+        {
+            _logger = logger;
         }
 
         public async Task<List<string>> AllSymbolsAsync()

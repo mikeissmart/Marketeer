@@ -15,21 +15,65 @@ export class TickerApiService {
 
   constructor(private readonly apiHttp: ApiHttpService) {}
 
-  searchSymbol(
+  searchNames(
     search: string,
     limit: number,
     callback: (result: string[]) => void
   ): void {
     this.apiHttp.get(
-      this.uri + `SearchSymbol?search=${search}&limit=${limit}`,
+      this.uri + `SearchNames?search=${search}&limit=${limit}`,
       callback
     );
   }
 
-  getTickers(
+  searchSymbols(
+    search: string,
+    limit: number,
+    callback: (result: string[]) => void
+  ): void {
+    this.apiHttp.get(
+      this.uri + `SearchSymbols?search=${search}&limit=${limit}`,
+      callback
+    );
+  }
+
+  searchQuoteTypes(
+    search: string,
+    limit: number,
+    callback: (result: string[]) => void
+  ): void {
+    this.apiHttp.get(
+      this.uri + `SearchQuoteTypes?search=${search}&limit=${limit}`,
+      callback
+    );
+  }
+
+  searchSectors(
+    search: string,
+    limit: number,
+    callback: (result: string[]) => void
+  ): void {
+    this.apiHttp.get(
+      this.uri + `SearchSectors?search=${search}&limit=${limit}`,
+      callback
+    );
+  }
+
+  searchIndustries(
+    search: string,
+    limit: number,
+    callback: (result: string[]) => void
+  ): void {
+    this.apiHttp.get(
+      this.uri + `SearchIndustries?search=${search}&limit=${limit}`,
+      callback
+    );
+  }
+
+  getTickerDetails(
     filter: IPaginateGenericFilter<ITickerFilter>,
     callback: (result: IPaginateGeneric<ITicker>) => void
   ): void {
-    this.apiHttp.post(this.uri + 'GetTickers', filter, callback);
+    this.apiHttp.post(this.uri + 'GetTickerDetails', filter, callback);
   }
 }

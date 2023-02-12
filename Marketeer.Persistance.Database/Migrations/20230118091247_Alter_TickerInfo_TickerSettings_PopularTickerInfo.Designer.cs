@@ -4,6 +4,7 @@ using Marketeer.Persistance.Database.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marketeer.Persistance.Database.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230118091247_Alter_TickerInfo_TickerSettings_PopularTickerInfo")]
+    partial class Alter_TickerInfo_TickerSettings_PopularTickerInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -255,7 +257,7 @@ namespace Marketeer.Persistance.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppLogs", (string)null);
+                    b.ToTable("AppLogs");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Logging.CronLog", b =>
@@ -286,7 +288,7 @@ namespace Marketeer.Persistance.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CronLogs", (string)null);
+                    b.ToTable("CronLogs");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Logging.PythonLog", b =>
@@ -315,7 +317,7 @@ namespace Marketeer.Persistance.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PythonLogs", (string)null);
+                    b.ToTable("PythonLogs");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.HistoryData", b =>
@@ -359,29 +361,7 @@ namespace Marketeer.Persistance.Database.Migrations
                     b.HasIndex("TickerId", "Interval", "DateTime")
                         .IsUnique();
 
-                    b.ToTable("HistoryDatas", (string)null);
-                });
-
-            modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.JsonTickerInfo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("InfoJson")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Symbol")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("JsonTickerInfos", (string)null);
+                    b.ToTable("HistoryDatas");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.Ticker", b =>
@@ -402,7 +382,7 @@ namespace Marketeer.Persistance.Database.Migrations
                     b.HasIndex("Symbol")
                         .IsUnique();
 
-                    b.ToTable("Tickers", (string)null);
+                    b.ToTable("Tickers");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.TickerInfo", b =>
@@ -454,7 +434,7 @@ namespace Marketeer.Persistance.Database.Migrations
                     b.HasIndex("TickerId")
                         .IsUnique();
 
-                    b.ToTable("TickerInfos", (string)null);
+                    b.ToTable("TickerInfos");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.TickerSetting", b =>
@@ -479,7 +459,7 @@ namespace Marketeer.Persistance.Database.Migrations
                     b.HasIndex("TickerId")
                         .IsUnique();
 
-                    b.ToTable("TickerSettings", (string)null);
+                    b.ToTable("TickerSettings");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.TickerSettingHistoryDisable", b =>
@@ -500,7 +480,7 @@ namespace Marketeer.Persistance.Database.Migrations
 
                     b.HasIndex("TickerSettingId");
 
-                    b.ToTable("TickerSettingHistoryDisables", (string)null);
+                    b.ToTable("TickerSettingHistoryDisables");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Auth.AppRoleClaim", b =>

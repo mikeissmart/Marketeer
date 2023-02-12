@@ -35,7 +35,7 @@ namespace Marketeer.Persistance.Database.Repositories.Market
 
         public async Task<List<HistoryData>> GetHistoryDataByTickerIntervalDateRangeAsync(int tickerId, HistoryDataIntervalEnum interval,
             DateTime? minDate = null, DateTime? maxDate = null, bool tracking = false) =>
-            await GetListAsync(
+            await GetAsync(
                 predicate: x =>
                     x.TickerId == tickerId &&
                     x.Interval == interval &&

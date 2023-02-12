@@ -37,7 +37,7 @@ namespace Marketeer.Persistance.Database.Repositories.Logging
                 orderBy: CalculateOrderBy(filter));
 
         public async Task<List<CronLog>> GetLogsBerforeDateAsync(DateTime date) =>
-            await GetListAsync(x => x.StartDate < date);
+            await GetAsync(x => x.StartDate < date);
 
         private Func<IQueryable<CronLog>, IOrderedQueryable<CronLog>>? CalculateOrderBy(PaginateFilterDto filter)
         {

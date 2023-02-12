@@ -8,6 +8,9 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 // Components
 import { ForbiddenComponent } from './components/core/forbidden/forbidden.component';
@@ -67,6 +70,9 @@ import { AutoCompleteComponent } from './components/common/auto-complete/auto-co
     NgxSpinnerModule,
     NgbModule,
     BrowserAnimationsModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatAutocompleteModule,
   ],
   providers: [
     DatePipe,

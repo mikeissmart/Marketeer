@@ -6,6 +6,6 @@
         public int PageItemCount { get; set; }
         public int TotalPages { get; set; }
         public int TotalItemCount { get; set; }
-        public List<T> Items { get; set; }
+        public IEnumerable<T> Items { get; set; }
     }
 }

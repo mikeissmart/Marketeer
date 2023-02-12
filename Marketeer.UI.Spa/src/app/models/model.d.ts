@@ -75,21 +75,38 @@ export interface IHistoryData
 export interface ITicker
 {
 	symbol: string;
+	tickerInfo: ITickerInfo;
+	tickerSetting: ITickerSetting;
 	id: number;
 }
 export interface ITickerFilter
 {
+	name?: string;
 	symbol?: string;
+	quoteType?: string;
+	sector?: string;
+	industry?: string;
+	isDelisted?: boolean;
 }
 export interface ITickerInfo
 {
 	tickerId: number;
 	name: string;
 	quoteType: string;
-	sector: string;
-	industry: string;
-	volume: number;
+	exchange: string;
+	marketCap?: number;
+	sector?: string;
+	industry?: string;
+	volume?: number;
+	payoutRatio?: number;
+	dividendRate?: number;
+	id: number;
+}
+export interface ITickerSetting
+{
+	tickerId: number;
 	isDelisted: boolean;
+	updateDailyHistory: boolean;
 	id: number;
 }
 export interface IAppLog
