@@ -1,3 +1,4 @@
+import sys
 import yfinance as yf
 import pyodbc as db
 import pandas as pd
@@ -31,7 +32,7 @@ for b in range(batchCount):
         jsonData = json.dumps(tickerInfo)
         jsonData = jsonData.replace("'", "''")
 
-        dbCursor.execute("SELECT COUNT(*) FROM [Marketeer].[dbo].[JsonTickerInfos] WHERE Symbol = '" + symbols[i] + '"")
+        dbCursor.execute("SELECT COUNT(*) FROM [Marketeer].[dbo].[JsonTickerInfos] WHERE Symbol = '" + symbols[i] + "'")
         if dbCursor.fetchall()[0] > 1:
             sql = "UPDATE [Marketeer].[dbo].[JsonTickerInfos] [InfoJson] = '" + jsonData + "' WHERE [Symbol] = '" + symbols[i] + "'"
         else:

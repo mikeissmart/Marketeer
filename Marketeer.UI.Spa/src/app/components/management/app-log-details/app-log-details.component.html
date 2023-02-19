@@ -49,24 +49,24 @@
 </div>
 <br />
 <div class="row">
-  <app-table
+  <app-table-paginate
     [paginateFilter]="paginateFilter"
     [paginate]="logs"
     [tableHeaders]="getTableHeaders()"
     (refetchData)="fetchLogs()"
   >
     <tr *ngFor="let item of logs.items">
-      <td>{{ getLogLevel(item.logLevel) }}</td>
-      <td>{{ item.eventName | truncate }}</td>
-      <td>{{ item.source | truncate }}</td>
-      <td>{{ item.createdDate | date : "short" }}</td>
       <td>
         <button class="btn btn-sm btn-primary" (click)="onViewLog(item)">
           <i class="fa-solid fa-magnifying-glass"></i>
         </button>
       </td>
+      <td>{{ getLogLevel(item.logLevel) }}</td>
+      <td>{{ item.eventName | truncate }}</td>
+      <td>{{ item.source | truncate }}</td>
+      <td>{{ item.createdDate | date : "short" }}</td>
     </tr>
-  </app-table>
+  </app-table-paginate>
 </div>
 <app-modal [isOpen]="viewLog != null" (onClose)="onViewLogClose()">
   <header>App Log</header>

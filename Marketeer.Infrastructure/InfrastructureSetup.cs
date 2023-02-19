@@ -18,6 +18,15 @@ namespace Marketeer.Infrastructure
             return services;
         }
 
+        public static void SetupInfrastructureServices(this IServiceScope scope)
+        {
+            var setupService = scope.ServiceProvider
+                .GetRequiredService<IPythonSetupService>();
+
+            setupService.CreatePythonEnvironmentAsync().Wait();
+            setupService.InstallPackagesAsync().Wait();
+        }
+
         private static IServiceCollection AddServices(this IServiceCollection services)
         {
             SetupHelper.ReflectionServiceRegister(services,

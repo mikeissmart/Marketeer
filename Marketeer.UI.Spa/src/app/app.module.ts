@@ -11,6 +11,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 // Components
 import { ForbiddenComponent } from './components/core/forbidden/forbidden.component';
@@ -28,6 +29,7 @@ import { PaginateComponent } from './components/common/paginate/paginate.compone
 import { EnumToArrayPipe } from './pipes/enum-to-array.pipe';
 import { JsonDateInterceptor } from './services/http/http-interceptor/json-date.interceptor';
 import { TableComponent } from './components/common/table/table.component';
+import { TablePaginateComponent } from './components/common/table-paginate/table-paginate.component';
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { ModalComponent } from './components/common/modal/modal.component';
 import { DatePickerComponent } from './components/common/date-picker/date-picker.component';
@@ -35,6 +37,8 @@ import { NgbDatePickerAdapter } from './services/data/ngb-date-picker-adapter';
 import { DatePickerRangeComponent } from './components/common/date-picker-range/date-picker-range.component';
 import { TickerListComponent } from './components/market/ticker-list/ticker-list.component';
 import { AutoCompleteComponent } from './components/common/auto-complete/auto-complete.component';
+import { TickerDetailsComponent } from './components/market/ticker-details/ticker-details.component';
+import { TickerHistorySummaryComponent } from './components/common/ticker-history-summary/ticker-history-summary.component';
 
 @NgModule({
   declarations: [
@@ -53,12 +57,15 @@ import { AutoCompleteComponent } from './components/common/auto-complete/auto-co
     EnumToArrayPipe,
     PaginateComponent,
     TableComponent,
+    TablePaginateComponent,
     TruncatePipe,
     ModalComponent,
     DatePickerComponent,
     DatePickerRangeComponent,
     TickerListComponent,
     AutoCompleteComponent,
+    TickerDetailsComponent,
+    TickerHistorySummaryComponent,
   ],
   imports: [
     ReactiveFormsModule,
@@ -73,6 +80,7 @@ import { AutoCompleteComponent } from './components/common/auto-complete/auto-co
     MatInputModule,
     MatFormFieldModule,
     MatAutocompleteModule,
+    NgApexchartsModule,
   ],
   providers: [
     DatePipe,

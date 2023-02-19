@@ -22,10 +22,13 @@ export class TickerListComponent implements OnInit {
   tickers = ModelHelper.IPaginateGenericDefault<ITicker>();
   paginateFilter =
     ModelHelper.IPaginateGenericFilterDefault() as IPaginateGenericFilter<ITickerFilter>;
+  viewTicker: ITicker | null = null;
 
   constructor(private readonly tickerApi: TickerApiService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.clear();
+  }
 
   onSearchName(searchText: string): void {
     this.paginateFilter.filter.name = searchText;
@@ -49,7 +52,7 @@ export class TickerListComponent implements OnInit {
     this.paginateFilter.filter.symbol = symbol;
   }
 
-  onSearchQuote(searchText: string): void {
+  onSearchQuoteType(searchText: string): void {
     this.paginateFilter.filter.quoteType = searchText;
     this.tickerApi.searchQuoteTypes(
       searchText,
@@ -94,6 +97,12 @@ export class TickerListComponent implements OnInit {
     this.searchQuotes = [];
     this.searchSectors = [];
     this.searchIndustries = [];
+
+    this.onSearchName('');
+    this.onSearchSymbol('');
+    this.onSearchQuoteType('');
+    this.onSearchSector('');
+    this.onSearchIndustry('');
   }
 
   fetchTickers(): void {
@@ -103,14 +112,23 @@ export class TickerListComponent implements OnInit {
     );
   }
 
+  onViewTicker(ticker: ITicker): void {
+    this.viewTicker = ticker;
+  }
+
+  onViewTickerClose(): void {
+    this.viewTicker = null;
+  }
+
   getTableHeaders(): TableHeader[] {
     return [
+      new TableHeader(''),
       new TableHeader('Name', 'Name'),
       new TableHeader('Symbol', 'Symbol'),
       new TableHeader('Quote Type', 'QuoteType'),
       new TableHeader('Sector', 'Sector'),
       new TableHeader('Industry', 'Industry'),
-      new TableHeader('Is Delisted'),
+      new TableHeader('Is Listed'),
     ];
   }
 }

@@ -13,12 +13,22 @@ namespace Marketeer.Infrastructure.Python
     public abstract class BasePythonService : IPythonService
     {
         protected readonly IPythonLogRepository _pythonLogRepository;
+        protected readonly RootPythonConfig _rootConfig;
         protected readonly PythonConfig _config;
 
-        protected BasePythonService(PythonConfig config,
+        protected BasePythonService(RootPythonConfig rootPythonConfig,
             IPythonLogRepository pythonLogRepository)
         {
             _pythonLogRepository = pythonLogRepository;
+            _rootConfig = rootPythonConfig;
+        }
+
+        protected BasePythonService(RootPythonConfig rootPythonConfig,
+            PythonConfig config,
+            IPythonLogRepository pythonLogRepository)
+        {
+            _pythonLogRepository = pythonLogRepository;
+            _rootConfig = rootPythonConfig;
             _config = config;
         }
 
@@ -26,7 +36,6 @@ namespace Marketeer.Infrastructure.Python
         {
             await RunPythonScriptAsync(
                 scriptFile,
-                Path.Combine(_config.ScriptFolder, scriptFile),
                 null);
         }
 
@@ -36,7 +45,6 @@ namespace Marketeer.Infrastructure.Python
 
             await RunPythonScriptAsync(
                 scriptFile,
-                Path.Combine(_config.ScriptFolder, scriptFile),
                 file);
 
             return await ReadResultFileAsync<TResut>(file);
@@ -48,7 +56,6 @@ namespace Marketeer.Infrastructure.Python
 
             await RunPythonScriptAsync(
                 scriptFile,
-                Path.Combine(_config.ScriptFolder, scriptFile),
                 file);
 
             DeleteResultFile(file);
@@ -60,24 +67,77 @@ namespace Marketeer.Infrastructure.Python
 
             await RunPythonScriptAsync(
                 scriptFile,
-                Path.Combine(_config.ScriptFolder, scriptFile),
                 file);
 
-            return await ReadResultFileAsync<TResut>(file);
+            return  await ReadResultFileAsync<TResut>(file);
         }
 
-        private async Task RunPythonScriptAsync(string scriptFile, string scriptFullPath, string? argsFile)
+        protected async Task RunCommandAsync(string command, bool useVenv, string args, bool throwErrors)
         {
             var log = new PythonLog
             {
-                File = scriptFile,
-                StartDate = DateTime.Now
+                File = $"Command: {command}, Args: {args}",
+                StartDate = DateTime.UtcNow
             };
             try
             {
                 var startInfo = new ProcessStartInfo
                 {
-                    FileName = @"python.exe",
+                    FileName = useVenv
+                        ? Path.Combine(_rootConfig.RootVenvPath, "Scripts\\" + command)
+                        : command,
+                    Arguments = args,
+                    CreateNoWindow = true,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                };
+
+                using (var process = new Process())
+                {
+                    process.StartInfo = startInfo;
+                    process.Start();
+                    await process.WaitForExitAsync();
+
+                    using (var reader = process.StandardOutput)
+                    {
+                        log.Output = reader.ReadToEnd();
+                    }
+                    using (var reader = process.StandardError)
+                    {
+                        log.Error = reader.ReadToEnd();
+                    }
+                }
+
+                if (throwErrors && !string.IsNullOrEmpty(log.Error))
+                    throw new Exception(log.Error);
+            }
+            catch (Exception e)
+            {
+                log.Error = e.Message;
+                throw;
+            }
+            finally
+            {
+                log.EndDate = DateTime.UtcNow;
+                await _pythonLogRepository.AddAsync(log);
+                await _pythonLogRepository.SaveChangesAsync();
+            }
+        }
+
+        private async Task RunPythonScriptAsync(string scriptFile, string? argsFile)
+        {
+            var log = new PythonLog
+            {
+                File = scriptFile,
+                StartDate = DateTime.UtcNow
+            };
+            var scriptFullPath = Path.Combine(_rootConfig.RootFolder, Path.Combine(_config.ScriptFolder, scriptFile));
+            try
+            {
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = _rootConfig.PythonRootVenvPath,
                     Arguments = argsFile != null
                         ? $"\"{scriptFullPath}\" \"{argsFile}\""
                         : $"\"{scriptFullPath}\"",
@@ -102,18 +162,21 @@ namespace Marketeer.Infrastructure.Python
                         log.Error = reader.ReadToEnd();
                     }
                 }
+
+                if (!string.IsNullOrEmpty(log.Error))
+                    throw new Exception(log.Error);
             }
             catch (Exception e)
             {
+                if (argsFile != null)
+                    File.Delete(argsFile);
+
                 log.Error = e.Message;
                 throw;
             }
             finally
             {
-                if (argsFile != null)
-                    File.Delete(argsFile);
-
-                log.EndDate = DateTime.Now;
+                log.EndDate = DateTime.UtcNow;
                 await _pythonLogRepository.AddAsync(log);
                 await _pythonLogRepository.SaveChangesAsync();
             }
@@ -121,7 +184,7 @@ namespace Marketeer.Infrastructure.Python
 
         private string GetArgsFilePath()
         {
-            return $"{Path.Combine(_config.DataFolder, Guid.NewGuid().ToString())}.json";
+            return $"{Path.Combine(_rootConfig.RootFolder, Path.Combine(_config.DataFolder, Guid.NewGuid().ToString()))}.json";
         }
 
         private async Task<string> WriteArgsFileAsync<TArgs>(TArgs args)

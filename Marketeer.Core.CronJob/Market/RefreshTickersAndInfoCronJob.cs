@@ -4,10 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Marketeer.Core.CronJob.Market
 {
-    public class RefreshTickersCronJob : BaseCronJobService
+    public class RefreshTickersAndInfoCronJob : BaseCronJobService
     {
-        public RefreshTickersCronJob(CronConfig cronConfig, IServiceProvider services) :
-            base(cronConfig, services, nameof(CronConfig.RefreshTickersCronJob))
+        public RefreshTickersAndInfoCronJob(CronConfig cronConfig, IServiceProvider services) :
+            base(cronConfig, services, nameof(CronConfig.RefreshTickers))
         {
 
         }

@@ -1,0 +1,26 @@
+<!--<div class="table-responsive">
+  <table class="table table-sm table-striped table-bordered">
+    <thead>
+      <tr class="table-primary">
+        <th *ngFor="let item of tableHeaders" (click)="onOrderBy(item)">
+          <u *ngIf="item.orderBy != null">{{ item.name }}</u>
+          <span *ngIf="item.orderBy == null">{{ item.name }}</span>
+          &nbsp;
+          <i [class]="sortIcon(item)"></i>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-content></ng-content>
+    </tbody>
+  </table>
+</div>-->
+<app-table [tableHeaders]="tableHeaders" (refetchData)="refetchData.emit()">
+  <ng-content></ng-content>
+</app-table>
+<app-paginate
+  *ngIf="paginate != null"
+  [paginate]="paginate"
+  (changePage)="changePage($event)"
+  (changeItemCount)="changeItemCount($event)"
+></app-paginate>

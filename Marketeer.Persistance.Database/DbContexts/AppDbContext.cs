@@ -29,10 +29,9 @@ namespace Marketeer.Persistance.Database.DbContexts
         #region Market
         public DbSet<HistoryData> HistoryDatas => Set<HistoryData>();
         public DbSet<JsonTickerInfo> JsonTickerInfos => Set<JsonTickerInfo>();
+        public DbSet<MarketSchedule> MarketSchedules => Set<MarketSchedule>();
         public DbSet<Ticker> Tickers => Set<Ticker>();
-        public DbSet<TickerInfo> TickerInfos => Set<TickerInfo>();
-        public DbSet<TickerSettingHistoryDisable> TickerSettingHistoryDisables => Set<TickerSettingHistoryDisable>();
-        public DbSet<TickerSetting> TickerSettings => Set<TickerSetting>();
+        public DbSet<TickerDelistReason> TickerDelistReasons => Set<TickerDelistReason>();
 
         #endregion
 

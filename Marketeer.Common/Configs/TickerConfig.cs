@@ -2,6 +2,7 @@
 {
     public class TickerConfig : IConfig
     {
-        public int InfoRefreshAfterDays { get; set; }
+        public float TickerInfoRefreshPercent { get; set; }
+        public int HistoryDataRetryDays { get; set; }
     }
 }

@@ -61,13 +61,5 @@ namespace Marketeer.UI.Api.Controllers
             var result = await _tickerService.GetTickerDetailsAsync(filter);
             return Ok(result);
         }
-
-        // TODO remove, chron only?
-        [HttpGet("RefreshTickers")]
-        public async Task<IActionResult> RefreshTickers()
-        {
-            await _tickerService.RefreshTickersAsync();
-            return Ok();
-        }
     }
 }

@@ -25,7 +25,7 @@
       [class]="'form-control'"
       [searchStr]="paginateFilter.filter.quoteType"
       [searchResults]="searchQuotes"
-      (search)="onSearchQuote($event)"
+      (search)="onSearchQuoteType($event)"
       (selected)="onSelectedQuote($event)"
     ></app-auto-complete>
   </div>
@@ -50,12 +50,12 @@
     ></app-auto-complete>
   </div>
   <div class="col-4">
-    <label for="delisted" class="form-label">Is Delisted:</label>
+    <label for="isListed" class="form-label">Is Listed:</label>
     <select
-      name="delisted"
-      id="delisted"
+      name="isListed"
+      id="isListed"
       class="form-control"
-      [(ngModel)]="paginateFilter.filter.isDelisted"
+      [(ngModel)]="paginateFilter.filter.isListed"
     >
       <option [ngValue]="undefined">Any</option>
       <option [ngValue]="true">Yes</option>
@@ -69,19 +69,30 @@
   <button class="btn btn-primary" (click)="fetchTickers()">Search</button>
 </div>
 <div class="row">
-  <app-table
+  <app-table-paginate
     [paginateFilter]="paginateFilter"
     [paginate]="tickers"
     [tableHeaders]="getTableHeaders()"
     (refetchData)="fetchTickers()"
   >
     <tr *ngFor="let item of tickers.items">
-      <td>{{ item.tickerInfo.name }}</td>
+      <td>
+        <button class="btn btn-sm btn-primary" (click)="onViewTicker(item)">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </td>
+      <td>{{ item.name }}</td>
       <td>{{ item.symbol }}</td>
-      <td>{{ item.tickerInfo.quoteType }}</td>
-      <td>{{ item.tickerInfo.sector }}</td>
-      <td>{{ item.tickerInfo.industry }}</td>
-      <td>{{ item.tickerSetting.isDelisted ? "Yes" : "No" }}</td>
+      <td>{{ item.quoteType }}</td>
+      <td>{{ item.sector }}</td>
+      <td>{{ item.industry }}</td>
+      <td>{{ item.delistReasons.length == 0 ? "Yes" : "No" }}</td>
     </tr>
-  </app-table>
+  </app-table-paginate>
 </div>
+<app-modal [isOpen]="viewTicker != null" (onClose)="onViewTickerClose()">
+  <header>Ticker</header>
+  <body>
+    <app-ticker-details [ticker]="viewTicker"></app-ticker-details>
+  </body>
+</app-modal>

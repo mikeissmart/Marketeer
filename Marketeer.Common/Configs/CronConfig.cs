@@ -2,7 +2,8 @@
 {
     public class CronConfig : IConfig
     {
-        public string ClearTickerSettingsTempHistoryDisable { get; set; }
-        public string RefreshTickersCronJob { get; set; }
+        public string RefreshTickers { get; set; }
+        public string UpdateDailyHistoryData { get; set; }
+        public string GetYearlyMarketSchedule { get; set; }
     }
 }

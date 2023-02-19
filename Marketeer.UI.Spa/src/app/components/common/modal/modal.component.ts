@@ -32,6 +32,8 @@ export class ModalComponent implements OnInit {
   @Input()
   showCloseBtn = true;
   @Input()
+  isStatic = true;
+  @Input()
   size: 'sm' | 'md' | 'lg' | 'xl' = 'lg';
   @Input()
   fullscreen: 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | boolean | null = null;
@@ -51,7 +53,7 @@ export class ModalComponent implements OnInit {
     this.modalService.dismissAll();
     this.modalRef = this.modalService.open(this.modal, {
       animation: true,
-      backdrop: 'static',
+      backdrop: this.isStatic ? 'static' : '',
       centered: true,
       keyboard: true,
       scrollable: true,

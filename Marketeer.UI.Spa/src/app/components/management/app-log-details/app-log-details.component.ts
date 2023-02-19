@@ -40,7 +40,7 @@ export class AppLogDetailsComponent implements OnInit {
   }
 
   getLogLevel(value: LogLevelEnum): string {
-    return LogLevelEnum[value].replace('_', ' ');
+    return LogLevelEnum[value].replaceAll('_', ' ');
   }
 
   clear(): void {
@@ -49,11 +49,11 @@ export class AppLogDetailsComponent implements OnInit {
 
   getTableHeaders(): TableHeader[] {
     return [
+      new TableHeader(''),
       new TableHeader('Log Level', 'LogLevel'),
       new TableHeader('Event Name', 'EventName'),
       new TableHeader('Source', 'Source'),
       new TableHeader('Date', 'CreatedDate'),
-      new TableHeader(''),
     ];
   }
 

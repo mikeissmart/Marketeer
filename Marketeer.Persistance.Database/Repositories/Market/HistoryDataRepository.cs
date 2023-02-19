@@ -7,6 +7,7 @@ namespace Marketeer.Persistance.Database.Repositories.Market
 {
     public interface IHistoryDataRepository : IRepository<HistoryData>
     {
+        IEnumerable<HistoryData> GetIEnumerable(int tickerId, HistoryDataIntervalEnum interval);
         Task<DateTime?> GetMaxDateTimeByTickerIntervalAsync(int tickerId, HistoryDataIntervalEnum interval);
         Task<List<HistoryData>> GetHistoryDataByTickerIntervalDateRangeAsync(int tickerId, HistoryDataIntervalEnum interval,
             DateTime? minDate = null, DateTime? maxDate = null, bool tracking = false);
@@ -19,12 +20,16 @@ namespace Marketeer.Persistance.Database.Repositories.Market
 
         }
 
+        public IEnumerable<HistoryData> GetIEnumerable(int tickerId, HistoryDataIntervalEnum interval) =>
+            GenerateQuery(x => x.TickerId == tickerId && x.Interval == interval);
+
         public async Task<DateTime?> GetMaxDateTimeByTickerIntervalAsync(int tickerId, HistoryDataIntervalEnum interval)
         {
             DateTime? value = await GenerateQuery(
-                predicate: x => x.TickerId == tickerId &&
-                    x.Interval == interval,
-                orderBy: x => x.OrderByDescending(x => x.DateTime))
+                    predicate: x =>
+                        x.TickerId == tickerId &&
+                        x.Interval == interval,
+                    orderBy: x => x.OrderByDescending(x => x.DateTime))
                 .Select(x => x.DateTime)
                 .FirstOrDefaultAsync();
             if (value == DateTime.MinValue)

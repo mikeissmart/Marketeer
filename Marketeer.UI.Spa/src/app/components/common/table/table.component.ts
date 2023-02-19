@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { IPaginate, IPaginateFilter } from 'src/app/models/model';
+import { IPaginateFilter } from 'src/app/models/model';
 import { TableHeader } from 'src/app/models/view-model';
 
 @Component({
@@ -10,8 +10,6 @@ import { TableHeader } from 'src/app/models/view-model';
 export class TableComponent implements OnInit {
   @Input()
   paginateFilter: IPaginateFilter | null = null;
-  @Input()
-  paginate: IPaginate | null = null;
   @Input()
   tableHeaders = [] as TableHeader[];
 

@@ -52,7 +52,8 @@ namespace Marketeer.UI.Spa.ViewModels
             builder.ExportAsEnums(new[]
                 {
                     typeof(LogLevel),
-                    typeof(HistoryDataIntervalEnum)
+                    typeof(HistoryDataIntervalEnum),
+                    typeof(DelistEnum)
                 }, x =>
                 {
                     x.ExportTo(ENUMFILE)

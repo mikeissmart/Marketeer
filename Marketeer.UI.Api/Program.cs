@@ -42,6 +42,7 @@ using (var scope = app.Services.CreateScope())
         .Database
         .Migrate();
     scope.SeedSecurityServiceScope();
+    scope.SetupInfrastructureServices();
 }
 
 // Configure the HTTP request pipeline.

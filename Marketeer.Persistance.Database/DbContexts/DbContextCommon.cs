@@ -10,7 +10,9 @@ namespace Marketeer.Persistance.Database.DbContexts
         public static void ConvertToUtc(ModelBuilder modelBuilder)
         {
             var dateTimeConverter = new ValueConverter<DateTime, DateTime>(
-                x => x, x => DateTime.SpecifyKind(x, DateTimeKind.Utc));
+                x => x, x => x.Kind == DateTimeKind.Unspecified
+                    ? DateTime.SpecifyKind(x, DateTimeKind.Utc)
+                    : x.ToUniversalTime());
 
             foreach (var p in modelBuilder.Model
                 .GetEntityTypes()

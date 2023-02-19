@@ -15,9 +15,3 @@
     </tbody>
   </table>
 </div>
-<app-paginate
-  *ngIf="paginate != null"
-  [paginate]="paginate"
-  (changePage)="changePage($event)"
-  (changeItemCount)="changeItemCount($event)"
-></app-paginate>

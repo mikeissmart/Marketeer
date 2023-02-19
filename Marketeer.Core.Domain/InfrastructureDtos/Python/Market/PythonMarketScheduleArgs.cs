@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Marketeer.Core.Domain.InfrastructureDtos.Python.Market
 {
-    public class PythonDownloadJsonInfoArgs
+    public class PythonMarketScheduleArgs
     {
-        public List<string> Tickers { get; set; }
+        public int Year { get; set; }
     }
 }

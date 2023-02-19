@@ -6,8 +6,13 @@ namespace Marketeer.Persistance.Database.EntityConfig.Market
 {
     public class TickerEntityConfig : IEntityConfig, IEntityTypeConfiguration<Ticker>
     {
-        public void Configure(EntityTypeBuilder<Ticker> builder) => builder
-                .HasIndex(x => x.Symbol)
+        public void Configure(EntityTypeBuilder<Ticker> builder)
+        {
+            builder.HasIndex(x => x.Symbol)
                 .IsUnique();
+
+            builder.Navigation(x => x.DelistReasons)
+                .AutoInclude();
+        }
     }
 }

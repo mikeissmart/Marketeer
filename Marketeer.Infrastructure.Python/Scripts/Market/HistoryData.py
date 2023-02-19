@@ -17,10 +17,13 @@ if data['EndDate'] == None:
     
 ticker = yf.Ticker(data['Ticker'])
 hist_data = ticker.history(start=data['StartDate'], end=data['EndDate'],
-                         interval=data['Interval'])
-hist_data['DateTime'] = hist_data.index.strftime('%Y-%m-%dT%H:%M:%S%z')
-hist_data = pd.DataFrame(hist_data, columns=['DateTime','Open','Close','High','Low','Volume'])
-out_data = hist_data.to_json(orient='records')
+                         interval=data['Interval'], period='1d')
+if len(hist_data.index) > 0:
+    hist_data['DateTime'] = hist_data.index.strftime('%Y-%m-%dT%H:%M:%S%z')
+    hist_data = pd.DataFrame(hist_data, columns=['DateTime','Open','Close','High','Low','Volume'])
+    out_data = hist_data.to_json(orient='records')
+else:
+    out_data = '[]'
 
 fp.seek(0)
 fp.write(out_data)

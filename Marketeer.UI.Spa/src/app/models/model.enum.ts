@@ -25,3 +25,9 @@ export enum HistoryDataIntervalEnum {
 	One_Month = 10,
 	Three_Months = 11
 }
+export enum DelistEnum {
+	Nasdaq_Removed = 0,
+	Yfinance_No_Ticker = 1,
+	Yfinance_No_Info = 2,
+	Yfinance_No_History = 3
+}

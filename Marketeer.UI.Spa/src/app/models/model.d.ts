@@ -3,6 +3,7 @@
 //     the code is regenerated.
 
 import { HistoryDataIntervalEnum } from './model.enum';
+import { DelistEnum } from './model.enum';
 import { LogLevelEnum } from './model.enum';
 
 export interface IPaginate
@@ -72,25 +73,24 @@ export interface IHistoryData
 	dateTime: Date;
 	id: number;
 }
+export interface IMarketSchedule
+{
+	day: Date;
+	marketOpen: Date;
+	marketClose: Date;
+	id: number;
+}
+export interface ITickerDelistReason
+{
+	tickerId: number;
+	delist: DelistEnum;
+	createdDate: Date;
+	id: number;
+}
 export interface ITicker
 {
 	symbol: string;
-	tickerInfo: ITickerInfo;
-	tickerSetting: ITickerSetting;
-	id: number;
-}
-export interface ITickerFilter
-{
-	name?: string;
-	symbol?: string;
-	quoteType?: string;
-	sector?: string;
-	industry?: string;
-	isDelisted?: boolean;
-}
-export interface ITickerInfo
-{
-	tickerId: number;
+	lastHistoryUpdate?: Date;
 	name: string;
 	quoteType: string;
 	exchange: string;
@@ -100,14 +100,31 @@ export interface ITickerInfo
 	volume?: number;
 	payoutRatio?: number;
 	dividendRate?: number;
+	lastInfoUpdate?: Date;
+	delistReasons: ITickerDelistReason[];
 	id: number;
 }
-export interface ITickerSetting
+export interface ITickerFilter
 {
-	tickerId: number;
-	isDelisted: boolean;
-	updateDailyHistory: boolean;
-	id: number;
+	name?: string;
+	symbol?: string;
+	quoteType?: string;
+	sector?: string;
+	industry?: string;
+	isListed?: boolean;
+}
+export interface ITickerHistorySummary
+{
+	earliestDate?: Date;
+	latestDate?: Date;
+	valueSummaries: IValueSummary[];
+}
+export interface IValueSummary
+{
+	title: string;
+	min: number;
+	max: number;
+	avg: number;
 }
 export interface IAppLog
 {

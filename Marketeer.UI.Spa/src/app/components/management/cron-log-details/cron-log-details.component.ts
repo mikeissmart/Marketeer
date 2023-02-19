@@ -35,6 +35,7 @@ export class CronLogDetailsComponent implements OnInit {
 
   getTableHeaders(): TableHeader[] {
     return [
+      new TableHeader(''),
       new TableHeader('Name', 'Name'),
       new TableHeader('Has Ouput'),
       new TableHeader('Has Error'),
@@ -64,6 +65,8 @@ export class CronLogDetailsComponent implements OnInit {
       milliSeconds / 1000 - minutes * 60 - hours * 60 * 60
     );
 
-    return `${hours}:${minutes}:${seconds}`;
+    return `${hours.toString().padStart(2, '0')}:${minutes
+      .toString()
+      .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }
 }
