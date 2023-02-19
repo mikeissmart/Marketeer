@@ -25,6 +25,7 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+*/Venv/
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -521,6 +522,8 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
+# Python
+
 # JetBrains Rider
 
 ### VisualStudio ###
@@ -705,3 +708,4 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/csharp,visualstudio,aspnetcore
+/Marketeer.Infrastructure.Python/Scripts/Venv/Marketeer
