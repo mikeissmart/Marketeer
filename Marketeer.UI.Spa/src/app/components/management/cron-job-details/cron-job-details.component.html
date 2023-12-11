@@ -1,0 +1,23 @@
+<div class="d-flex justify-content-end mb-3">
+  <button class="btn btn-primary" (click)="refresh()">Refresh</button>
+</div>
+<div class="row">
+  <app-table-paginate
+    [paginateFilter]="paginateFilter"
+    [paginate]="cronJobDetails"
+    [tableHeaders]="getTableHeaders()"
+    (refetchData)="refresh()">
+    <tr *ngFor="let item of cronJobDetails.items">
+      <td>
+        <button class="btn btn-sm btn-primary" (click)="fire(item)">
+          <i class="fa-solid fa-bullseye"></i>
+        </button>
+      </td>
+      <td>{{ item.name }}</td>
+      <td>{{ item.cronExpression }}</td>
+      <td>{{ item.nextOccurrence | date : "short" }}</td>
+      <td>{{ item.lastOccurrence | date : "short" }}</td>
+      <td>{{ item.isRunning ? "Yes" : "No" }}</td>
+    </tr>
+  </app-table-paginate>
+</div>

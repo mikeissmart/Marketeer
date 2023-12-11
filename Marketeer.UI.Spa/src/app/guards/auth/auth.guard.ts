@@ -6,7 +6,7 @@ import {
   RouterStateSnapshot,
   UrlTree,
 } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { SecurityApiService } from '../../services/api/security-api.service';
 
 @Injectable({
@@ -26,9 +26,12 @@ export class AuthGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    if (this.securityStore.getClientToken() === null) {
-      this.router.navigateByUrl('/login');
-      return false;
+    if (!this.securityStore.checkClientToken()) {
+      return this.securityStore.refreshToken().pipe(
+        map((result) => {
+          return this.securityStore.checkClientToken();
+        })
+      );
     }
 
     return true;

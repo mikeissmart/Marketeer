@@ -61,6 +61,15 @@ export interface ILogin
 	userName: string;
 	password: string;
 }
+export interface INewsArticle
+{
+	tickerId?: number;
+	title: string;
+	link: string;
+	text: string;
+	date: Date;
+	id: number;
+}
 export interface IHistoryData
 {
 	tickerId: number;
@@ -115,16 +124,13 @@ export interface ITickerFilter
 }
 export interface ITickerHistorySummary
 {
-	earliestDate?: Date;
-	latestDate?: Date;
 	valueSummaries: IValueSummary[];
 }
 export interface IValueSummary
 {
 	title: string;
-	min: number;
-	max: number;
-	avg: number;
+	date: Date;
+	value?: number;
 }
 export interface IAppLog
 {
@@ -175,6 +181,19 @@ export interface IPythonLogFilter
 	minDate?: Date;
 	maxDate?: Date;
 }
+export interface ICronJobDetail
+{
+	name: string;
+	cronExpression: string;
+	nextOccurrence?: Date;
+	lastOccurrence?: Date;
+	isRunning: boolean;
+}
 export interface IAppUser
 {
+}
+export interface IToken
+{
+	accessToken: string;
+	refreshToken: string;
 }

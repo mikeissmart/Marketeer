@@ -9,7 +9,7 @@
     >
       <option [ngValue]="undefined">Any</option>
       <option *ngFor="let item of files" [ngValue]="item">
-        {{ item }}
+        {{ item | truncate : 50 }}
       </option>
     </select>
   </div>
@@ -42,10 +42,9 @@
   &nbsp;
   <button class="btn btn-primary" (click)="fetchLogs()">Search</button>
 </div>
-<br />
 <div class="row">
   <app-table-paginate
-    [paginateFilter]="paginateFilter"
+    [paginateFilter]="this.paginateFilter"
     [paginate]="logs"
     [tableHeaders]="getTableHeaders()"
     (refetchData)="fetchLogs()"
@@ -69,7 +68,7 @@
   <header>App Log</header>
   <body>
     <div class="row" *ngIf="viewLog != null">
-      <div class="col-4">
+      <div class="col-12">
         <label class="form-label" for="file">File:</label>
         <input
           class="form-control"

@@ -47,7 +47,7 @@ namespace Marketeer.UI.Api.Security
             })
             .AddJwtBearer(jwt =>
             {
-                var key = Encoding.ASCII.GetBytes(jwtConfig.Secret);
+                var key = Encoding.UTF8.GetBytes(jwtConfig.Secret);
                 jwt.SaveToken = true;
                 jwt.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -56,7 +56,8 @@ namespace Marketeer.UI.Api.Security
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     RequireExpirationTime = false,
-                    ValidateLifetime = true
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 

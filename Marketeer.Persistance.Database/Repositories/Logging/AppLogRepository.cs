@@ -26,7 +26,8 @@ namespace Marketeer.Persistance.Database.Repositories.Logging
                 .OrderBy(x => x)
                 .ToListAsync();
 
-        public async Task<Paginate<AppLog>> GetAllPaginatedLogsAsync(PaginateFilterDto<AppLogFilterDto> filter) => await GetPaginateAsync(
+        public async Task<Paginate<AppLog>> GetAllPaginatedLogsAsync(PaginateFilterDto<AppLogFilterDto> filter) =>
+            await GetPaginateAsync(
                 filter,
                 predicate: x =>
                     (filter.Filter.LogLevel == null || x.LogLevel == filter.Filter.LogLevel) &&

@@ -7,8 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="InfrastructureDtos\External\**" />
+    <EmbeddedResource Remove="InfrastructureDtos\External\**" />
+    <None Remove="InfrastructureDtos\External\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Entities\Logging\" />
-    <Folder Include="InfrastructureDtos\External\Market\" />
   </ItemGroup>
 
   <ItemGroup>

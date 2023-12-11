@@ -22,6 +22,61 @@ namespace Marketeer.Persistance.Database.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("Marketeer.Core.Domain.Entities.AI.HuggingFaceModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("HuggingFaceModels");
+                });
+
+            modelBuilder.Entity("Marketeer.Core.Domain.Entities.AI.SentimentResult", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("HuggingFaceModelId")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Negative")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Neutral")
+                        .HasColumnType("real");
+
+                    b.Property<int?>("NewsArticleId")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Positive")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HuggingFaceModelId");
+
+                    b.HasIndex("NewsArticleId");
+
+                    b.ToTable("SentimentResults");
+                });
+
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Auth.AppRole", b =>
                 {
                     b.Property<int>("Id")
@@ -120,6 +175,13 @@ namespace Marketeer.Persistance.Database.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("RefreshToken")
+                        .HasMaxLength(44)
+                        .HasColumnType("nvarchar(44)");
+
+                    b.Property<DateTime?>("RefreshTokenExpires")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -221,6 +283,29 @@ namespace Marketeer.Persistance.Database.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Marketeer.Core.Domain.Entities.CronJob.CronJobStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<bool>("IsRunning")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("CronJobStatus");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Logging.AppLog", b =>
@@ -493,6 +578,56 @@ namespace Marketeer.Persistance.Database.Migrations
                     b.ToTable("TickerDelistReasons");
                 });
 
+            modelBuilder.Entity("Marketeer.Core.Domain.Entities.News.NewsArticle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TickerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TickerId");
+
+                    b.ToTable("NewsArticles");
+                });
+
+            modelBuilder.Entity("Marketeer.Core.Domain.Entities.AI.SentimentResult", b =>
+                {
+                    b.HasOne("Marketeer.Core.Domain.Entities.AI.HuggingFaceModel", "HuggingFaceModel")
+                        .WithMany("SentimentResults")
+                        .HasForeignKey("HuggingFaceModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Marketeer.Core.Domain.Entities.News.NewsArticle", "NewsArticle")
+                        .WithMany()
+                        .HasForeignKey("NewsArticleId");
+
+                    b.Navigation("HuggingFaceModel");
+
+                    b.Navigation("NewsArticle");
+                });
+
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Auth.AppRoleClaim", b =>
                 {
                     b.HasOne("Marketeer.Core.Domain.Entities.Auth.AppRole", null)
@@ -566,11 +701,27 @@ namespace Marketeer.Persistance.Database.Migrations
                     b.Navigation("Ticker");
                 });
 
+            modelBuilder.Entity("Marketeer.Core.Domain.Entities.News.NewsArticle", b =>
+                {
+                    b.HasOne("Marketeer.Core.Domain.Entities.Market.Ticker", "Ticker")
+                        .WithMany("NewsArticles")
+                        .HasForeignKey("TickerId");
+
+                    b.Navigation("Ticker");
+                });
+
+            modelBuilder.Entity("Marketeer.Core.Domain.Entities.AI.HuggingFaceModel", b =>
+                {
+                    b.Navigation("SentimentResults");
+                });
+
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.Market.Ticker", b =>
                 {
                     b.Navigation("DelistReasons");
 
                     b.Navigation("HistoryDatas");
+
+                    b.Navigation("NewsArticles");
                 });
 #pragma warning restore 612, 618
         }

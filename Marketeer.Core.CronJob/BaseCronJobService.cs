@@ -1,6 +1,8 @@
 ﻿using Cronos;
 using Marketeer.Common.Configs;
+using Marketeer.Core.Domain.Entities.CronJob;
 using Marketeer.Core.Domain.Entities.Logging;
+using Marketeer.Persistance.Database.Repositories.CronJob;
 using Marketeer.Persistance.Database.Repositories.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,13 +35,27 @@ namespace Marketeer.Core.CronJob
             await Task.CompletedTask;
         }
 
+        public void DoWorkNow()
+        {
+            if (_timer != null)
+            {
+                _timer.Stop();
+                _timer.Interval = 0.1;
+                _timer.Start();
+            }
+        }
+
+        public DateTimeOffset? NextOccurrence() => _cronExpression.GetNextOccurrence(DateTimeOffset.Now, _timeZoneInfo);
+
+        public string GetCronExpression() => _cronExpression.ToString();
+
         public virtual void Dispose() => _timer?.Dispose();
 
         protected abstract Task<string?> DoWorkAsync(IServiceScope scope, CancellationToken cancellationToken);
 
         private async Task ScheduleJob(CancellationToken cancellationToken)
         {
-            var next = _cronExpression.GetNextOccurrence(DateTimeOffset.Now, _timeZoneInfo);
+            var next = NextOccurrence();
             if (next != null)
             {
                 var delay = next.Value - DateTimeOffset.Now;
@@ -60,13 +76,46 @@ namespace Marketeer.Core.CronJob
                         };
                         using (var scope = _services.CreateScope())
                         {
-                            log.Message = await DoWorkAsync(scope, cancellationToken);
-                            log.EndDate = DateTime.UtcNow;
-                            log.IsCanceled = cancellationToken.IsCancellationRequested;
+                            var cronJobStatusRepository = scope.ServiceProvider.GetRequiredService<ICronJobStatusRepository>();
+                            var cronJobStatus = await cronJobStatusRepository.GetByNameAsync(GetType().Name);
+                            if (cronJobStatus == null)
+                            {
+                                cronJobStatus = new CronJobStatus
+                                {
+                                    Name = GetType().Name,
+                                    IsRunning = true
+                                };
+                                await cronJobStatusRepository.AddAsync(cronJobStatus);
+                            }
+                            else
+                            {
+                                cronJobStatus.IsRunning = true;
+                                cronJobStatusRepository.Update(cronJobStatus);
+                            }    
+                            await cronJobStatusRepository.SaveChangesAsync();
 
-                            var cronLogRepository = scope.ServiceProvider.GetRequiredService<ICronLogRepository>();
-                            await cronLogRepository.AddAsync(log);
-                            await cronLogRepository.SaveChangesAsync();
+                            try
+                            {
+                                log.Message = await DoWorkAsync(scope, cancellationToken);
+                            }
+                            catch (Exception ex)
+                            {
+                                // Consume error
+                                ;
+                            }
+                            finally
+                            {
+                                log.EndDate = DateTime.UtcNow;
+                                log.IsCanceled = cancellationToken.IsCancellationRequested;
+
+                                cronJobStatus.IsRunning = false;
+                                cronJobStatusRepository.Update(cronJobStatus);
+                                await cronJobStatusRepository.SaveChangesAsync();
+
+                                var cronLogRepository = scope.ServiceProvider.GetRequiredService<ICronLogRepository>();
+                                await cronLogRepository.AddAsync(log);
+                                await cronLogRepository.SaveChangesAsync();
+                            }
                         }
                     }
                     if (!cancellationToken.IsCancellationRequested)

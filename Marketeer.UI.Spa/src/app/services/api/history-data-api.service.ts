@@ -19,4 +19,14 @@ export class HistoryDataApiService {
       callback
     );
   }
+
+  updateTickerHistoryData(
+    tickerId: number,
+    callback: (result: boolean) => void
+  ): void {
+    this.apiHttp.get(
+      this.uri + `UpdateTickerHistoryData?tickerId=${tickerId}`,
+      callback
+    );
+  }
 }

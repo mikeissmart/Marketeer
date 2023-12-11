@@ -40,13 +40,12 @@ namespace Marketeer.Core.Service.Market
             {
                 for (var i = 0; i < numYears; i++)
                 {
-                    var minDate = new DateTime(DateTime.Now.Year + i, 1, 1);
-                    var maxDate = new DateTime(DateTime.Now.Year + i, 12, 31);
+                    var minDate = new DateTime(DateTime.UtcNow.Year + i, 1, 1);
+                    var maxDate = new DateTime(DateTime.UtcNow.Year + i, 12, 31);
 
                     var curSchedules = await _marketScheduleRepository.GetScheduleDaysInRangeAsync(minDate, maxDate);
 
                     var freshSchedules = _mapper.Map<List<MarketSchedule>>(await _marketPythonService.GetYearlyMarketSchedule(minDate.Year));
-
                     var addSchedules = freshSchedules
                         .Where(x => !curSchedules.Any(y =>
                             y.Day == x.Day &&
@@ -64,9 +63,9 @@ namespace Marketeer.Core.Service.Market
                     await _marketScheduleRepository.SaveChangesAsync();
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.LogError(e, e.Message);
+                _logger.LogError(ex, ex.Message);
                 throw;
             }
         }

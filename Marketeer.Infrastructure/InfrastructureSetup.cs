@@ -1,5 +1,6 @@
 ﻿using AutoMapper.Internal;
 using Marketeer.Common;
+using Marketeer.Core.Domain.Domain.CronJob;
 using Marketeer.Infrastructure.External;
 using Marketeer.Infrastructure.External.Market;
 using Marketeer.Infrastructure.Python;
@@ -25,6 +26,26 @@ namespace Marketeer.Infrastructure
 
             setupService.CreatePythonEnvironmentAsync().Wait();
             setupService.InstallPackagesAsync().Wait();
+            scope.CleanScriptDataFolders();
+        }
+
+        private static void CleanScriptDataFolders(this IServiceScope scope)
+        {
+            var pythonType = typeof(IPythonService);
+            var types = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(x => x.GetTypes())
+                .Where(x => pythonType.IsAssignableFrom(x) &&
+                    x.IsInterface &&
+                    x != pythonType &&
+                    x != typeof(IPythonSetupService));
+
+            foreach (var type in types)
+            {
+                var pythonService = (BasePythonService)scope.ServiceProvider.GetRequiredService(type);
+                var dataFolder = pythonService.GetDataFolder();
+                if (Directory.Exists(dataFolder))
+                    Directory.Delete(dataFolder, true);
+            }
         }
 
         private static IServiceCollection AddServices(this IServiceCollection services)

@@ -1,10 +1,15 @@
 ﻿using Marketeer.Common.Configs;
 using Marketeer.Core.Domain.Dtos;
+using Marketeer.Core.Domain.Dtos.Auth;
 using Marketeer.Core.Domain.Dtos.Security;
+using Marketeer.Core.Service.Auth;
+using Marketeer.Persistance.Database.Repositories.Auth;
 using Marketeer.UI.Api.Security;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -17,15 +22,18 @@ namespace Marketeer.UI.Api.Controllers
     {
         private readonly AppSignInManager _signInManager;
         private readonly AppUserManager _userManager;
-        private readonly JwtConfig _jwtConfig;
+        private readonly ITokenService _tokenService;
+        private readonly IAppUserRepository _appUserRepository;
 
         public SecurityController(AppUserManager userManager,
             AppSignInManager signInManager,
-            JwtConfig jwtConfig)
+            ITokenService tokenService,
+            IAppUserRepository appUserRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _jwtConfig = jwtConfig;
+            _tokenService = tokenService;
+            _appUserRepository = appUserRepository;
         }
 
         [AllowAnonymous]
@@ -40,30 +48,67 @@ namespace Marketeer.UI.Api.Controllers
             if (!signIn.Succeeded)
                 return Unauthorized();
 
-            var roles = (await _userManager.GetRolesAsync(user)).ToArray();
-            var secret = Encoding.ASCII.GetBytes(_jwtConfig.Secret);
+            _tokenService.GenerateRefreshToken(out var refreshToken, out var refreshExpires);
 
-            var handler = new JwtSecurityTokenHandler();
-            var descriptor = new SecurityTokenDescriptor()
-            {
-                Audience = "",
-                Issuer = "",
-                Expires = DateTime.UtcNow.AddMinutes(10),
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(secret),
-                    SecurityAlgorithms.HmacSha256),
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim("UserId", user.Id.ToString()),
-                    new Claim("UserName", user.UserName),
-                    new Claim("Roles", string.Join(",", roles))
-                })
-            };
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpires = refreshExpires;
+            _appUserRepository.Update(user);
+            await _appUserRepository.SaveChangesAsync();
 
-            return Ok(new StringDataDto()
+            var roles = await _userManager.GetRolesAsync(user);
+            return Ok(new TokenDto
             {
-                Data = handler.WriteToken(handler.CreateToken(descriptor))
+                AccessToken = _tokenService.GenerateAccessToken(user, roles),
+                RefreshToken = refreshToken
             });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("Refresh")]
+        public async Task<IActionResult> Refresh(TokenDto token)
+        {
+            if (token == null)
+                return BadRequest("Invalid client request");
+
+            var principal = _tokenService.GetPrincipalFromExpiredToken(token.AccessToken);
+            var username = principal.Claims.First(x => x.Type == "UserName").Value; //this is mapped to the Name claim by default
+
+            var user = await _appUserRepository.GetUserByUserNameAsync(username);
+            if (user == null ||
+                user.RefreshToken != token.RefreshToken ||
+                user.RefreshTokenExpires <= DateTime.Now)
+            {
+                return BadRequest("Invalid client request");
+            }
+
+            _tokenService.GenerateRefreshToken(out var refreshToken, out var refreshExpires);
+
+            user.RefreshToken = refreshToken;
+            _appUserRepository.Update(user);
+            await _appUserRepository.SaveChangesAsync();
+
+            var roles = await _userManager.GetRolesAsync(user);
+            return Ok(new TokenDto
+            {
+                AccessToken = _tokenService.GenerateAccessToken(user, roles),
+                RefreshToken = refreshToken
+            });
+        }
+        [HttpPost("Revoke")]
+        [Authorize]
+        public async Task<IActionResult> Revoke()
+        {
+            var username = User.Identity!.Name!;
+            var user = await _appUserRepository.GetUserByUserNameAsync(username);
+            if (user == null)
+                return BadRequest();
+
+            user.RefreshToken = null;
+            user.RefreshTokenExpires = null;
+            _appUserRepository.Update(user);
+            await _appUserRepository.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

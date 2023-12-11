@@ -11,6 +11,7 @@ import { SecurityApiService } from '../../api/security-api.service';
 import { HttpService } from '../http/http.service';
 import { ModelStateError, ModelStateErrors } from '../ModelStateErrors';
 import { IStringData } from 'src/app/models/model';
+import { ToasterService } from '../../toaster/toaster.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,8 @@ export class ApiHttpService extends HttpService<ModelStateErrors> {
     private readonly router: Router,
     private readonly loadingService: LoadingService,
     private readonly httpClient: HttpClient,
-    private readonly securityStore: SecurityApiService
+    private readonly securityStore: SecurityApiService,
+    private readonly toasterService: ToasterService
   ) {
     super();
 
@@ -57,28 +59,33 @@ export class ApiHttpService extends HttpService<ModelStateErrors> {
     return options;
   }
 
-  private handleErrors(httpError: HttpErrorResponse): ModelStateErrors | null {
+  private handleErrors(
+    httpError: HttpErrorResponse,
+    errorCallback: (error: ModelStateErrors | null) => void
+  ): void {
     const appError = httpError.headers.get('Application-Error');
     if (appError) {
       throw appError;
     }
     switch (httpError.status) {
       case 500: // server error
-        this.serverErrorMessage = httpError.error;
+        this.toasterService.showError('Server Error');
+        console.log(httpError.error);
+        /*this.serverErrorMessage = httpError.error;
         this.router.navigateByUrl('/servererror', {
           skipLocationChange: true,
-        });
+        });*/
         break;
       case 401: // forbidden
         this.router.navigateByUrl('/forbidden', {
           skipLocationChange: true,
         });
-        break;
+        return;
       case 403: // unauthorized
         this.router.navigateByUrl('/unauthorized', {
           skipLocationChange: true,
         });
-        break;
+        return;
       case 400: // bad request
         const modelErrors = new ModelStateErrors();
         Object.getOwnPropertyNames(httpError.error.errors).forEach((x) => {
@@ -89,8 +96,14 @@ export class ApiHttpService extends HttpService<ModelStateErrors> {
           });
           modelErrors.errors.push(modelError);
         });
-        return modelErrors;
+        errorCallback(modelErrors);
+        break;
+      case 0: // unknown
+        this.router.navigateByUrl('/', {
+          skipLocationChange: false,
+        });
+        return;
     }
-    return null;
+    errorCallback(null);
   }
 }

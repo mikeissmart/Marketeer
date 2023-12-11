@@ -15,7 +15,11 @@
     </tbody>
   </table>
 </div>-->
-<app-table [tableHeaders]="tableHeaders" (refetchData)="refetchData.emit()">
+<app-table
+  [paginateFilter]="paginateFilter"
+  [tableHeaders]="tableHeaders"
+  (refetchData)="refetchData.emit()"
+>
   <ng-content></ng-content>
 </app-table>
 <app-paginate

@@ -2,6 +2,7 @@
 using Marketeer.Common;
 using Marketeer.Persistance.Database.DbContexts;
 using Marketeer.Persistance.Database.Repositories;
+using Marketeer.Persistance.Database.Repositories.CronJob;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -39,6 +39,8 @@ import { TickerListComponent } from './components/market/ticker-list/ticker-list
 import { AutoCompleteComponent } from './components/common/auto-complete/auto-complete.component';
 import { TickerDetailsComponent } from './components/market/ticker-details/ticker-details.component';
 import { TickerHistorySummaryComponent } from './components/common/ticker-history-summary/ticker-history-summary.component';
+import { CronJobDetailsComponent } from './components/management/cron-job-details/cron-job-details.component';
+import { NewsDetailsComponent } from './components/news/news-details/news-details.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +68,8 @@ import { TickerHistorySummaryComponent } from './components/common/ticker-histor
     AutoCompleteComponent,
     TickerDetailsComponent,
     TickerHistorySummaryComponent,
+    CronJobDetailsComponent,
+    NewsDetailsComponent,
   ],
   imports: [
     ReactiveFormsModule,

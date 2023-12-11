@@ -7,8 +7,8 @@ import {
   HttpHeaders,
 } from '@angular/common/http';
 import { LoadingService } from '../loading/loading.service';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { IClientToken, IStringData, ILogin } from 'src/app/models/model';
+import { BehaviorSubject, Observable, catchError, map, of } from 'rxjs';
+import { IClientToken, ILogin, IToken } from 'src/app/models/model';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +31,10 @@ export class SecurityApiService {
     this.stateBehSub$ = new BehaviorSubject<IClientToken | null>(null);
     this.stateObs$ = this.stateBehSub$.asObservable();
     this.baseUri = environment.apiUrl + 'security/';
-    this.getClientToken();
+    const token = this.getClientToken();
+    if (token !== null) {
+      this.setState(token);
+    }
   }
 
   hasRole(role: string): boolean {
@@ -64,17 +67,21 @@ export class SecurityApiService {
     var clientToken = this.getState();
     if (clientToken === null) {
       clientToken = this.parseJwtToken();
-      this.setState(clientToken);
-    }
-
-    if (clientToken !== null) {
-      if (clientToken.exp!!.getTime() < Date.now()) {
-        // Token expired
-        this.logout();
-      }
     }
 
     return clientToken;
+  }
+
+  checkClientToken(): boolean {
+    const clientToken = this.getClientToken();
+
+    if (clientToken !== null) {
+      if (clientToken.exp!!.getTime() < Date.now()) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   getJwtToken(): string | null {
@@ -93,11 +100,12 @@ export class SecurityApiService {
   ): void {
     const token = this.getClientToken();
     if (token !== null) {
+      this.setState(token);
       callback(token);
     } else {
       const loadingDone = this.loadingService.show();
       this.httpClient
-        .post<IStringData>(
+        .post<IToken>(
           this.baseUri + 'Login',
           { userName: userName, password: password } as ILogin,
           this.headerOptions
@@ -105,7 +113,8 @@ export class SecurityApiService {
         .subscribe({
           next: (result) => {
             loadingDone();
-            localStorage.setItem('userToken', result.data!!);
+            localStorage.setItem('userToken', result.accessToken!!);
+            localStorage.setItem('refreshToken', result.refreshToken!!);
             const clientToken = this.parseJwtToken();
             this.setState(clientToken);
             if (callback) callback(clientToken);
@@ -122,8 +131,37 @@ export class SecurityApiService {
     }
   }
 
+  refreshToken(): Observable<IToken | null> {
+    const loadingDone = this.loadingService.show();
+    return this.httpClient
+      .post<IToken>(
+        this.baseUri + 'Refresh',
+        {
+          accessToken: localStorage.getItem('userToken'),
+          refreshToken: localStorage.getItem('refreshToken'),
+        } as IToken,
+        this.headerOptions
+      )
+      .pipe(
+        map((result) => {
+          loadingDone();
+          localStorage.setItem('userToken', result.accessToken!!);
+          localStorage.setItem('refreshToken', result.refreshToken!!);
+          const clientToken = this.parseJwtToken();
+          this.setState(clientToken);
+          return result;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          loadingDone();
+          this.logout();
+          return of(null);
+        })
+      );
+  }
+
   logout(callback?: () => void): void {
     localStorage.removeItem('userToken');
+    localStorage.removeItem('refreshToken');
     this.setState(null);
     this.jwtToken = null;
     if (callback) callback();

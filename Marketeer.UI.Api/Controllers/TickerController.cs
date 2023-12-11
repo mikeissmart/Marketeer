@@ -20,6 +20,20 @@ namespace Marketeer.UI.Api.Controllers
             _tickerService = tickerService;
         }
 
+        [HttpGet("GetTickerById")]
+        public async Task<IActionResult> GetTickerById([FromQuery] int tickerId)
+        {
+            var result = await _tickerService.GetTickerByIdAsync(tickerId);
+            return Ok(result);
+        }
+
+        [HttpGet("GetTickerBySymbol")]
+        public async Task<IActionResult> GetTickerBySymbol([FromQuery] string symbol)
+        {
+            var result = await _tickerService.GetTickerBySymbolAsync(symbol);
+            return Ok(result);
+        }
+
         [HttpGet("SearchNames")]
         public async Task<IActionResult> SearchNames(string? search, int limit)
         {
@@ -59,6 +73,13 @@ namespace Marketeer.UI.Api.Controllers
         public async Task<IActionResult> GetTickerDetails(PaginateFilterDto<TickerFilterDto> filter)
         {
             var result = await _tickerService.GetTickerDetailsAsync(filter);
+            return Ok(result);
+        }
+
+        [HttpGet("UpdateTickerInfoData")]
+        public async Task<IActionResult> UpdateTickerInfoData([FromQuery] int tickerId)
+        {
+            var result = await _tickerService.UpdateTickerInfoAsync(tickerId);
             return Ok(result);
         }
     }

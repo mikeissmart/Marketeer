@@ -12,6 +12,7 @@ namespace Marketeer.Persistance.Database.Repositories.Logging
         Task<List<string>> AllNamesAsync();
         Task<Paginate<CronLog>> GetAllPaginatedLogsAsync(PaginateFilterDto<CronLogFilterDto> filter);
         Task<List<CronLog>> GetLogsBerforeDateAsync(DateTime date);
+        Task<List<CronLog>> GetLastLogForCronJobsAsync(List<string> cronJobLogNames);
     }
 
     public class CronLogRepository : BaseRepository<CronLog>, ICronLogRepository
@@ -38,6 +39,12 @@ namespace Marketeer.Persistance.Database.Repositories.Logging
 
         public async Task<List<CronLog>> GetLogsBerforeDateAsync(DateTime date) =>
             await GetAsync(x => x.StartDate < date);
+
+        public async Task<List<CronLog>> GetLastLogForCronJobsAsync(List<string> cronJobLogNames) =>
+            await GenerateQuery(x => cronJobLogNames.Contains(x.Name))
+                .GroupBy(x => x.Name, x => x)
+                .Select(x => x.OrderByDescending(x => x.StartDate).First())
+                .ToListAsync();
 
         private Func<IQueryable<CronLog>, IOrderedQueryable<CronLog>>? CalculateOrderBy(PaginateFilterDto filter)
         {

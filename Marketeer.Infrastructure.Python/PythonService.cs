@@ -8,6 +8,7 @@ namespace Marketeer.Infrastructure.Python
 {
     public interface IPythonService
     {
+        string GetDataFolder();
     }
 
     public abstract class BasePythonService : IPythonService
@@ -32,6 +33,8 @@ namespace Marketeer.Infrastructure.Python
             _config = config;
         }
 
+        public string GetDataFolder() => Path.Combine(_rootConfig.RootFolder, _config.DataFolder);
+
         protected async Task RunPythonScriptAsync(string scriptFile)
         {
             await RunPythonScriptAsync(
@@ -41,18 +44,18 @@ namespace Marketeer.Infrastructure.Python
 
         protected async Task<TResut> RunPythonScriptResultAsync<TResut>(string scriptFile)
         {
-            var file = GetArgsFilePath();
+            var file = CreateArgsFilePath();
 
             await RunPythonScriptAsync(
                 scriptFile,
                 file);
 
-            return await ReadResultFileAsync<TResut>(file);
+            return ReadResultFile<TResut>(file);
         }
 
         protected async Task RunPythonScriptArgsAsync<TArgs>(string scriptFile, TArgs args)
         {
-            var file = await WriteArgsFileAsync(args);
+            var file = WriteArgsFile(args);
 
             await RunPythonScriptAsync(
                 scriptFile,
@@ -63,13 +66,13 @@ namespace Marketeer.Infrastructure.Python
 
         protected async Task<TResut> RunPythonScriptAsync<TResut, TArgs>(string scriptFile, TArgs args)
         {
-            var file = await WriteArgsFileAsync(args);
+            var file = WriteArgsFile(args);
 
             await RunPythonScriptAsync(
                 scriptFile,
                 file);
 
-            return  await ReadResultFileAsync<TResut>(file);
+            return ReadResultFile<TResut>(file);
         }
 
         protected async Task RunCommandAsync(string command, bool useVenv, string args, bool throwErrors)
@@ -79,6 +82,7 @@ namespace Marketeer.Infrastructure.Python
                 File = $"Command: {command}, Args: {args}",
                 StartDate = DateTime.UtcNow
             };
+
             try
             {
                 var startInfo = new ProcessStartInfo
@@ -97,24 +101,17 @@ namespace Marketeer.Infrastructure.Python
                 {
                     process.StartInfo = startInfo;
                     process.Start();
+                    log.Output = process.StandardOutput.ReadToEnd();
+                    log.Error = process.StandardError.ReadToEnd();
                     await process.WaitForExitAsync();
-
-                    using (var reader = process.StandardOutput)
-                    {
-                        log.Output = reader.ReadToEnd();
-                    }
-                    using (var reader = process.StandardError)
-                    {
-                        log.Error = reader.ReadToEnd();
-                    }
                 }
 
                 if (throwErrors && !string.IsNullOrEmpty(log.Error))
                     throw new Exception(log.Error);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                log.Error = e.Message;
+                log.Error = ex.Message;
                 throw;
             }
             finally
@@ -151,27 +148,20 @@ namespace Marketeer.Infrastructure.Python
                 {
                     process.StartInfo = startInfo;
                     process.Start();
+                    log.Output = process.StandardOutput.ReadToEnd();
+                    log.Error = process.StandardError.ReadToEnd();
                     await process.WaitForExitAsync();
-
-                    using (var reader = process.StandardOutput)
-                    {
-                        log.Output = reader.ReadToEnd();
-                    }
-                    using (var reader = process.StandardError)
-                    {
-                        log.Error = reader.ReadToEnd();
-                    }
                 }
 
                 if (!string.IsNullOrEmpty(log.Error))
                     throw new Exception(log.Error);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 if (argsFile != null)
                     File.Delete(argsFile);
 
-                log.Error = e.Message;
+                log.Error = ex.Message;
                 throw;
             }
             finally
@@ -182,22 +172,29 @@ namespace Marketeer.Infrastructure.Python
             }
         }
 
-        private string GetArgsFilePath()
+        private string CreateArgsFilePath()
         {
-            return $"{Path.Combine(_rootConfig.RootFolder, Path.Combine(_config.DataFolder, Guid.NewGuid().ToString()))}.json";
+            var path = GetDataFolder();
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            var file = $"{Path.Combine(path, Guid.NewGuid().ToString())}.json";
+            File.Create(file).Dispose();
+
+            return file;
         }
 
-        private async Task<string> WriteArgsFileAsync<TArgs>(TArgs args)
+        private string WriteArgsFile<TArgs>(TArgs args)
         {
-            var dataFile = GetArgsFilePath();
-            await File.WriteAllTextAsync(dataFile, JsonConvert.SerializeObject(args));
+            var dataFile = CreateArgsFilePath();
+            File.WriteAllText(dataFile, JsonConvert.SerializeObject(args));
 
             return dataFile;
         }
 
-        private async Task<TResult> ReadResultFileAsync<TResult>(string resultFile)
+        private TResult ReadResultFile<TResult>(string resultFile)
         {
-            var data = await File.ReadAllTextAsync(resultFile);
+            var data = File.ReadAllText(resultFile);
             File.Delete(resultFile);
 
             return JsonConvert.DeserializeObject<TResult>(data)!;

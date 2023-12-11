@@ -16,7 +16,7 @@ namespace Marketeer.Core.CronJob.Market
         {
             var tickerService = scope.ServiceProvider.GetRequiredService<ITickerService>();
             var result = await tickerService.RefreshTickersAsync();
-            var infoUpdated = await tickerService.UpdateTickerInfoAsync();
+            var infoUpdated = await tickerService.UpdateMultipleTickerInfoAsync();
 
             return $"Added: {result.Item1}, Relisted: {result.Item2}, Delisted: {result.Item3}, InfoUpdated: {infoUpdated}";
         }

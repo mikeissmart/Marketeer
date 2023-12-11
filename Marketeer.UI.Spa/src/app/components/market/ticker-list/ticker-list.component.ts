@@ -28,6 +28,7 @@ export class TickerListComponent implements OnInit {
 
   ngOnInit(): void {
     this.clear();
+    this.fetchTickers();
   }
 
   onSearchName(searchText: string): void {

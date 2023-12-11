@@ -18,6 +18,7 @@ namespace Marketeer.Core.Service.Market
 {
     public interface ITickerService : ICoreService
     {
+        Task<TickerDto> GetTickerByIdAsync(int tickerId);
         /// <summary>
         /// AddedCount, RelistedCount, DelistedCount
         /// </summary>
@@ -29,7 +30,8 @@ namespace Marketeer.Core.Service.Market
         Task<List<string>> SearchQuoteTypesAsync(string? search, int limit);
         Task<List<string>> SearchSectorsAsync(string? search, int limit);
         Task<List<string>> SearchIndustriesAsync(string? search, int limit);
-        Task<int> UpdateTickerInfoAsync();
+        Task<int> UpdateMultipleTickerInfoAsync();
+        Task<bool> UpdateTickerInfoAsync(int tickerId);
         Task<PaginateDto<TickerDto>> GetTickerDetailsAsync(PaginateFilterDto<TickerFilterDto> filter);
     }
 
@@ -58,6 +60,23 @@ namespace Marketeer.Core.Service.Market
             _jsonTickerInfoRepository = jsonTickerInfoRepository;
             _nasdaqApiHttpClient = nasdaqApiHttpClient;
             _marketPythonService = marketPythonService;
+        }
+
+        public async Task<TickerDto> GetTickerByIdAsync(int tickerId)
+        {
+            try
+            {
+                var ticker = await _tickerRepository.GetTickerByIdAsync(tickerId);
+                if (ticker == null)
+                    throw new ArgumentNullException("No Ticker Found");
+
+                return _mapper.Map<TickerDto>(ticker);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw;
+            }
         }
 
         public async Task<(int, int, int)> RefreshTickersAsync()
@@ -191,7 +210,7 @@ namespace Marketeer.Core.Service.Market
             }
         }
 
-        public async Task<int> UpdateTickerInfoAsync()
+        public async Task<int> UpdateMultipleTickerInfoAsync()
         {
             try
             {
@@ -210,11 +229,32 @@ namespace Marketeer.Core.Service.Market
             }
         }
 
+        public async Task<bool> UpdateTickerInfoAsync(int tickerId)
+        {
+            try
+            {
+                var ticker = await _tickerRepository.GetTickerByIdAsync(tickerId);
+                if (ticker == null)
+                    throw new ArgumentNullException("No Ticker Found");
+
+                var infos = new List<Ticker> { ticker };
+                await _marketPythonService.DownloadTickerJsonInfo(infos.Select(x => x.Symbol).ToList());
+                var updatedCount = await UploadInfoJsonsAsync(infos);
+
+                return updatedCount == 1;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw;
+            }
+        }
+
         public async Task<PaginateDto<TickerDto>> GetTickerDetailsAsync(PaginateFilterDto<TickerFilterDto> filter)
         {
             try
             {
-                return _mapper.Map<PaginateDto<TickerDto>>(await _tickerRepository.GetTickerDetailsAsync(filter));
+                return _mapper.Map<PaginateDto<TickerDto>>(await _tickerRepository.GetTickerByFilterAsync(filter));
             }
             catch (Exception e)
             {
@@ -225,25 +265,22 @@ namespace Marketeer.Core.Service.Market
 
         private async Task<int> UploadInfoJsonsAsync(List<Ticker> tickers)
         {
-            var now = DateTime.UtcNow.Date;
             var updatedCount = 0;
             foreach (var ticker in tickers)
             {
+                var noInfo = ticker.DelistReasons.FirstOrDefault(x => x.Delist == DelistEnum.Yfinance_No_Ticker);
                 var jInfo = await _jsonTickerInfoRepository.GetJsonTickerBySymbolAsync(ticker.Symbol);
                 if (jInfo == null)
                 {
-                    if (!ticker.DelistReasons.Any(x => x.Delist == DelistEnum.Yfinance_No_Ticker))
+                    var noTicker = ticker.DelistReasons.FirstOrDefault(x => x.Delist == DelistEnum.Yfinance_No_Ticker);
+                    if (noTicker == null)
                         ticker.DelistReasons.Add(new TickerDelistReason { Delist = DelistEnum.Yfinance_No_Ticker });
                     continue;
                 }
 
-                ticker.DelistReasons = ticker.DelistReasons
-                    .Where(x => x.Delist != DelistEnum.Yfinance_No_Ticker)
-                    .ToList();
-
                 if (jInfo.InfoJson == "null")
                 {
-                    if (!ticker.DelistReasons.Any(x => x.Delist == DelistEnum.Yfinance_No_Info))
+                    if (noInfo == null)
                         ticker.DelistReasons.Add(new TickerDelistReason { Delist = DelistEnum.Yfinance_No_Info });
                     continue;
                 }
@@ -254,14 +291,13 @@ namespace Marketeer.Core.Service.Market
                     ticker.Name = jObj["shortName"]?.GetValue<string>() ?? "";
                     if (ticker.Name.Length == 0)
                     {
-                        if (!ticker.DelistReasons.Any(x => x.Delist == DelistEnum.Yfinance_No_Info))
+                        if (noInfo == null)
                             ticker.DelistReasons.Add(new TickerDelistReason { Delist = DelistEnum.Yfinance_No_Info });
                     }
                     else
                     {
-                        ticker.DelistReasons = ticker.DelistReasons
-                            .Where(x => x.Delist != DelistEnum.Yfinance_No_Info)
-                            .ToList();
+                        if (noInfo != null)
+                            ticker.DelistReasons.Remove(noInfo);
 
                         ticker.QuoteType = jObj["quoteType"]!.GetValue<string>();
                         ticker.Exchange = jObj["exchange"]!.GetValue<string>();
@@ -274,7 +310,7 @@ namespace Marketeer.Core.Service.Market
                         ticker.DividendRate = jObj["dividendRate"]?.GetValue<float>();
                     }
                 }
-                ticker.LastInfoUpdate = now;
+                ticker.LastInfoUpdate = DateTime.UtcNow;
                 updatedCount++;
 
                 _tickerRepository.Update(ticker);

@@ -15,7 +15,6 @@
   &nbsp;
   <button class="btn btn-primary" (click)="fetchLogs()">Search</button>
 </div>
-<br />
 <div class="row">
   <app-table-paginate
     [paginateFilter]="paginateFilter"
@@ -30,10 +29,77 @@
         </button>
       </td>
       <td>{{ item.name }}</td>
-      <td>{{ item.message }}</td>
+      <td>{{ item.message ? "Yes" : "No" }}</td>
       <td>{{ item.isCanceled ? "Yes" : "No" }}</td>
-      <td>{{ item.startDate }}</td>
+      <td>{{ item.startDate | date : "short" }}</td>
       <td>{{ calculateRunTime(item) }}</td>
     </tr>
   </app-table-paginate>
 </div>
+
+<app-modal [isOpen]="viewLog != null" (onClose)="onViewLogClose()">
+  <header>App Log</header>
+  <body>
+    <div class="row" *ngIf="viewLog != null">
+      <div class="col-12">
+        <label class="form-label" for="name">Name:</label>
+        <input
+          class="form-control"
+          id="name"
+          name="name"
+          type="text"
+          [value]="viewLog.name"
+          disabled
+        />
+      </div>
+      <div class="col-4">
+        <label class="form-label">Start Date:</label>
+        <input
+          class="form-control"
+          type="text"
+          [value]="viewLog.startDate | date : 'short'"
+          disabled
+        />
+      </div>
+      <div class="col-4">
+        <label class="form-label">End Date:</label>
+        <input
+          class="form-control"
+          type="text"
+          [value]="viewLog.endDate | date : 'short'"
+          disabled
+        />
+      </div>
+      <div class="col-4">
+        <label class="form-label">Run Time:</label>
+        <input
+          class="form-control"
+          type="text"
+          [value]="calculateRunTime(viewLog)"
+          disabled
+        />
+      </div>
+      <div class="col-4">
+        <div class="form-check">
+          <label class="form-check-label">Is Canceled:</label>
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [value]="viewLog.isCanceled"
+            disabled
+          />
+        </div>
+      </div>
+      <div class="col-12">
+        <label class="form-label">Message:</label>
+        <textarea
+          class="form-control"
+          type="text"
+          rows="4"
+          [value]="viewLog.message"
+          disabled
+        ></textarea>
+      </div>
+    </div>
+  </body>
+</app-modal>

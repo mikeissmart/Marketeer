@@ -38,7 +38,7 @@ namespace Marketeer.Infrastructure.Python.Market
                 Tickers = tickers
             };
             await RunPythonScriptArgsAsync(
-                _marketPythonConfig.DownloadTickerInfoJson, args);
+                _marketPythonConfig.DownloadTickerJsonInfo, args);
         }
 
         public async Task<List<HistoryDataDto>> GetHistoryDataAsync(TickerDto ticker,
@@ -63,7 +63,7 @@ namespace Marketeer.Infrastructure.Python.Market
             {
                 hist.TickerId = ticker.Id;
                 hist.Interval = interval;
-                hist.DateTime = hist.DateTime.ToUniversalTime();
+                hist.DateTime = hist.DateTime.Date;
             }
 
             return histDatas;
@@ -76,17 +76,20 @@ namespace Marketeer.Infrastructure.Python.Market
                 Year = year
             };
 
-            var schedules = await RunPythonScriptAsync<List<MarketScheduleDto>, PythonMarketScheduleArgs>(
+            var schedules = await RunPythonScriptAsync<List<PythonMarketScheduleDto>, PythonMarketScheduleArgs>(
                 _marketPythonConfig.GetYearlyMarketSchedule, args);
 
-            foreach (var item in schedules)
+            var marketSchedules = new List<MarketScheduleDto>();
+            foreach (var dto in schedules)
             {
-                item.Day = item.Day.ToUniversalTime();
-                item.MarketOpen = item.MarketOpen.ToUniversalTime();
-                item.MarketClose = item.MarketClose.ToUniversalTime();
+                var item = new MarketScheduleDto();
+                item.Day = dto.Day.Date;
+                item.MarketOpen = dto.MarketOpen.ToUniversalTime();
+                item.MarketClose = dto.MarketClose.ToUniversalTime();
+                marketSchedules.Add(item);
             }
 
-            return schedules;
+            return marketSchedules;
         }
     }
 }

@@ -19,6 +19,8 @@ namespace Marketeer.Infrastructure.External.Market
             _logger = logger;
         }
 
+        /*
+        Original
         public async Task<List<string>> AllSymbolsAsync()
         {
 
@@ -37,7 +39,7 @@ namespace Marketeer.Infrastructure.External.Market
                     {
                         using (var reader = new StreamReader(fileStream))
                         {
-                            ParseNasdaqFile(reader, totalData);
+                            totalData = ParseNasdaqFile(reader, totalData);
                         }
                     }
                     File.Delete(Path.Combine(Directory.GetCurrentDirectory(), file));
@@ -49,7 +51,7 @@ namespace Marketeer.Infrastructure.External.Market
                     {
                         using (var reader = new StreamReader(fileStream))
                         {
-                            ParseNasdaqFile(reader, totalData);
+                            totalData = ParseNasdaqFile(reader, totalData);
                         }
                     }
                     File.Delete(Path.Combine(Directory.GetCurrentDirectory(), file));
@@ -70,9 +72,62 @@ namespace Marketeer.Infrastructure.External.Market
                     throw;
                 }
             }
+        }*/
+
+        public async Task<List<string>> AllSymbolsAsync()
+        {
+
+            using (var client = new AsyncFtpClient(@"ftp://ftp.nasdaqtrader.com"))
+            {
+                var file = "";
+                try
+                {
+                    var totalData = new List<string>();
+                    await client.AutoConnect();
+
+                    file = "nasdaqlisted.txt";
+                    totalData = await LoadNasdaqFile(file, totalData, client);
+
+                    file = "otherlisted.txt";
+                    totalData = await LoadNasdaqFile(file, totalData, client);
+
+                    await client.Disconnect();
+
+                    totalData = totalData
+                        .Where(x => x.Length > 0 && x.Length <= 5)
+                        .Distinct()
+                        .ToList();
+
+                    return totalData;
+                }
+                catch (Exception ex)
+                {
+                    await client.Disconnect();
+                    _logger.LogError(ex, $"FTP: File: {file}: Message: {ex.Message}");
+                    throw;
+                }
+            }
         }
 
-        private void ParseNasdaqFile(StreamReader reader, List<string> totalData)
+        private async Task<List<string>> LoadNasdaqFile(string file, List<string> totalData, AsyncFtpClient client)
+        {
+            var tempFile = Path.GetTempFileName();
+            await client.DownloadFile(tempFile, @$"SymbolDirectory/{file}",
+                 FtpLocalExists.Overwrite, FtpVerify.Delete);
+
+            using (var fileStream = new FileStream(Path.Combine(Directory.GetCurrentDirectory(), file), FileMode.Open,
+                FileAccess.Read, FileShare.None, 4096, FileOptions.DeleteOnClose))
+            {
+                using (var reader = new StreamReader(fileStream))
+                {
+                    totalData = ParseNasdaqFile(reader, totalData);
+                }
+            }
+
+            return totalData;
+        }
+
+        private List<string> ParseNasdaqFile(StreamReader reader, List<string> totalData)
         {
             var header = reader.ReadLine()!.Split('|');
             while (!reader.EndOfStream)
@@ -100,6 +155,8 @@ namespace Marketeer.Infrastructure.External.Market
                 }
                 totalData.Add(symbol);
             }
+
+            return totalData;
         }
     }
 }

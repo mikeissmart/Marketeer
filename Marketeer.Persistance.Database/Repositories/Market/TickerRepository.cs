@@ -14,15 +14,16 @@ namespace Marketeer.Persistance.Database.Repositories.Market
         Task<int> GetListedTickerCountAsync();
         Task<List<Ticker>> GetOldestListedTickerInfosAsync(int limitCount);
         Task<List<Ticker>> GetAllTickersAsync();
-        Task<List<Ticker>> GetTickersWithoutDelistReasons(params DelistEnum[] delists);
+        Task<List<Ticker>> GetTickersWithoutDelistReasons(List<DelistEnum> delists);
         Task<Ticker?> GetTickerByIdAsync(int id);
+        Task<List<Ticker>> GetTickersByIdsAsync(List<int> ids);
         Task<Ticker?> GetTickerBySymbolAsync(string symbol);
         Task<List<string>> SearchSymbolsAsync(string? search, int limit);
         Task<List<string>> SearchNamesAsync(string? search, int limit);
         Task<List<string>> SearchQuoteTypesAsync(string? search, int limit);
         Task<List<string>> SearchSectorsAsync(string? search, int limit);
         Task<List<string>> SearchIndustriesAsync(string? search, int limit);
-        Task<Paginate<Ticker>> GetTickerDetailsAsync(PaginateFilterDto<TickerFilterDto> filter);
+        Task<Paginate<Ticker>> GetTickerByFilterAsync(PaginateFilterDto<TickerFilterDto> filter);
     }
 
     public class TickerRepository : BaseRepository<Ticker>, ITickerRepository
@@ -44,13 +45,20 @@ namespace Marketeer.Persistance.Database.Repositories.Market
                 .ToListAsync();
 
         public async Task<List<Ticker>> GetAllTickersAsync() =>
-            await GetAsync();
+            await GetAsync(
+                include:x => x
+                    .Include(x => x.DelistReasons));
 
-        public async Task<List<Ticker>> GetTickersWithoutDelistReasons(params DelistEnum[] delists) =>
-            await GetAsync(x => x.DelistReasons.Any(x => delists.Any(y => x.Delist == y)));
+        public async Task<List<Ticker>> GetTickersWithoutDelistReasons(List<DelistEnum> delists) =>
+            await GetAsync(x => x.DelistReasons.Any(x => delists.Contains(x.Delist)));
 
         public async Task<Ticker?> GetTickerByIdAsync(int id) =>
-            await GetSingleOrDefaultAsync(x => x.Id == id);
+            await GetSingleOrDefaultAsync(x => x.Id == id,
+                include: x => x
+                    .Include(x => x.DelistReasons));
+
+        public async Task<List<Ticker>> GetTickersByIdsAsync(List<int> ids) =>
+            await GetAsync(x => ids.Contains(x.Id));
 
         public async Task<Ticker?> GetTickerBySymbolAsync(string symbol) =>
             await GetSingleOrDefaultAsync(
@@ -106,7 +114,7 @@ namespace Marketeer.Persistance.Database.Repositories.Market
             .Take(limit)
             .ToListAsync();
 
-        public async Task<Paginate<Ticker>> GetTickerDetailsAsync(PaginateFilterDto<TickerFilterDto> filter) =>
+        public async Task<Paginate<Ticker>> GetTickerByFilterAsync(PaginateFilterDto<TickerFilterDto> filter) =>
             await GetPaginateAsync(
                 filter,
                 predicate: x =>

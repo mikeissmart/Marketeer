@@ -34,7 +34,7 @@ export class ModalComponent implements OnInit {
   @Input()
   isStatic = true;
   @Input()
-  size: 'sm' | 'md' | 'lg' | 'xl' = 'lg';
+  size: 'sm' | 'md' | 'lg' | 'xl' = 'xl';
   @Input()
   fullscreen: 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | boolean | null = null;
   @Output()

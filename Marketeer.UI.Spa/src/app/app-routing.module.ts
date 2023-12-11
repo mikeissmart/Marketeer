@@ -10,6 +10,8 @@ import { UnauthorizedComponent } from './components/core/unauthorized/unauthoriz
 import { LogDetailsComponent } from './components/management/log-details/log-details.component';
 import { TickerListComponent } from './components/market/ticker-list/ticker-list.component';
 import { AuthGuard } from './guards/auth/auth.guard';
+import { CronJobDetailsComponent } from './components/management/cron-job-details/cron-job-details.component';
+import { TickerDetailsComponent } from './components/market/ticker-details/ticker-details.component';
 
 const routes: Routes = [
   // management
@@ -18,10 +20,20 @@ const routes: Routes = [
     component: LogDetailsComponent,
     canActivate: [AuthGuard],
   },
+  {
+    path: 'management/cronjobs',
+    component: CronJobDetailsComponent,
+    canActivate: [AuthGuard],
+  },
   // market
   {
     path: 'market/tickers',
     component: TickerListComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'market/tickers/:symbol',
+    component: TickerDetailsComponent,
     canActivate: [AuthGuard],
   },
   // core

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Marketeer.Infrastructure.Python
 {
@@ -24,20 +25,18 @@ namespace Marketeer.Infrastructure.Python
 
         public async Task CreatePythonEnvironmentAsync()
         {
-            Directory.CreateDirectory(_rootConfig.RootFolder);
             Directory.CreateDirectory(_rootConfig.RootVenvPath);
 
             var args = $" -m venv \"{_rootConfig.RootVenvPath}\"";
-            await RunCommandAsync("python.exe", false, args, true);
-            ;
+            await RunCommandAsync("python.exe", false, args, false);
         }
 
         public async Task InstallPackagesAsync()
         {
+            var pipPath = Path.Combine(_rootConfig.RootVenvPath, "Scripts\\pip.exe");
             foreach (var package in _rootConfig.Packages)
             {
-                var args = $"pip install {package}";
-                // will throw error if package updates are available
+                var args = $" {pipPath} install \"{package}\"";
                 await RunCommandAsync("python.exe", true, args, false);
             }
         }

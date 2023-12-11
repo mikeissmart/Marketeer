@@ -25,9 +25,8 @@ export class TickerHistorySummaryComponent implements OnInit {
   getTableHeaders(): TableHeader[] {
     return [
       new TableHeader('Title'),
-      new TableHeader('Range'),
-      new TableHeader('Min'),
-      new TableHeader('Max'),
+      new TableHeader('Date'),
+      new TableHeader('Close'),
     ];
   }
 }

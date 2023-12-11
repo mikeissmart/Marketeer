@@ -38,7 +38,7 @@ export class CronLogDetailsComponent implements OnInit {
       new TableHeader(''),
       new TableHeader('Name', 'Name'),
       new TableHeader('Has Ouput'),
-      new TableHeader('Has Error'),
+      new TableHeader('Is Canceled'),
       new TableHeader('Date', 'StartDate'),
       new TableHeader(''),
     ];

@@ -1,6 +1,8 @@
-﻿using Marketeer.Core.Domain.Entities.Auth;
+﻿using Marketeer.Core.Domain.Entities.AI;
+using Marketeer.Core.Domain.Entities.Auth;
 using Marketeer.Core.Domain.Entities.Logging;
 using Marketeer.Core.Domain.Entities.Market;
+using Marketeer.Core.Domain.Entities.News;
 using Marketeer.Persistance.Database.EntityConfig;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -18,6 +20,13 @@ namespace Marketeer.Persistance.Database.DbContexts
             IHttpContextAccessor httpContextAccessor) : base(options) =>
             _httpContextAccessor = httpContextAccessor;
 
+        #region AI
+
+        public DbSet<HuggingFaceModel> HuggingFaceModels => Set<HuggingFaceModel>();
+        public DbSet<SentimentResult> SentimentResults => Set<SentimentResult>();
+
+        #endregion
+
         #region Logging
 
         public DbSet<AppLog> AppLogs => Set<AppLog>();
@@ -32,6 +41,11 @@ namespace Marketeer.Persistance.Database.DbContexts
         public DbSet<MarketSchedule> MarketSchedules => Set<MarketSchedule>();
         public DbSet<Ticker> Tickers => Set<Ticker>();
         public DbSet<TickerDelistReason> TickerDelistReasons => Set<TickerDelistReason>();
+
+        #endregion
+
+        #region News
+        public DbSet<NewsArticle> NewsArticles => Set<NewsArticle>();
 
         #endregion
 

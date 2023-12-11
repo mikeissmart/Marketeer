@@ -76,4 +76,25 @@ export class TickerApiService {
   ): void {
     this.apiHttp.post(this.uri + 'GetTickerDetails', filter, callback);
   }
+
+  getTickerById(tickerId: number, callback: (result: ITicker) => void): void {
+    this.apiHttp.get(this.uri + `GetTickerById?tickerId=${tickerId}`, callback);
+  }
+
+  getTickerBySymbol(
+    symbol: string,
+    callback: (result: ITicker | null) => void
+  ): void {
+    this.apiHttp.get(this.uri + `GetTickerBySymbol?symbol=${symbol}`, callback);
+  }
+
+  updateTickerInfoData(
+    tickerId: number,
+    callback: (result: boolean) => void
+  ): void {
+    this.apiHttp.get(
+      this.uri + `UpdateTickerInfoData?tickerId=${tickerId}`,
+      callback
+    );
+  }
 }

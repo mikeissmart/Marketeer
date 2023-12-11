@@ -30,30 +30,21 @@ namespace Marketeer.UI.Api.Controllers
         {
             var ticker = await _tickerService.GetTickerBySymbolAsync(symbol);
             var data = await _historyDataService.GetHistoryDataAsync(ticker!.Id, interval);
-
-            return Ok(data);
+                        return Ok(data);
         }
 
         [HttpGet("GetTickerHistorySummary")]
         public async Task<IActionResult> GetTickerHistorySummary([FromQuery] int tickerId)
         {
             var data = await _historyDataService.GetTickerHistorySummaryAsync(tickerId);
-
             return Ok(data);
         }
 
-        [HttpGet("UpdateToYesterday")]
-        public async Task<IActionResult> UpdateToYesterday()
+        [HttpGet("UpdateTickerHistoryData")]
+        public async Task<IActionResult> UpdateTickerHistoryData([FromQuery] int tickerId)
         {
-            await _historyDataService.UpdateDailyHistoryDataAsync();
-            return Ok();
-        }
-
-        [HttpGet("TestSchedule")]
-        public async Task<IActionResult> TestSchedule()
-        {
-            await _marketScheduleService.GetYearlyMarketSchedulesAsync(2);
-            return Ok();
+            var result = await _historyDataService.UpdateTickerHistoryDataAsync(tickerId);
+            return Ok(result);
         }
     }
 }

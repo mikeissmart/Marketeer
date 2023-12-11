@@ -4,7 +4,14 @@
       <h4>500: Server Error</h4>
     </div>
     <div class="row">
-      {{ error }}
+      <textarea
+        class="form-control"
+        type="text"
+        rows="25"
+        wrap="soft"
+        [value]="error"
+        disabled
+      ></textarea>
     </div>
   </div>
 </div>

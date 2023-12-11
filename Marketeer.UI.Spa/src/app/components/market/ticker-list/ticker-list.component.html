@@ -77,9 +77,13 @@
   >
     <tr *ngFor="let item of tickers.items">
       <td>
-        <button class="btn btn-sm btn-primary" (click)="onViewTicker(item)">
+        <a
+          class="btn btn-sm btn-primary"
+          (click)="$event.preventDefault()"
+          [routerLink]="['/market/tickers', item.symbol]"
+        >
           <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
+        </a>
       </td>
       <td>{{ item.name }}</td>
       <td>{{ item.symbol }}</td>
@@ -90,9 +94,3 @@
     </tr>
   </app-table-paginate>
 </div>
-<app-modal [isOpen]="viewTicker != null" (onClose)="onViewTickerClose()">
-  <header>Ticker</header>
-  <body>
-    <app-ticker-details [ticker]="viewTicker"></app-ticker-details>
-  </body>
-</app-modal>

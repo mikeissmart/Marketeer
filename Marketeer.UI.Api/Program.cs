@@ -1,4 +1,5 @@
 using Marketeer.Common;
+using Marketeer.Common.Configs;
 using Marketeer.Core;
 using Marketeer.Core.Service.Loggers;
 using Marketeer.Infrastructure;
@@ -7,6 +8,7 @@ using Marketeer.Persistance.Database.DbContexts;
 using Marketeer.UI.Api;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Security.Cryptography;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -41,6 +43,7 @@ using (var scope = app.Services.CreateScope())
         .GetRequiredService<AppDbContext>()
         .Database
         .Migrate();
+    scope.ClearCronJobStatuses();
     scope.SeedSecurityServiceScope();
     scope.SetupInfrastructureServices();
 }

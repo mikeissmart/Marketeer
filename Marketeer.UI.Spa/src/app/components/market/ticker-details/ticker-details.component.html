@@ -111,7 +111,7 @@
       />
     </div>
   </div>
-  <div class="row mb-3" *ngIf="tickerDetail.delistReasons.length > 0">
+  <div class="row mb-3">
     <app-table [tableHeaders]="getTableHeaders()">
       <tr *ngFor="let item of tickerDetail.delistReasons">
         <td>{{ getDelist(item.delist) }}</td>
@@ -119,10 +119,53 @@
     </app-table>
   </div>
   <div class="row mb-3">
-    <div *ngIf="tickerHistorySummary != null">
-      <app-ticker-history-summary
-        [summary]="tickerHistorySummary"
-      ></app-ticker-history-summary>
+    <div class="col-6">
+      <div class="d-flex justify-content-between">
+        <label>Last Info Update:</label>
+        <label>
+          {{
+            tickerDetail.lastInfoUpdate == null
+              ? "N/A"
+              : (tickerDetail.lastInfoUpdate | date : "short")
+          }}</label
+        >
+        <button class="btn btn-primary" (click)="fetchInfo()">
+          <span class="fa fa-history"></span>
+        </button>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="d-flex justify-content-between">
+        <label>Last History Update:</label>
+        <label>
+          {{
+            tickerDetail.lastHistoryUpdate == null
+              ? "N/A"
+              : (tickerDetail.lastHistoryUpdate | date : "short")
+          }}</label
+        >
+        <button class="btn btn-primary" (click)="fetchHistData()">
+          <span class="fa fa-history"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-6">
+      <div class="row mb-3">
+        <app-table [tableHeaders]="getTableHeaders()">
+          <tr *ngFor="let item of tickerDetail.delistReasons">
+            <td>{{ getDelist(item.delist) }}</td>
+          </tr>
+        </app-table>
+      </div>
+      <div class="row mb-3">
+        <div *ngIf="tickerHistorySummary != null">
+          <app-ticker-history-summary
+            [summary]="tickerHistorySummary"
+          ></app-ticker-history-summary>
+        </div>
+      </div>
     </div>
   </div>
 </div>
