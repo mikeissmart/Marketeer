@@ -59,7 +59,7 @@ namespace Marketeer.Core.Service.Logging
         {
             try
             {
-                var cleanDate = DateTime.UtcNow.AddDays(-1 * daysOld);
+                var cleanDate = DateTime.Now.AddDays(-1 * daysOld);
                 var logs = await _cronLogRepository.GetLogsBerforeDateAsync(cleanDate);
                 if (logs.Count > 0)
                 {

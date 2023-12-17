@@ -91,6 +91,7 @@ namespace Marketeer.Core.Service.Market
         {
             try
             {
+                var latestMarket = await _marketScheduleRepository.GetLastestMarketDayAsync();
                 var query = _historyDataRepository.GetQuery(tickerId, HistoryDataIntervalEnum.One_Day);
 
                 var summary = new TickerHistorySummaryDto
@@ -99,26 +100,24 @@ namespace Marketeer.Core.Service.Market
                 };
                 if (query.Count() > 0)
                 {
-                    DateTime? minDate = query.Count() > 0
-                        ? query.Min(x => x.DateTime)
-                        : null;
-                    DateTime? maxDate = query.Count() > 0
-                        ? query.Max(x => x.DateTime)
-                        : null;
-                    summary = new TickerHistorySummaryDto
+                    var latestHistData = query.FirstOrDefault(x => x.Date.Date <= latestMarket.Date);
+                    if (latestHistData != null)
                     {
-                        ValueSummaries = new List<ValueSummaryDto>
+                        summary = new TickerHistorySummaryDto
                         {
-                            GenerateSummary("Today", DateTime.UtcNow.Date, query),
-                            GenerateSummary("7 Days", DateTime.UtcNow.Date.AddDays(-7), query),
-                            GenerateSummary("1 Month", DateTime.UtcNow.Date.AddMonths(-1), query),
-                            GenerateSummary("3 Months", DateTime.UtcNow.Date.AddMonths(-3), query),
-                            GenerateSummary("6 Months", DateTime.UtcNow.Date.AddMonths(-6), query),
-                            GenerateSummary("1 Year", DateTime.UtcNow.Date.AddYears(-1), query),
-                            GenerateSummary("3 Years", DateTime.UtcNow.Date.AddYears(-3), query),
-                            GenerateSummary("5 Years", DateTime.UtcNow.Date.AddYears(-5), query),
-                        }
-                    };
+                            ValueSummaries = new List<ValueSummaryDto>
+                            {
+                                GenerateSummary("Today", DateTime.Now.Date, latestHistData, query),
+                                GenerateSummary("7 Days", DateTime.Now.Date.AddDays(-7), latestHistData, query),
+                                GenerateSummary("1 Month", DateTime.Now.Date.AddMonths(-1), latestHistData, query),
+                                GenerateSummary("3 Months", DateTime.Now.Date.AddMonths(-3), latestHistData, query),
+                                GenerateSummary("6 Months", DateTime.Now.Date.AddMonths(-6), latestHistData, query),
+                                GenerateSummary("1 Year", DateTime.Now.Date.AddYears(-1), latestHistData, query),
+                                GenerateSummary("3 Years", DateTime.Now.Date.AddYears(-3), latestHistData, query),
+                                GenerateSummary("5 Years", DateTime.Now.Date.AddYears(-5), latestHistData, query),
+                            }
+                        };
+                    }
                 }
 
                 return summary;
@@ -143,26 +142,28 @@ namespace Marketeer.Core.Service.Market
             }
         }
 
-        private ValueSummaryDto GenerateSummary(string title, DateTime date, IEnumerable<HistoryData> query)
+        private ValueSummaryDto GenerateSummary(string title, DateTime date, HistoryData? latestHistData, IEnumerable<HistoryData> query)
         {
+            var data = query.FirstOrDefault(x => x.Date.Date <= date.Date);
             return new ValueSummaryDto
             {
                 Title = title,
-                Date = date,
-                Value = query.FirstOrDefault(x => x.DateTime.Date == date.Date)?.Close
+                Date = data?.Date,
+                Value = data?.Close,
+                Difference = latestHistData?.Close - data?.Close
             };
         }
 
         private async Task<bool> FetchNewHistoryDataAsync(Ticker ticker, HistoryDataIntervalEnum interval, bool checkYfinanceRetry)
         {
             var retryHistDays = _tickerConfig.HistoryDataRetryDays;
-            var today = DateTime.UtcNow.Date;
+            var now = DateTime.Now;
 
             var noHist = ticker.DelistReasons.FirstOrDefault(x => x.Delist == DelistEnum.Yfinance_No_History);
 
             if (checkYfinanceRetry)
             {
-                if (noHist != null && noHist.CreatedDate.AddDays(retryHistDays) < today)
+                if (noHist != null && noHist.CreatedDate.AddDays(retryHistDays) < now)
                     // Dont check for new history until after retryHistDays days
                     return false;
             }
@@ -173,17 +174,15 @@ namespace Marketeer.Core.Service.Market
                 curMaxDate = interval.AddInterval(curMaxDate.Value);
 
             var addedHistData = false;
-            var marketDates = await _marketScheduleRepository.GetScheduleDaysInRangeAsync(curMaxDate, today);
-            if (curMaxDate != null)
-                marketDates = marketDates.Where(x => x.Day != curMaxDate.Value.Date).ToList();
-            if (curMaxDate == null || marketDates.Count() > 0)
+            var marketDates = await _marketScheduleRepository.GetScheduleDaysInRangeAsync(curMaxDate, now);
+            if (curMaxDate == null || marketDates.Count(x => now > x.MarketClose) > 0)
             {
                 var freshHistDatas = _mapper.Map<IEnumerable<HistoryData>>(
                     await _marketPythonService.GetHistoryDataAsync(_mapper.Map<TickerDto>(ticker), interval,
-                    curMaxDate, today));
+                    curMaxDate, interval.AddInterval(now)));
 
                 var addHistDatas = curMaxDate != null
-                    ? freshHistDatas.Where(x => x.DateTime > curMaxDate)
+                    ? freshHistDatas.Where(x => x.Date >= curMaxDate)
                     : freshHistDatas;
 
                 if (addHistDatas.Count() > 0)
@@ -195,23 +194,23 @@ namespace Marketeer.Core.Service.Market
                     addedHistData = true;
                 }
                 else if (ticker.LastHistoryUpdate == null ||
-                    !checkYfinanceRetry ||
-                    ticker.LastHistoryUpdate.Value.AddDays(retryHistDays) < today)
+                    checkYfinanceRetry ||
+                    ticker.LastHistoryUpdate.Value.AddDays(retryHistDays) < now)
                 {
                     if (noHist != null)
                     {
-                        noHist.CreatedDate = DateTime.UtcNow;
+                        noHist.CreatedDate = DateTime.Now;
                         _tickerDelistReasonRepository.Update(noHist);
                     }
                     else
                         await _tickerDelistReasonRepository.AddAsync(new TickerDelistReason { Delist = DelistEnum.Yfinance_No_History });
                 }
-
-                ticker.LastHistoryUpdate = DateTime.UtcNow;
-                _tickerRepository.Update(ticker);
-
-                await _historyDataRepository.SaveChangesAsync();
             }
+
+            ticker.LastHistoryUpdate = DateTime.Now;
+            _tickerRepository.Update(ticker);
+
+            await _historyDataRepository.SaveChangesAsync();
 
             return addedHistData;
         }

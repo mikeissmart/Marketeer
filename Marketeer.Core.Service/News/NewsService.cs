@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using Marketeer.Core.Domain.Dtos;
+using Marketeer.Core.Domain.Dtos.Market;
 using Marketeer.Core.Domain.Dtos.News;
+using Marketeer.Core.Domain.Entities.Market;
 using Marketeer.Core.Domain.Entities.News;
 using Marketeer.Infrastructure.Python.News;
 using Marketeer.Persistance.Database.Repositories.Market;
@@ -15,10 +18,8 @@ namespace Marketeer.Core.Service.News
 {
     public interface INewsService : ICoreService
     {
-        Task<List<NewsArticleDto>> GetTickerNewsArticles(List<int> tickerIds, int limit);
-        Task<List<NewsArticleDto>> GetNewFinanceNewsArticles(int limit);
-        Task<List<NewsArticleDto>> GetNewTickerNewsArticles(int tickerId);
-        Task<List<NewsArticleDto>> GetNewFinanceNewsArticles();
+        Task<PaginateDto<NewsArticleDto>> GetTickerNewsArticlesAsync(int tickerId, PaginateFilterDto<NewsFilterDto> filter);
+        Task<bool> UpdateTickerNewsArticlesAsync(int tickerId);
     }
 
     public class NewsService : BaseCoreService, INewsService
@@ -42,12 +43,11 @@ namespace Marketeer.Core.Service.News
             _newsArticleRepository = newsArticleRepository;
         }
 
-        public async Task<List<NewsArticleDto>> GetTickerNewsArticles(List<int> tickerIds, int limit)
+        public async Task<PaginateDto<NewsArticleDto>> GetTickerNewsArticlesAsync(int tickerId, PaginateFilterDto<NewsFilterDto> filter)
         {
             try
             {
-                var news = await _newsArticleRepository.GetTickerNewsArticlesAsync(tickerIds, null, null, limit);
-                return _mapper.Map<List<NewsArticleDto>>(news);
+                return _mapper.Map<PaginateDto<NewsArticleDto>>(await _newsArticleRepository.GetTickerNewsArticlesAsync(tickerId, filter));
             }
             catch (Exception e)
             {
@@ -56,73 +56,31 @@ namespace Marketeer.Core.Service.News
             }
         }
 
-        public async Task<List<NewsArticleDto>> GetNewFinanceNewsArticles(int limit)
+        public async Task<bool> UpdateTickerNewsArticlesAsync(int tickerId)
         {
             try
             {
-                var news = await _newsArticleRepository.GetFinanceNewsArticlesAsync(null, null, limit);
-                return _mapper.Map<List<NewsArticleDto>>(news);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw;
-            }
-        }
+                var ticker = await _tickerRepository.GetTickerByIdAsync(tickerId, withNewsArticles: true);
+                var newnews = await _newsPythonService.GetTickerNewsArticlesLinksAsync(ticker!.Symbol);
 
-        public async Task<List<NewsArticleDto>> GetNewTickerNewsArticles(int tickerId)
-        {
-            try
-            {
-                var news = new List<NewsArticle>();
-                var ticker = await _tickerRepository.GetTickerByIdAsync(tickerId);
-                var newNews = await _newsPythonService.GetTickerNewsArticlesAsync(ticker!.Symbol);
-                var currentNews = await _newsArticleRepository.GetLatestTickerNewsArticlesAsync(tickerId, newNews.Count);
-                foreach (var n in newNews)
-                {
-                    if (!currentNews.Any(x => x.Link == n.Link))
-                    {
-                        var newsArticle = _mapper.Map<NewsArticle>(n);
-                        newsArticle.TickerId = ticker.Id;
-                        news.Add(newsArticle);
-                    }
-                }
+                var needTexts = await _newsArticleRepository.CalculateNotExistingLinksAsync(newnews);
+                var newNewsLinks = newnews
+                    .Select(x => x.Link)
+                    .ToList();
+                var existingNews = await _newsArticleRepository.GetNewsArticlesByLinksAsync(tickerId, newNewsLinks);
 
-                if (news.Count > 0)
-                {
-                    await _newsArticleRepository.AddRangeAsync(news);
-                    await _newsArticleRepository.SaveChangesAsync();
-                }
+                if (needTexts.Count > 0)
+                    needTexts = await _newsPythonService.GetNewsArticlesTextAsync(needTexts);
 
-                return _mapper.Map<List<NewsArticleDto>>(news);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw;
-            }
-        }
+                var news = _mapper.Map<List<NewsArticle>>(needTexts);
+                ticker.NewsArticles.AddRange(news);
+                ticker.NewsArticles.AddRange(existingNews);
 
-        public async Task<List<NewsArticleDto>> GetNewFinanceNewsArticles()
-        {
-            try
-            {
-                var news = new List<NewsArticle>();
-                var newNews = await _newsPythonService.GetFinanceNewsArticlesAsync();
-                var currentNews = await _newsArticleRepository.GetLatestFinanceNewsArticlesAsync(newNews.Count);
-                foreach (var n in newNews)
-                {
-                    if (!currentNews.Any(x => x.Link == n.Link))
-                        news.Add(_mapper.Map<NewsArticle>(n));
-                }
+                ticker.LastNewsUpdate = DateTime.Now;
+                _tickerRepository.Update(ticker);
+                await _tickerRepository.SaveChangesAsync();
 
-                if (news.Count > 0)
-                {
-                    await _newsArticleRepository.AddRangeAsync(news);
-                    await _newsArticleRepository.SaveChangesAsync();
-                }
-
-                return _mapper.Map<List<NewsArticleDto>>(news);
+                return news.Count > 0;
             }
             catch (Exception e)
             {

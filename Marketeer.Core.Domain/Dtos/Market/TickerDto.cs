@@ -9,6 +9,8 @@ namespace Marketeer.Core.Domain.Dtos.Market
     {
         public string Symbol { get; set; }
         public DateTime? LastHistoryUpdate { get; set; }
+        public DateTime? LastInfoUpdate { get; set; }
+        public DateTime? LastNewsUpdate { get; set; }
         public string Name { get; set; } = "";
         public string QuoteType { get; set; } = "";
         public string Exchange { get; set; } = "";
@@ -18,7 +20,6 @@ namespace Marketeer.Core.Domain.Dtos.Market
         public long? Volume { get; set; }
         public float? PayoutRatio { get; set; }
         public float? DividendRate { get; set; }
-        public DateTime? LastInfoUpdate { get; set; }
         public List<TickerDelistReasonDto> DelistReasons { get; set; }
     }
 }

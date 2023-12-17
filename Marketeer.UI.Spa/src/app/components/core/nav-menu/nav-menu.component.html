@@ -1,28 +1,3 @@
-<!--<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" routerLink="/">Marketeer</a>
-    <div>
-      <ul class="navbar-nav">
-        <a href="/management/logs" class="nav-link">Logs</a>
-      </ul>
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/login" *ngIf="clientToken === null">
-            Login
-          </a>
-          <a
-            class="nav-link"
-            href="#"
-            *ngIf="clientToken !== null"
-            (click)="logout()"
-          >
-            {{ clientToken.userName!! }} Logout
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>-->
 <nav
   id="navigationMenu"
   class="navbar navbar-expand-lg navbar-light bg-light px-3"
@@ -93,6 +68,30 @@
             routerLink="/market/tickers"
           >
             Tickers
+          </a>
+        </div>
+      </li>
+      <li class="nav-item" ngbDropdown>
+        <a
+          class="nav-link"
+          style="cursor: pointer"
+          ngbDropdownToggle
+          id="newsDropdown"
+          role="button"
+        >
+          News
+        </a>
+        <div
+          ngbDropdownMenu
+          aria-labelledby="newsDropdown"
+          class="dropdown-menu dropdown-menu-right"
+        >
+          <a
+            class="dropdown-item"
+            (click)="$event.preventDefault()"
+            routerLink="/news/finance"
+          >
+            Finance
           </a>
         </div>
       </li>

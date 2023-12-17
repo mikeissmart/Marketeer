@@ -64,7 +64,7 @@ namespace Marketeer.Persistance.Database.DbContexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            DbContextCommon.ConvertToUtc(modelBuilder);
+            DbContextCommon.ChageDecimalPrecision(modelBuilder);
 
             var efConfig = typeof(IEntityTypeConfiguration<>);
             var iConfig = typeof(IEntityConfig);

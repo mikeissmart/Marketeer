@@ -15,7 +15,7 @@ namespace Marketeer.Persistance.Database.Repositories.Market
         Task<List<Ticker>> GetOldestListedTickerInfosAsync(int limitCount);
         Task<List<Ticker>> GetAllTickersAsync();
         Task<List<Ticker>> GetTickersWithoutDelistReasons(List<DelistEnum> delists);
-        Task<Ticker?> GetTickerByIdAsync(int id);
+        Task<Ticker?> GetTickerByIdAsync(int id, bool withNewsArticles = false);
         Task<List<Ticker>> GetTickersByIdsAsync(List<int> ids);
         Task<Ticker?> GetTickerBySymbolAsync(string symbol);
         Task<List<string>> SearchSymbolsAsync(string? search, int limit);
@@ -52,10 +52,15 @@ namespace Marketeer.Persistance.Database.Repositories.Market
         public async Task<List<Ticker>> GetTickersWithoutDelistReasons(List<DelistEnum> delists) =>
             await GetAsync(x => x.DelistReasons.Any(x => delists.Contains(x.Delist)));
 
-        public async Task<Ticker?> GetTickerByIdAsync(int id) =>
-            await GetSingleOrDefaultAsync(x => x.Id == id,
-                include: x => x
-                    .Include(x => x.DelistReasons));
+        public async Task<Ticker?> GetTickerByIdAsync(int id, bool withNewsArticles = false) =>
+            await GetSingleOrDefaultAsync2(x => x.Id == id,
+                includes: new List<Func<IQueryable<Ticker>, Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Ticker, object>>>
+                {
+                    x => x.Include(x => x.DelistReasons),
+                    (withNewsArticles
+                        ? x => x.Include(x => x.NewsArticles)
+                        : null)
+                });
 
         public async Task<List<Ticker>> GetTickersByIdsAsync(List<int> ids) =>
             await GetAsync(x => ids.Contains(x.Id));

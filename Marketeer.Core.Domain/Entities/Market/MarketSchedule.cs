@@ -8,7 +8,7 @@ namespace Marketeer.Core.Domain.Entities.Market
 {
     public class MarketSchedule : Entity
     {
-        public DateTime Day { get; set; }
+        public DateTime Date { get; set; }
         public DateTime MarketOpen { get; set; }
         public DateTime MarketClose { get; set; }
     }

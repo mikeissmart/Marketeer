@@ -63,7 +63,7 @@ namespace Marketeer.Infrastructure.Python.Market
             {
                 hist.TickerId = ticker.Id;
                 hist.Interval = interval;
-                hist.DateTime = hist.DateTime.Date;
+                hist.Date = hist.Date.Date;
             }
 
             return histDatas;
@@ -83,9 +83,11 @@ namespace Marketeer.Infrastructure.Python.Market
             foreach (var dto in schedules)
             {
                 var item = new MarketScheduleDto();
+
                 item.Day = dto.Day.Date;
                 item.MarketOpen = dto.MarketOpen.ToUniversalTime();
                 item.MarketClose = dto.MarketClose.ToUniversalTime();
+
                 marketSchedules.Add(item);
             }
 

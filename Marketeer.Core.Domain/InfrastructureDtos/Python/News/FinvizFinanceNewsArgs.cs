@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Marketeer.Core.Domain.InfrastructureDtos.Python.News
 {
-    public class FinvizFinanceNewsArgs
+    public class FinvizFinanceNewsLinkArgs
     {
         public string Symbol { get; set; }
     }

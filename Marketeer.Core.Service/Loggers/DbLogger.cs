@@ -23,7 +23,7 @@ namespace Marketeer.Core.Service.Loggers
                 LogLevel = logLevel,
                 EventId = eventId.Id,
                 EventName = eventId.Name,
-                CreatedDate = DateTime.UtcNow
+                CreatedDate = DateTime.Now
             };
 
             if (exception != null)

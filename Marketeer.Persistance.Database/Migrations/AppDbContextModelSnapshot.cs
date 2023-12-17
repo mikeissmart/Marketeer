@@ -415,7 +415,7 @@ namespace Marketeer.Persistance.Database.Migrations
                         .HasPrecision(28, 10)
                         .HasColumnType("decimal(28,10)");
 
-                    b.Property<DateTime>("DateTime")
+                    b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("High")
@@ -441,7 +441,7 @@ namespace Marketeer.Persistance.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TickerId", "Interval", "DateTime")
+                    b.HasIndex("TickerId", "Interval", "Date")
                         .IsUnique();
 
                     b.ToTable("HistoryDatas");
@@ -477,7 +477,7 @@ namespace Marketeer.Persistance.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("Day")
+                    b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("MarketClose")
@@ -515,6 +515,9 @@ namespace Marketeer.Persistance.Database.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("LastInfoUpdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("LastNewsUpdate")
                         .HasColumnType("datetime2");
 
                     b.Property<long?>("MarketCap")
@@ -597,18 +600,28 @@ namespace Marketeer.Persistance.Database.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TickerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TickerId");
-
                     b.ToTable("NewsArticles");
+                });
+
+            modelBuilder.Entity("NewsArticleTicker", b =>
+                {
+                    b.Property<int>("NewsArticlesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TickersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("NewsArticlesId", "TickersId");
+
+                    b.HasIndex("TickersId");
+
+                    b.ToTable("NewsArticleTicker");
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.AI.SentimentResult", b =>
@@ -701,13 +714,19 @@ namespace Marketeer.Persistance.Database.Migrations
                     b.Navigation("Ticker");
                 });
 
-            modelBuilder.Entity("Marketeer.Core.Domain.Entities.News.NewsArticle", b =>
+            modelBuilder.Entity("NewsArticleTicker", b =>
                 {
-                    b.HasOne("Marketeer.Core.Domain.Entities.Market.Ticker", "Ticker")
-                        .WithMany("NewsArticles")
-                        .HasForeignKey("TickerId");
+                    b.HasOne("Marketeer.Core.Domain.Entities.News.NewsArticle", null)
+                        .WithMany()
+                        .HasForeignKey("NewsArticlesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Ticker");
+                    b.HasOne("Marketeer.Core.Domain.Entities.Market.Ticker", null)
+                        .WithMany()
+                        .HasForeignKey("TickersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.AI.HuggingFaceModel", b =>
@@ -720,8 +739,6 @@ namespace Marketeer.Persistance.Database.Migrations
                     b.Navigation("DelistReasons");
 
                     b.Navigation("HistoryDatas");
-
-                    b.Navigation("NewsArticles");
                 });
 #pragma warning restore 612, 618
         }

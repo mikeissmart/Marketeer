@@ -112,60 +112,29 @@
     </div>
   </div>
   <div class="row mb-3">
-    <app-table [tableHeaders]="getTableHeaders()">
-      <tr *ngFor="let item of tickerDetail.delistReasons">
-        <td>{{ getDelist(item.delist) }}</td>
-      </tr>
-    </app-table>
-  </div>
-  <div class="row mb-3">
     <div class="col-6">
-      <div class="d-flex justify-content-between">
-        <label>Last Info Update:</label>
-        <label>
-          {{
-            tickerDetail.lastInfoUpdate == null
-              ? "N/A"
-              : (tickerDetail.lastInfoUpdate | date : "short")
-          }}</label
-        >
-        <button class="btn btn-primary" (click)="fetchInfo()">
-          <span class="fa fa-history"></span>
-        </button>
-      </div>
+      <app-ticker-delist-reasons
+        [tickerId]="tickerDetail.id"
+        [lastInfoUpdate]="tickerDetail.lastInfoUpdate"
+        [delistReasons]="tickerDetail.delistReasons"
+        (onUpdateInfo)="getTickerDetails()"
+      ></app-ticker-delist-reasons>
     </div>
     <div class="col-6">
-      <div class="d-flex justify-content-between">
-        <label>Last History Update:</label>
-        <label>
-          {{
-            tickerDetail.lastHistoryUpdate == null
-              ? "N/A"
-              : (tickerDetail.lastHistoryUpdate | date : "short")
-          }}</label
-        >
-        <button class="btn btn-primary" (click)="fetchHistData()">
-          <span class="fa fa-history"></span>
-        </button>
-      </div>
+      <app-ticker-history-summary
+        [tickerId]="tickerDetail.id"
+        [lastHistoryUpdate]="tickerDetail.lastHistoryUpdate"
+        (onUpdateHistoryData)="getTickerDetails()"
+      ></app-ticker-history-summary>
     </div>
   </div>
   <div class="row mb-3">
-    <div class="col-6">
-      <div class="row mb-3">
-        <app-table [tableHeaders]="getTableHeaders()">
-          <tr *ngFor="let item of tickerDetail.delistReasons">
-            <td>{{ getDelist(item.delist) }}</td>
-          </tr>
-        </app-table>
-      </div>
-      <div class="row mb-3">
-        <div *ngIf="tickerHistorySummary != null">
-          <app-ticker-history-summary
-            [summary]="tickerHistorySummary"
-          ></app-ticker-history-summary>
-        </div>
-      </div>
+    <div class="col-12">
+      <app-ticker-news-list
+        [tickerId]="tickerDetail.id"
+        [lastNewsUpdate]="tickerDetail.lastNewsUpdate"
+        (onUpdateNewsArticles)="getTickerDetails()"
+      ></app-ticker-news-list>
     </div>
   </div>
 </div>

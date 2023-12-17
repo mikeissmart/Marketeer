@@ -7,7 +7,23 @@ namespace Marketeer.Persistance.Database.DbContexts
 {
     internal static class DbContextCommon
     {
-        public static void ConvertToUtc(ModelBuilder modelBuilder)
+        public static void ChageDecimalPrecision(ModelBuilder modelBuilder)
+        {
+            foreach (var p in modelBuilder.Model
+                .GetEntityTypes()
+                .SelectMany(x => x.GetProperties())
+                .Where(x => x.ClrType == typeof(decimal) || x.ClrType == typeof(decimal?))
+                .Select(x => modelBuilder.Entity(x.DeclaringEntityType.Name).Property(x.Name)))
+            {
+                p.HasPrecision(28, 10);
+            }
+        }
+
+        /// <summary>
+        /// Dont use, When sending just dates to Angular it gets changed from UTC to local
+        /// </summary>
+        /// <param name="modelBuilder"></param>
+        /*public static void ConvertToUtc(ModelBuilder modelBuilder)
         {
             var dateTimeConverter = new ValueConverter<DateTime, DateTime>(
                 x => x, x => x.Kind == DateTimeKind.Unspecified
@@ -22,21 +38,12 @@ namespace Marketeer.Persistance.Database.DbContexts
             {
                 p.HasConversion(dateTimeConverter);
             }
-
-            foreach (var p in modelBuilder.Model
-                .GetEntityTypes()
-                .SelectMany(x => x.GetProperties())
-                .Where(x => x.ClrType == typeof(decimal) || x.ClrType == typeof(decimal?))
-                .Select(x => modelBuilder.Entity(x.DeclaringEntityType.Name).Property(x.Name)))
-            {
-                p.HasPrecision(28, 10);
-            }
-        }
+        }*/
 
         public static void ChangeAuditableEntities(ChangeTracker changeTracker, int? userId)
         {
             changeTracker.DetectChanges();
-            var nowDt = DateTime.UtcNow;
+            var nowDt = DateTime.Now;
 
             if (userId == null && changeTracker.Entries().Any(x =>
                 (x.State == EntityState.Added &&

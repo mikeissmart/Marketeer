@@ -37,7 +37,9 @@ export class JsonDateInterceptor implements HttpInterceptor {
       map((val: HttpEvent<any>) => {
         if (val instanceof HttpResponse) {
           const body = val.body;
-          this.convert(body);
+          // This will convert non local dates to local dates
+          // Even when there is no time
+          //this.convert(body);
         }
         return val;
       }),

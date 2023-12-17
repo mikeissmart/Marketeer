@@ -22,7 +22,7 @@ namespace Marketeer.Persistance.Database.DbContexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            DbContextCommon.ConvertToUtc(modelBuilder);
+            DbContextCommon.ChageDecimalPrecision(modelBuilder);
 
             base.OnModelCreating(modelBuilder);
         }

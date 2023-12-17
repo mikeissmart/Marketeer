@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Marketeer.Core.Domain.InfrastructureDtos.Python.News
 {
-    public class FinvizFinanceNewsDto
+    public class FinvizFinanceNewsLinkDto
     {
         public string Title { get; set; }
         public string Link { get; set; }
-        public string Date { get; set; }
         public string Text { get; set; }
+        public DateTime Date { get; set; }
     }
 }

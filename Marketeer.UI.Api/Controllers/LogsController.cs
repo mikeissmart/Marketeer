@@ -35,7 +35,6 @@ namespace Marketeer.UI.Api.Controllers
         [HttpPost("GetAppLogsFail")]
         public async Task<IActionResult> GetAppLogsFail([FromBody] PaginateFilterDto<AppLogFilterDto> filter)
         {
-            var a = Request.Cookies;
             var data = await _appLogService.GetLogEventIdsAsync();
             return Ok(data);
         }

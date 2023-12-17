@@ -8,6 +8,7 @@ namespace Marketeer.Common.Configs
 {
     public class NewsPythonConfig : PythonConfig, IConfig
     {
-        public string FinvizFinanceNews { get; set; }
+        public string FinvizFinanceNewsLink { get; set; }
+        public string FinvizFinanceNewsText { get; set; }
     }
 }

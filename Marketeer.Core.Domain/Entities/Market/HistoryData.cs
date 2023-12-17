@@ -12,7 +12,7 @@ namespace Marketeer.Core.Domain.Entities.Market
         public decimal High { get; set; }
         public decimal Low { get; set; }
         public long Volume { get; set; }
-        public DateTime DateTime { get; set; }
+        public DateTime Date { get; set; }
 
         #region Nav
 

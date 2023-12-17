@@ -12,6 +12,7 @@ namespace Marketeer.Persistance.Database.Repositories.Market
     public interface IMarketScheduleRepository : IRepository<MarketSchedule>
     {
         Task<List<MarketSchedule>> GetScheduleDaysInRangeAsync(DateTime? minDate, DateTime? maxDate);
+        Task<MarketSchedule?> GetLastestMarketDayAsync();
     }
 
     public class MarketScheduleRepository : BaseRepository<MarketSchedule>, IMarketScheduleRepository
@@ -24,8 +25,13 @@ namespace Marketeer.Persistance.Database.Repositories.Market
         public async Task<List<MarketSchedule>> GetScheduleDaysInRangeAsync(DateTime? minDate, DateTime? maxDate) =>
             await GetAsync(
                 predicate: x =>
-                    (minDate == null || x.Day.Date >= minDate.Value.Date) &&
-                    (maxDate == null || x.Day.Date <= maxDate.Value.Date),
-                orderBy: x => x.OrderBy(x => x.MarketOpen));
+                    (minDate == null || x.Date.Date >= minDate.Value.Date) &&
+                    (maxDate == null || x.Date.Date <= maxDate.Value.Date),
+                orderBy: x => x.OrderBy(x => x.Date));
+
+        public async Task<MarketSchedule?> GetLastestMarketDayAsync() =>
+            await GetFirstOrDefaultAsync(
+                predicate: x => x.Date <= DateTime.Now.Date,
+                orderBy: x => x.OrderByDescending(x => x.Date));
     }
 }

@@ -12,6 +12,7 @@ import { TickerListComponent } from './components/market/ticker-list/ticker-list
 import { AuthGuard } from './guards/auth/auth.guard';
 import { CronJobDetailsComponent } from './components/management/cron-job-details/cron-job-details.component';
 import { TickerDetailsComponent } from './components/market/ticker-details/ticker-details.component';
+import { NewsListComponent } from './components/news/news-list/news-list.component';
 
 const routes: Routes = [
   // management
@@ -34,6 +35,12 @@ const routes: Routes = [
   {
     path: 'market/tickers/:symbol',
     component: TickerDetailsComponent,
+    canActivate: [AuthGuard],
+  },
+  // news
+  {
+    path: 'news/finance',
+    component: NewsListComponent,
     canActivate: [AuthGuard],
   },
   // core

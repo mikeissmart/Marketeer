@@ -38,9 +38,12 @@ import { DatePickerRangeComponent } from './components/common/date-picker-range/
 import { TickerListComponent } from './components/market/ticker-list/ticker-list.component';
 import { AutoCompleteComponent } from './components/common/auto-complete/auto-complete.component';
 import { TickerDetailsComponent } from './components/market/ticker-details/ticker-details.component';
-import { TickerHistorySummaryComponent } from './components/common/ticker-history-summary/ticker-history-summary.component';
+import { TickerHistorySummaryComponent } from './components/market/ticker-history-summary/ticker-history-summary.component';
 import { CronJobDetailsComponent } from './components/management/cron-job-details/cron-job-details.component';
 import { NewsDetailsComponent } from './components/news/news-details/news-details.component';
+import { TickerDelistReasonsComponent } from './components/market/ticker-delist-reasons/ticker-delist-reasons.component';
+import { TickerNewsListComponent } from './components/market/ticker-news-list/ticker-news-list.component';
+import { NewsListComponent } from './components/news/news-list/news-list.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +73,9 @@ import { NewsDetailsComponent } from './components/news/news-details/news-detail
     TickerHistorySummaryComponent,
     CronJobDetailsComponent,
     NewsDetailsComponent,
+    TickerDelistReasonsComponent,
+    TickerNewsListComponent,
+    NewsListComponent,
   ],
   imports: [
     ReactiveFormsModule,

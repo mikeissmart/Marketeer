@@ -310,7 +310,7 @@ namespace Marketeer.Core.Service.Market
                         ticker.DividendRate = jObj["dividendRate"]?.GetValue<float>();
                     }
                 }
-                ticker.LastInfoUpdate = DateTime.UtcNow;
+                ticker.LastInfoUpdate = DateTime.Now;
                 updatedCount++;
 
                 _tickerRepository.Update(ticker);

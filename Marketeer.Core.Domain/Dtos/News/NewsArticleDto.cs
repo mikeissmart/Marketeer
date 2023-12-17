@@ -9,10 +9,9 @@ using System.Threading.Tasks;
 namespace Marketeer.Core.Domain.Dtos.News
 {
     public class NewsArticleDto : EntityDto, IRefactorType,
-        IMapFrom<FinvizFinanceNewsDto>,
-        IMapFrom<NewsArticle>
+        IMapFrom<NewsArticle>,
+        IMapTo<NewsArticle>
     {
-        public int? TickerId { get; set; }
         public string Title { get; set; }
         public string Link { get; set; }
         public string Text { get; set; }

@@ -1,9 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ITicker, ITickerHistorySummary } from 'src/app/models/model';
-import { DelistEnum } from 'src/app/models/model.enum';
-import { TableHeader } from 'src/app/models/view-model';
+import { ITicker } from 'src/app/models/model';
 import { HistoryDataApiService } from 'src/app/services/api/history-data-api.service';
+import { NewsApiService } from 'src/app/services/api/news-api.service';
 import { TickerApiService } from 'src/app/services/api/ticker-api.service';
 import { ToasterService } from 'src/app/services/toaster/toaster.service';
 
@@ -14,14 +13,11 @@ import { ToasterService } from 'src/app/services/toaster/toaster.service';
 })
 export class TickerDetailsComponent implements OnInit {
   tickerDetail: ITicker | null = null;
-  tickerHistorySummary: ITickerHistorySummary | null = null;
 
   constructor(
     private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly historyDataApi: HistoryDataApiService,
-    private readonly tickerApi: TickerApiService,
-    private readonly toaster: ToasterService
+    private readonly tickerApi: TickerApiService
   ) {}
 
   ngOnInit(): void {
@@ -43,53 +39,15 @@ export class TickerDetailsComponent implements OnInit {
     }
   }
 
-  getTickerHistorySummary(): void {
-    if (this.tickerDetail == null) {
-      this.tickerHistorySummary = null;
-    } else {
-      this.historyDataApi.getTickerHistorySummary(
-        this.tickerDetail.id,
-        (x) => (this.tickerHistorySummary = x)
-      );
-    }
-  }
-
-  getDelist(value: DelistEnum): string {
-    return DelistEnum[value].replaceAll('_', ' ');
-  }
-
-  getTableHeaders(): TableHeader[] {
-    return [new TableHeader('Delist Reasons')];
-  }
-
-  fetchInfo(): void {
-    this.tickerApi.updateTickerInfoData(this.tickerDetail!.id, (result) => {
-      if (result) {
-        this.toaster.showSuccess('New Info Data');
-        this.tickerApi.getTickerById(
-          this.tickerDetail!.id,
-          (result) => (this.tickerDetail = result)
-        );
+  getTickerDetails(): void {
+    this.tickerApi.getTickerBySymbol(this.tickerDetail!.symbol, (result) => {
+      if (result == null) {
+        this.router.navigateByUrl('/tickers', {
+          skipLocationChange: false,
+        });
       } else {
-        this.toaster.showWarning('Info Data up to date');
+        this.tickerDetail = result!;
       }
     });
-  }
-
-  fetchHistData(): void {
-    this.historyDataApi.updateTickerHistoryData(
-      this.tickerDetail!.id,
-      (result) => {
-        if (result) {
-          this.toaster.showSuccess('New History Data');
-          this.tickerApi.getTickerById(
-            this.tickerDetail!.id,
-            (result) => (this.tickerDetail = result)
-          );
-        } else {
-          this.toaster.showWarning('History Data up to date');
-        }
-      }
-    );
   }
 }

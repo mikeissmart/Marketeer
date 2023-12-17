@@ -10,6 +10,8 @@ namespace Marketeer.Core.Domain.Entities.Market
         [StringLength(5)]
         public string Symbol { get; set; }
         public DateTime? LastHistoryUpdate { get; set; }
+        public DateTime? LastInfoUpdate { get; set; }
+        public DateTime? LastNewsUpdate { get; set; }
 
         #region Info
 
@@ -36,7 +38,6 @@ namespace Marketeer.Core.Domain.Entities.Market
         public float? PayoutRatio { get; set; }
         //dividendRate
         public float? DividendRate { get; set; }
-        public DateTime? LastInfoUpdate { get; set; }
 
         #endregion
 

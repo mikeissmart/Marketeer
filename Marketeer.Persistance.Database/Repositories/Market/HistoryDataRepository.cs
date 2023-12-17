@@ -21,21 +21,19 @@ namespace Marketeer.Persistance.Database.Repositories.Market
         }
 
         public IEnumerable<HistoryData> GetQuery(int tickerId, HistoryDataIntervalEnum interval) =>
-            GenerateQuery(x => x.TickerId == tickerId && x.Interval == interval);
+            GenerateQuery(
+                predicate: x => x.TickerId == tickerId && x.Interval == interval,
+                orderBy: x => x.OrderByDescending(x => x.Date));
 
         public async Task<DateTime?> GetMaxDateTimeByTickerIntervalAsync(int tickerId, HistoryDataIntervalEnum interval)
         {
-            DateTime? value = await GenerateQuery(
+            return await GenerateQuery(
                     predicate: x =>
                         x.TickerId == tickerId &&
                         x.Interval == interval,
-                    orderBy: x => x.OrderByDescending(x => x.DateTime))
-                .Select(x => x.DateTime)
+                    orderBy: x => x.OrderByDescending(x => x.Date))
+                .Select(x => x.Date)
                 .FirstOrDefaultAsync();
-            if (value == DateTime.MinValue)
-                value = null;
-
-            return value;
         }
 
         public async Task<List<HistoryData>> GetHistoryDataByTickerIntervalDateRangeAsync(int tickerId, HistoryDataIntervalEnum interval,
@@ -44,9 +42,9 @@ namespace Marketeer.Persistance.Database.Repositories.Market
                 predicate: x =>
                     x.TickerId == tickerId &&
                     x.Interval == interval &&
-                    (minDate == null || x.DateTime >= minDate.Value) &&
-                    (maxDate == null || x.DateTime <= maxDate.Value),
-                orderBy: x => x.OrderBy(x => x.DateTime),
+                    (minDate == null || x.Date >= minDate.Value) &&
+                    (maxDate == null || x.Date <= maxDate.Value),
+                orderBy: x => x.OrderBy(x => x.Date),
                 tracking: tracking);
     }
 }

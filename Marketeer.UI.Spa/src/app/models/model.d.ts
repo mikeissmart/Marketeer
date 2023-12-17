@@ -70,6 +70,11 @@ export interface INewsArticle
 	date: Date;
 	id: number;
 }
+export interface INewsFilter
+{
+	minDate?: Date;
+	maxDate?: Date;
+}
 export interface IHistoryData
 {
 	tickerId: number;
@@ -79,7 +84,7 @@ export interface IHistoryData
 	high: number;
 	low: number;
 	volume: number;
-	dateTime: Date;
+	date: Date;
 	id: number;
 }
 export interface IMarketSchedule
@@ -100,6 +105,8 @@ export interface ITicker
 {
 	symbol: string;
 	lastHistoryUpdate?: Date;
+	lastInfoUpdate?: Date;
+	lastNewsUpdate?: Date;
 	name: string;
 	quoteType: string;
 	exchange: string;
@@ -109,7 +116,6 @@ export interface ITicker
 	volume?: number;
 	payoutRatio?: number;
 	dividendRate?: number;
-	lastInfoUpdate?: Date;
 	delistReasons: ITickerDelistReason[];
 	id: number;
 }
@@ -129,8 +135,9 @@ export interface ITickerHistorySummary
 export interface IValueSummary
 {
 	title: string;
-	date: Date;
+	date?: Date;
 	value?: number;
+	difference?: number;
 }
 export interface IAppLog
 {

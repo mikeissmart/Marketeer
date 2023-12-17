@@ -40,20 +40,20 @@ namespace Marketeer.Core.Service.Market
             {
                 for (var i = 0; i < numYears; i++)
                 {
-                    var minDate = new DateTime(DateTime.UtcNow.Year + i, 1, 1);
-                    var maxDate = new DateTime(DateTime.UtcNow.Year + i, 12, 31);
+                    var minDate = new DateTime(DateTime.Now.Year + i, 1, 1);
+                    var maxDate = new DateTime(DateTime.Now.Year + i, 12, 31);
 
                     var curSchedules = await _marketScheduleRepository.GetScheduleDaysInRangeAsync(minDate, maxDate);
 
                     var freshSchedules = _mapper.Map<List<MarketSchedule>>(await _marketPythonService.GetYearlyMarketSchedule(minDate.Year));
                     var addSchedules = freshSchedules
                         .Where(x => !curSchedules.Any(y =>
-                            y.Day == x.Day &&
+                            y.Date == x.Date &&
                             y.MarketOpen == x.MarketOpen &&
                             y.MarketClose == x.MarketClose));
                     var removeSchedules = curSchedules
                         .Where(x => !freshSchedules.Any(y =>
-                            y.Day == x.Day &&
+                            y.Date == x.Date &&
                             y.MarketOpen == x.MarketOpen &&
                             y.MarketClose == x.MarketClose));
 

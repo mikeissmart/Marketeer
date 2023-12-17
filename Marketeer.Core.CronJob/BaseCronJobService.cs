@@ -72,7 +72,7 @@ namespace Marketeer.Core.CronJob
                         var log = new CronLog()
                         {
                             Name = GetType().Name,
-                            StartDate = DateTime.UtcNow,
+                            StartDate = DateTime.Now,
                         };
                         using (var scope = _services.CreateScope())
                         {
@@ -105,7 +105,7 @@ namespace Marketeer.Core.CronJob
                             }
                             finally
                             {
-                                log.EndDate = DateTime.UtcNow;
+                                log.EndDate = DateTime.Now;
                                 log.IsCanceled = cancellationToken.IsCancellationRequested;
 
                                 cronJobStatus.IsRunning = false;
