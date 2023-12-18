@@ -17,9 +17,16 @@ import { ToasterService } from 'src/app/services/toaster/toaster.service';
 export class TickerNewsListComponent implements OnInit {
   @Input() set tickerId(value: number | null | undefined) {
     if (value == undefined || value == null) {
-      this.currentTickerId = null;
+      this.currentSymbol = null;
     } else if (this.currentTickerId != value) {
       this.currentTickerId = value;
+    }
+  }
+  @Input() set symbol(value: string | null | undefined) {
+    if (value == undefined || value == null) {
+      this.currentSymbol = null;
+    } else if (this.currentSymbol != value) {
+      this.currentSymbol = value;
     }
   }
   @Input() set lastNewsUpdate(value: Date | null | undefined) {
@@ -33,6 +40,7 @@ export class TickerNewsListComponent implements OnInit {
   @Output() onUpdateNewsArticles = new EventEmitter();
 
   currentTickerId: number | null = null;
+  currentSymbol: string | null = null;
   currentLastNewsUpdate: Date | null = null;
   newArticles = ModelHelper.IPaginateGenericDefault<INewsArticle>();
   paginateFilter =
@@ -45,6 +53,7 @@ export class TickerNewsListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.paginateFilter.filter.symbol = this.currentSymbol!;
     this.paginateFilter.orderBy = 'Date';
     this.paginateFilter.isOrderAsc = false;
     if (this.currentLastNewsUpdate != null) {
@@ -62,9 +71,8 @@ export class TickerNewsListComponent implements OnInit {
   }
 
   fetchNewsArticles(): void {
-    if (this.currentTickerId != null) {
+    if (this.currentSymbol != null) {
       this.newsApi.getTickerNews(
-        this.currentTickerId!,
         this.paginateFilter,
         (x) => (this.newArticles = x)
       );
@@ -72,8 +80,8 @@ export class TickerNewsListComponent implements OnInit {
   }
 
   updateNewsData(): void {
-    if (this.currentTickerId != null) {
-      this.newsApi.updateTickerNews(this.currentTickerId, (result) => {
+    if (this.currentSymbol != null) {
+      this.newsApi.updateTickerNews(this.currentTickerId!, (result) => {
         if (result) {
           this.toaster.showSuccess('New News');
         } else {

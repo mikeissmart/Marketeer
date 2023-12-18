@@ -15,7 +15,7 @@ namespace Marketeer.Persistance.Database.Repositories.News
 {
     public interface INewsArticleRepository : IRepository<NewsArticle>
     {
-        Task<Paginate<NewsArticle>> GetTickerNewsArticlesAsync(int tickerId, PaginateFilterDto<NewsFilterDto> filter);
+        Task<Paginate<NewsArticle>> GetTickerNewsArticlesAsync(PaginateFilterDto<NewsFilterDto> filter);
         Task<List<NewsArticleDto>> CalculateNotExistingLinksAsync(List<NewsArticleDto> newNews);
         Task<List<NewsArticle>> GetNewsArticlesByLinksAsync(int withoutTickerId, List<string> newsLinks);
     }
@@ -27,11 +27,11 @@ namespace Marketeer.Persistance.Database.Repositories.News
 
         }
 
-        public async Task<Paginate<NewsArticle>> GetTickerNewsArticlesAsync(int tickerId, PaginateFilterDto<NewsFilterDto> filter) =>
+        public async Task<Paginate<NewsArticle>> GetTickerNewsArticlesAsync(PaginateFilterDto<NewsFilterDto> filter) =>
             await GetPaginateAsync(
                 filter,
                 predicate: x =>
-                    (x.Tickers.Any(x => x.Id == tickerId)) &&
+                    (string.IsNullOrEmpty(filter.Filter.Symbol) || x.Tickers.Any(x => x.Symbol == filter.Filter.Symbol)) &&
                     (filter.Filter.MinDate == null || x.Date.Date > filter.Filter.MinDate.Value.Date) &&
                     (filter.Filter.MaxDate == null || x.Date.Date <= filter.Filter.MaxDate.Value.Date),
                 orderBy: CalculateOrderBy(filter));

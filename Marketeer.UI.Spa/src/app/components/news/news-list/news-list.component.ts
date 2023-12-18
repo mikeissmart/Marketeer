@@ -7,6 +7,7 @@ import {
 import { ModelHelper } from 'src/app/models/model-helper';
 import { TableHeader } from 'src/app/models/view-model';
 import { NewsApiService } from 'src/app/services/api/news-api.service';
+import { TickerApiService } from 'src/app/services/api/ticker-api.service';
 import { ToasterService } from 'src/app/services/toaster/toaster.service';
 
 @Component({
@@ -15,6 +16,7 @@ import { ToasterService } from 'src/app/services/toaster/toaster.service';
   styleUrls: ['./news-list.component.scss'],
 })
 export class NewsListComponent implements OnInit {
+  searchSymbols = [] as string[];
   newArticles = ModelHelper.IPaginateGenericDefault<INewsArticle>();
   paginateFilter =
     ModelHelper.IPaginateGenericFilterDefault() as IPaginateGenericFilter<INewsFilter>;
@@ -22,13 +24,26 @@ export class NewsListComponent implements OnInit {
 
   constructor(
     private readonly newsApi: NewsApiService,
-    private readonly toaster: ToasterService
+    private readonly tickerApi: TickerApiService
   ) {}
 
   ngOnInit(): void {
     this.paginateFilter.orderBy = 'Date';
     this.paginateFilter.isOrderAsc = false;
     this.fetchNewsArticles();
+  }
+
+  onSearchSymbol(searchText: string): void {
+    this.paginateFilter.filter.symbol = searchText;
+    this.tickerApi.searchSymbols(
+      searchText,
+      8,
+      (x) => (this.searchSymbols = x)
+    );
+  }
+
+  onSelectedSymbol(symbol: string): void {
+    this.paginateFilter.filter.symbol = symbol;
   }
 
   getTableHeaders(): TableHeader[] {
@@ -48,21 +63,10 @@ export class NewsListComponent implements OnInit {
   }
 
   fetchNewsArticles(): void {
-    this.newsApi.getFinanceNews(
+    this.newsApi.getTickerNews(
       this.paginateFilter,
       (x) => (this.newArticles = x)
     );
-  }
-
-  updateNewsData(): void {
-    this.newsApi.updateFinanceNews((result) => {
-      if (result) {
-        this.toaster.showSuccess('New News');
-      } else {
-        this.toaster.showWarning('News up to date');
-      }
-      this.fetchNewsArticles();
-    });
   }
 
   onViewNews(news: INewsArticle): void {

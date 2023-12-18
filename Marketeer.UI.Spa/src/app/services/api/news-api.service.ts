@@ -16,15 +16,10 @@ export class NewsApiService {
   constructor(private readonly apiHttp: ApiHttpService) {}
 
   getTickerNews(
-    tickerId: number,
     filter: IPaginateGenericFilter<INewsFilter>,
     callback: (result: IPaginateGeneric<INewsArticle>) => void
   ): void {
-    this.apiHttp.post(
-      this.uri + `GetTickerNews?tickerId=${tickerId}`,
-      filter,
-      callback
-    );
+    this.apiHttp.post(this.uri + `GetNews`, filter, callback);
   }
 
   updateTickerNews(
@@ -35,16 +30,5 @@ export class NewsApiService {
       this.uri + `UpdateTickerNews?tickerId=${tickerId}`,
       callback
     );
-  }
-
-  getFinanceNews(
-    filter: IPaginateGenericFilter<INewsFilter>,
-    callback: (result: IPaginateGeneric<INewsArticle>) => void
-  ): void {
-    this.apiHttp.post(this.uri + `GetFinanceNews`, filter, callback);
-  }
-
-  updateFinanceNews(callback: (result: boolean) => void): void {
-    this.apiHttp.get(this.uri + `UpdateFinanceNews`, callback);
   }
 }

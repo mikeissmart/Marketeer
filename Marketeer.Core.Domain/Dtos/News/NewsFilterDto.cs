@@ -8,6 +8,7 @@ namespace Marketeer.Core.Domain.Dtos.News
 {
     public class NewsFilterDto : IRefactorType
     {
+        public string? Symbol { get; set; }
         public DateTime? MinDate { get; set; }
         public DateTime? MaxDate { get; set; }
     }

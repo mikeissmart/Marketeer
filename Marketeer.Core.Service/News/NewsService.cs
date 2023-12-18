@@ -18,7 +18,7 @@ namespace Marketeer.Core.Service.News
 {
     public interface INewsService : ICoreService
     {
-        Task<PaginateDto<NewsArticleDto>> GetTickerNewsArticlesAsync(int tickerId, PaginateFilterDto<NewsFilterDto> filter);
+        Task<PaginateDto<NewsArticleDto>> GetTickerNewsArticlesAsync(PaginateFilterDto<NewsFilterDto> filter);
         Task<bool> UpdateTickerNewsArticlesAsync(int tickerId);
     }
 
@@ -43,11 +43,11 @@ namespace Marketeer.Core.Service.News
             _newsArticleRepository = newsArticleRepository;
         }
 
-        public async Task<PaginateDto<NewsArticleDto>> GetTickerNewsArticlesAsync(int tickerId, PaginateFilterDto<NewsFilterDto> filter)
+        public async Task<PaginateDto<NewsArticleDto>> GetTickerNewsArticlesAsync(PaginateFilterDto<NewsFilterDto> filter)
         {
             try
             {
-                return _mapper.Map<PaginateDto<NewsArticleDto>>(await _newsArticleRepository.GetTickerNewsArticlesAsync(tickerId, filter));
+                return _mapper.Map<PaginateDto<NewsArticleDto>>(await _newsArticleRepository.GetTickerNewsArticlesAsync(filter));
             }
             catch (Exception e)
             {

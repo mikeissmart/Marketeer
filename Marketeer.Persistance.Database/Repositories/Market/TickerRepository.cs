@@ -6,6 +6,7 @@ using Marketeer.Core.Domain.Entities.Market;
 using Marketeer.Core.Domain.Enums;
 using Marketeer.Persistance.Database.DbContexts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace Marketeer.Persistance.Database.Repositories.Market
 {
@@ -53,8 +54,8 @@ namespace Marketeer.Persistance.Database.Repositories.Market
             await GetAsync(x => x.DelistReasons.Any(x => delists.Contains(x.Delist)));
 
         public async Task<Ticker?> GetTickerByIdAsync(int id, bool withNewsArticles = false) =>
-            await GetSingleOrDefaultAsync2(x => x.Id == id,
-                includes: new List<Func<IQueryable<Ticker>, Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Ticker, object>>>
+            await GetSingleOrDefaultAsync(x => x.Id == id,
+                includes: new List<Func<IQueryable<Ticker>, IIncludableQueryable<Ticker, object>>?>
                 {
                     x => x.Include(x => x.DelistReasons),
                     (withNewsArticles

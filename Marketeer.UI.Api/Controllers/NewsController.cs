@@ -22,10 +22,10 @@ namespace Marketeer.UI.Api.Controllers
             _newsService = newsService;
         }
 
-        [HttpPost("GetTickerNews")]
-        public async Task<IActionResult> GetTickerNews([FromQuery] int tickerId, [FromBody] PaginateFilterDto<NewsFilterDto> filter)
+        [HttpPost("GetNews")]
+        public async Task<IActionResult> GetTickerNews([FromBody] PaginateFilterDto<NewsFilterDto> filter)
         {
-            var data = await _newsService.GetTickerNewsArticlesAsync(tickerId, filter);
+            var data = await _newsService.GetTickerNewsArticlesAsync(filter);
             return Ok(data);
         }
 

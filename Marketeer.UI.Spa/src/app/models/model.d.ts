@@ -63,7 +63,6 @@ export interface ILogin
 }
 export interface INewsArticle
 {
-	tickerId?: number;
 	title: string;
 	link: string;
 	text: string;
@@ -72,6 +71,7 @@ export interface INewsArticle
 }
 export interface INewsFilter
 {
+	symbol?: string;
 	minDate?: Date;
 	maxDate?: Date;
 }
