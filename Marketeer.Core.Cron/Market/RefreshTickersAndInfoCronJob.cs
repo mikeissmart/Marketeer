@@ -2,12 +2,12 @@
 using Marketeer.Core.Service.Market;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Marketeer.Core.CronJob.Market
+namespace Marketeer.Core.Cron.Market
 {
     public class RefreshTickersAndInfoCronJob : BaseCronJobService
     {
-        public RefreshTickersAndInfoCronJob(CronConfig cronConfig, IServiceProvider services) :
-            base(cronConfig, services, nameof(CronConfig.RefreshTickers))
+        public RefreshTickersAndInfoCronJob(CronJobConfig cronConfig, IServiceProvider services) :
+            base(cronConfig, services, nameof(CronJobConfig.RefreshTickers))
         {
 
         }

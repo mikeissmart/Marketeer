@@ -8,5 +8,6 @@ namespace Marketeer.Common.Configs
 {
     public class AIPythonConfig : PythonConfig, IConfig
     {
+        public string CalculateSentiment { get; set; }
     }
 }

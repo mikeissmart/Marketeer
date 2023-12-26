@@ -7,12 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Marketeer.Core.CronJob.Market
+namespace Marketeer.Core.Cron.Market
 {
     public class UpdateDailyHistoryDataCronJob : BaseCronJobService
     {
-        public UpdateDailyHistoryDataCronJob(CronConfig cronConfig, IServiceProvider services) :
-            base(cronConfig, services, nameof(CronConfig.UpdateDailyHistoryData))
+        public UpdateDailyHistoryDataCronJob(CronJobConfig cronConfig, IServiceProvider services) :
+            base(cronConfig, services, nameof(CronJobConfig.UpdateDailyHistoryData))
         {
 
         }

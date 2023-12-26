@@ -5,7 +5,9 @@ import {
   IPaginateGenericFilter,
 } from 'src/app/models/model';
 import { ModelHelper } from 'src/app/models/model-helper';
+import { SentimentEnum, SentimentStatusEnum } from 'src/app/models/model.enum';
 import { TableHeader } from 'src/app/models/view-model';
+import { AiApiService } from 'src/app/services/api/ai-api.service';
 import { NewsApiService } from 'src/app/services/api/news-api.service';
 import { ToasterService } from 'src/app/services/toaster/toaster.service';
 
@@ -49,6 +51,7 @@ export class TickerNewsListComponent implements OnInit {
 
   constructor(
     private readonly newsApi: NewsApiService,
+    private readonly aiApi: AiApiService,
     private readonly toaster: ToasterService
   ) {}
 
@@ -61,12 +64,13 @@ export class TickerNewsListComponent implements OnInit {
     }
   }
 
-  getTableHeaders(): TableHeader[] {
+  getSentimentTableHeaders(): TableHeader[] {
     return [
       new TableHeader(''),
       new TableHeader(''),
       new TableHeader('Title', 'Title'),
       new TableHeader('Date', 'Date'),
+      new TableHeader('Last Sentiment'),
     ];
   }
 
@@ -91,6 +95,57 @@ export class TickerNewsListComponent implements OnInit {
         this.onUpdateNewsArticles.emit();
       });
     }
+  }
+
+  enqueueNewsDefaultSentiment(): void {
+    this.aiApi.queueTickerNewsDefaultSentiment(this.currentSymbol!, (result) =>
+      this.toaster.showSuccess(result.data)
+    );
+  }
+
+  getLastSentimentResult(item: INewsArticle): SentimentEnum | null {
+    if (item.sentimentResults.length > 0) {
+      const completed = item.sentimentResults.filter(
+        (x) => x.status == SentimentStatusEnum.Completed
+      );
+      if (completed.length > 0) {
+        return completed[completed.length - 1].sentiment;
+      }
+    }
+
+    return null;
+  }
+
+  getSentimentResultColor(value: SentimentEnum | null): string {
+    if (value == SentimentEnum.Positive) {
+      return 'bg-success text-light';
+    } else if (value == SentimentEnum.Neutral) {
+      return 'bg-warning text-dark';
+    } else if (value == SentimentEnum.Negative) {
+      return 'bg-danger text-light';
+    } else {
+      return '';
+    }
+  }
+
+  sentimentToString(value: SentimentEnum | null): string {
+    return value != null ? SentimentEnum[value].replaceAll('_', ' ') : '';
+  }
+
+  sentimentStatusToString(value: SentimentStatusEnum | null): string {
+    return value != null ? SentimentStatusEnum[value].replaceAll('_', ' ') : '';
+  }
+
+  getNewsSentimentTableHeaders(): TableHeader[] {
+    return [
+      new TableHeader('Model Name'),
+      new TableHeader('Date'),
+      new TableHeader('Status'),
+      new TableHeader('Positive Score'),
+      new TableHeader('Neutral Score'),
+      new TableHeader('Negitive Score'),
+      new TableHeader('Sentiment'),
+    ];
   }
 
   onViewNews(news: INewsArticle): void {

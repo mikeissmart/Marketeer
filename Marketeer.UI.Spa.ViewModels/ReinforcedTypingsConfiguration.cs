@@ -53,7 +53,10 @@ namespace Marketeer.UI.Spa.ViewModels
                 {
                     typeof(LogLevel),
                     typeof(HistoryDataIntervalEnum),
-                    typeof(DelistEnum)
+                    typeof(DelistEnum),
+                    typeof(SentimentEnum),
+                    typeof(SentimentResultTypeEnum),
+                    typeof(SentimentStatusEnum)
                 }, x =>
                 {
                     x.ExportTo(ENUMFILE)

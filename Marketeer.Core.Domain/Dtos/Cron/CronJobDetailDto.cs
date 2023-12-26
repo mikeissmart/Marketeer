@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Marketeer.Core.Domain.Dtos.CronJob
+namespace Marketeer.Core.Domain.Dtos.Cron
 {
     public class CronJobDetailDto : IRefactorType,
         IMapFrom<CronJobDetail>

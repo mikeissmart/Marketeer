@@ -12,8 +12,18 @@ namespace Marketeer.Persistance.Database.EntityConfig.AI
 {
     public class HuggingFaceModelConfig : IEntityConfig, IEntityTypeConfiguration<HuggingFaceModel>
     {
-        public void Configure(EntityTypeBuilder<HuggingFaceModel> builder) => builder
+        public void Configure(EntityTypeBuilder<HuggingFaceModel> builder)
+        {
+            builder
                 .HasIndex(x => x.Name)
                 .IsUnique();
+
+            builder.HasData(new HuggingFaceModel
+            {
+                Id = 1,
+                Name = "mrm8488/distilroberta-finetuned-financial-news-sentiment-analysis",
+                IsDefault = true
+            });
+        }
     }
 }

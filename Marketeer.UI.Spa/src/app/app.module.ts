@@ -44,6 +44,7 @@ import { NewsDetailsComponent } from './components/news/news-details/news-detail
 import { TickerDelistReasonsComponent } from './components/market/ticker-delist-reasons/ticker-delist-reasons.component';
 import { TickerNewsListComponent } from './components/market/ticker-news-list/ticker-news-list.component';
 import { NewsListComponent } from './components/news/news-list/news-list.component';
+import { CronQueueDetailsComponent } from './components/management/cron-queue-details/cron-queue-details.component';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { NewsListComponent } from './components/news/news-list/news-list.compone
     TickerDelistReasonsComponent,
     TickerNewsListComponent,
     NewsListComponent,
+    CronQueueDetailsComponent,
   ],
   imports: [
     ReactiveFormsModule,

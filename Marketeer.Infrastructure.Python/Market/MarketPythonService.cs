@@ -20,15 +20,15 @@ namespace Marketeer.Infrastructure.Python.Market
     public class MarketPythonService : BasePythonService, IMarketPythonService
     {
         private readonly IMapper _mapper;
-        private readonly MarketPythonConfig _marketPythonConfig;
+        private readonly MarketPythonConfig _config;
 
         public MarketPythonService(IMapper mapper,
             RootPythonConfig rootPythonConfig,
-            MarketPythonConfig yFinanceConfig,
-            IPythonLogRepository pythonLogRepository) : base(rootPythonConfig, yFinanceConfig, pythonLogRepository)
+            MarketPythonConfig config,
+            IPythonLogRepository pythonLogRepository) : base(rootPythonConfig, config, pythonLogRepository)
         {
             _mapper = mapper;
-            _marketPythonConfig = yFinanceConfig;
+            _config = config;
         }
 
         public async Task DownloadTickerJsonInfo(List<string> tickers)
@@ -38,7 +38,7 @@ namespace Marketeer.Infrastructure.Python.Market
                 Tickers = tickers
             };
             await RunPythonScriptArgsAsync(
-                _marketPythonConfig.DownloadTickerJsonInfo, args);
+                _config.DownloadTickerJsonInfo, args);
         }
 
         public async Task<List<HistoryDataDto>> GetHistoryDataAsync(TickerDto ticker,
@@ -52,7 +52,7 @@ namespace Marketeer.Infrastructure.Python.Market
                 EndDate = endDate?.ToString("yyyy-MM-dd")
             };
             var pyHistDatas = await RunPythonScriptAsync<List<PythonHistoryDataDto>, PythonHistoryDataArgs>(
-                _marketPythonConfig.HistoryData, args);
+                _config.HistoryData, args);
             var histDatas = _mapper.Map<List<HistoryDataDto>>(pyHistDatas.Where(x =>
                 x.Open.HasValue &&
                 x.Close.HasValue &&
@@ -77,7 +77,7 @@ namespace Marketeer.Infrastructure.Python.Market
             };
 
             var schedules = await RunPythonScriptAsync<List<PythonMarketScheduleDto>, PythonMarketScheduleArgs>(
-                _marketPythonConfig.GetYearlyMarketSchedule, args);
+                _config.GetYearlyMarketSchedule, args);
 
             var marketSchedules = new List<MarketScheduleDto>();
             foreach (var dto in schedules)

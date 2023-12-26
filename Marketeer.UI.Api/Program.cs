@@ -46,6 +46,7 @@ using (var scope = app.Services.CreateScope())
     scope.ClearCronJobStatuses();
     scope.SeedSecurityServiceScope();
     scope.SetupInfrastructureServices();
+    scope.StartCronQueues();
 }
 
 // Configure the HTTP request pipeline.

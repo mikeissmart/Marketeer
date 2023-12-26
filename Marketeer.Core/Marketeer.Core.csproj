@@ -12,7 +12,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Marketeer.Common\Marketeer.Common.csproj" />
-	  <ProjectReference Include="..\Marketeer.Core.CronJob\Marketeer.Core.CronJob.csproj" />
+	  <ProjectReference Include="..\Marketeer.Core.Cron\Marketeer.Core.Cron.csproj" />
 	  <ProjectReference Include="..\Marketeer.Core.Service\Marketeer.Core.Service.csproj" />
 	</ItemGroup>
 

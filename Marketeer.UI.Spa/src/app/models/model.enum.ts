@@ -31,3 +31,17 @@ export enum DelistEnum {
 	Yfinance_No_Info = 2,
 	Yfinance_No_History = 3
 }
+export enum SentimentEnum {
+	Negative = 0,
+	Neutral = 1,
+	Positive = 2
+}
+export enum SentimentResultTypeEnum {
+	NewsArticle = 0
+}
+export enum SentimentStatusEnum {
+	Pending = 0,
+	Queued = 1,
+	Completed = 2,
+	Failed = 3
+}

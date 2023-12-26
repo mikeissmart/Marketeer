@@ -1,4 +1,5 @@
-﻿using Marketeer.Core.Domain.Entities.Market;
+﻿using Marketeer.Core.Domain.Entities.AI;
+using Marketeer.Core.Domain.Entities.Market;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace Marketeer.Core.Domain.Entities.News
         #region Nav
 
         public List<Ticker> Tickers { get; set; }
+        public List<SentimentResult> SentimentResults { get; set; }
 
         #endregion
     }

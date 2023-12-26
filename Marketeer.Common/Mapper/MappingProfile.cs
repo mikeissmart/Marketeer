@@ -12,7 +12,13 @@ namespace Marketeer.Common.Mapper
             ApplyMappingsManually();
         }
 
-        private void ApplyMappingsManually() => CreateMap(typeof(Paginate<>), typeof(PaginateDto<>));
+        private void ApplyMappingsManually()
+        {
+            CreateMap(typeof(Paginate<>), typeof(Paginate<>));
+            CreateMap(typeof(Paginate<>), typeof(PaginateDto<>));
+            CreateMap(typeof(PaginateDto<>), typeof(Paginate<>));
+            CreateMap(typeof(PaginateDto<>), typeof(PaginateDto<>));
+        }
 
         private void ApplyMappingsFromAssembly()
         {

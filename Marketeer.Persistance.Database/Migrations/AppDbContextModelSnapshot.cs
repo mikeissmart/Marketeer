@@ -30,6 +30,9 @@ namespace Marketeer.Persistance.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -40,6 +43,14 @@ namespace Marketeer.Persistance.Database.Migrations
                         .IsUnique();
 
                     b.ToTable("HuggingFaceModels");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsDefault = true,
+                            Name = "mrm8488/distilroberta-finetuned-financial-news-sentiment-analysis"
+                        });
                 });
 
             modelBuilder.Entity("Marketeer.Core.Domain.Entities.AI.SentimentResult", b =>
@@ -68,11 +79,19 @@ namespace Marketeer.Persistance.Database.Migrations
                     b.Property<float>("Positive")
                         .HasColumnType("real");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("HuggingFaceModelId");
-
                     b.HasIndex("NewsArticleId");
+
+                    b.HasIndex("HuggingFaceModelId", "NewsArticleId")
+                        .IsUnique()
+                        .HasFilter("[NewsArticleId] IS NOT NULL");
 
                     b.ToTable("SentimentResults");
                 });
@@ -358,8 +377,7 @@ namespace Marketeer.Persistance.Database.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Message")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -633,7 +651,7 @@ namespace Marketeer.Persistance.Database.Migrations
                         .IsRequired();
 
                     b.HasOne("Marketeer.Core.Domain.Entities.News.NewsArticle", "NewsArticle")
-                        .WithMany()
+                        .WithMany("SentimentResults")
                         .HasForeignKey("NewsArticleId");
 
                     b.Navigation("HuggingFaceModel");
@@ -739,6 +757,11 @@ namespace Marketeer.Persistance.Database.Migrations
                     b.Navigation("DelistReasons");
 
                     b.Navigation("HistoryDatas");
+                });
+
+            modelBuilder.Entity("Marketeer.Core.Domain.Entities.News.NewsArticle", b =>
+                {
+                    b.Navigation("SentimentResults");
                 });
 #pragma warning restore 612, 618
         }

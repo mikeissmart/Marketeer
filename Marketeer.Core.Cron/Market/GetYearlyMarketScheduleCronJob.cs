@@ -7,12 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Marketeer.Core.CronJob.Market
+namespace Marketeer.Core.Cron.Market
 {
     public class GetYearlyMarketScheduleCronJob : BaseCronJobService
     {
-        public GetYearlyMarketScheduleCronJob(CronConfig cronConfig, IServiceProvider services) :
-            base(cronConfig, services, nameof(CronConfig.GetYearlyMarketSchedule))
+        public GetYearlyMarketScheduleCronJob(CronJobConfig cronConfig, IServiceProvider services) :
+            base(cronConfig, services, nameof(CronJobConfig.GetYearlyMarketSchedule))
         {
 
         }

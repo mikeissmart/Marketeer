@@ -22,7 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{2125E666-F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketeer.Core", "Marketeer.Core\Marketeer.Core.csproj", "{8AA85205-BA6B-4B77-8E70-5DEB1A194B80}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketeer.Core.CronJob", "Marketeer.Core.CronJob\Marketeer.Core.CronJob.csproj", "{38C70781-3073-4FD6-BF64-47938CD471C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketeer.Core.Cron", "Marketeer.Core.Cron\Marketeer.Core.Cron.csproj", "{38C70781-3073-4FD6-BF64-47938CD471C2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketeer.Core.Domain", "Marketeer.Core.Domain\Marketeer.Core.Domain.csproj", "{8F0E5935-5908-4079-A8A5-DCBE39F5A520}"
 EndProject
@@ -40,7 +40,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketeer.Infrastructure", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketeer.Infrastructure.Python", "Marketeer.Infrastructure.Python\Marketeer.Infrastructure.Python.csproj", "{C7ACA631-0ABD-4E9B-8C58-5190CD7737F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketeer.Infrastructure.External", "Marketeer.Infrastructure.External\Marketeer.Infrastructure.External.csproj", "{CD1932D7-4174-41A0-A315-DE7FC1A01F62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketeer.Infrastructure.External", "Marketeer.Infrastructure.External\Marketeer.Infrastructure.External.csproj", "{CD1932D7-4174-41A0-A315-DE7FC1A01F62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

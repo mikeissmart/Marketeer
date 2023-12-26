@@ -11,6 +11,7 @@ namespace Marketeer.Core.Domain.Entities.AI
     public class HuggingFaceModel : Entity
     {
         public string Name { get; set; }
+        public bool IsDefault { get; set; }
 
         #region Nav
 

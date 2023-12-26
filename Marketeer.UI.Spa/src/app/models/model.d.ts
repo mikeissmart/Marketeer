@@ -5,6 +5,9 @@
 import { HistoryDataIntervalEnum } from './model.enum';
 import { DelistEnum } from './model.enum';
 import { LogLevelEnum } from './model.enum';
+import { SentimentResultTypeEnum } from './model.enum';
+import { SentimentStatusEnum } from './model.enum';
+import { SentimentEnum } from './model.enum';
 
 export interface IPaginate
 {
@@ -67,6 +70,7 @@ export interface INewsArticle
 	link: string;
 	text: string;
 	date: Date;
+	sentimentResults: ISentimentResult[];
 	id: number;
 }
 export interface INewsFilter
@@ -196,6 +200,12 @@ export interface ICronJobDetail
 	lastOccurrence?: Date;
 	isRunning: boolean;
 }
+export interface ICronQueueDetail
+{
+	name: string;
+	isRunning: boolean;
+	isPendingStop: boolean;
+}
 export interface IAppUser
 {
 }
@@ -203,4 +213,32 @@ export interface IToken
 {
 	accessToken: string;
 	refreshToken: string;
+}
+export interface IHuggingFaceModel
+{
+	name: string;
+	isDefault: boolean;
+	id: number;
+}
+export interface IQueueSentiment
+{
+	huggingFaceModelId: number;
+	sentimentResultType: SentimentResultTypeEnum;
+	itemIds: number[];
+}
+export interface ISentimentResult
+{
+	huggingFaceModelId: number;
+	newsArticleId?: number;
+	negative: number;
+	neutral: number;
+	positive: number;
+	status: SentimentStatusEnum;
+	huggingFaceModel: IHuggingFaceModel;
+	newsArticle: INewsArticle;
+	sentimentResultType: SentimentResultTypeEnum;
+	sentiment: SentimentEnum;
+	createdDate: Date;
+	updatedDate?: Date;
+	id: number;
 }

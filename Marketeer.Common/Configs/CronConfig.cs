@@ -1,6 +1,6 @@
 ﻿namespace Marketeer.Common.Configs
 {
-    public class CronConfig : IConfig
+    public class CronJobConfig : IConfig
     {
         public string RefreshTickers { get; set; }
         public string UpdateDailyHistoryData { get; set; }

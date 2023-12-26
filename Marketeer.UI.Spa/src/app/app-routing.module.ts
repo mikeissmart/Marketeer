@@ -13,6 +13,7 @@ import { AuthGuard } from './guards/auth/auth.guard';
 import { CronJobDetailsComponent } from './components/management/cron-job-details/cron-job-details.component';
 import { TickerDetailsComponent } from './components/market/ticker-details/ticker-details.component';
 import { NewsListComponent } from './components/news/news-list/news-list.component';
+import { CronQueueDetailsComponent } from './components/management/cron-queue-details/cron-queue-details.component';
 
 const routes: Routes = [
   // management
@@ -24,6 +25,11 @@ const routes: Routes = [
   {
     path: 'management/cronjobs',
     component: CronJobDetailsComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'management/cronqueues',
+    component: CronQueueDetailsComponent,
     canActivate: [AuthGuard],
   },
   // market

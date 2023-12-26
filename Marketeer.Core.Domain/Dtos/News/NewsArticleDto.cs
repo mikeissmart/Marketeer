@@ -1,4 +1,6 @@
-﻿using Marketeer.Core.Domain.Entities.News;
+﻿using Marketeer.Core.Domain.Dtos.AI;
+using Marketeer.Core.Domain.Entities.AI;
+using Marketeer.Core.Domain.Entities.News;
 using Marketeer.Core.Domain.InfrastructureDtos.Python.News;
 using System;
 using System.Collections.Generic;
@@ -16,5 +18,6 @@ namespace Marketeer.Core.Domain.Dtos.News
         public string Link { get; set; }
         public string Text { get; set; }
         public DateTime Date { get; set; }
+        public List<SentimentResultDto> SentimentResults { get; set; }
     }
 }

@@ -1,6 +1,8 @@
-﻿namespace Marketeer.Core.Domain
+﻿using Marketeer.Core.Domain.Dtos;
+
+namespace Marketeer.Core.Domain
 {
-    public class Paginate<T> where T : class
+    public class Paginate<T>
     {
         public int PageIndex { get; set; }
         public int PageItemCount { get; set; }

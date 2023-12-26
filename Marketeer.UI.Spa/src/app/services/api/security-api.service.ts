@@ -75,10 +75,10 @@ export class SecurityApiService {
   checkClientToken(): boolean {
     const clientToken = this.getClientToken();
 
-    if (clientToken !== null) {
-      if (clientToken.exp!!.getTime() < Date.now()) {
-        return false;
-      }
+    if (clientToken == null) {
+      return false;
+    } else if (clientToken.exp!!.getTime() < Date.now()) {
+      return false;
     }
 
     return true;

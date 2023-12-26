@@ -1,21 +1,33 @@
-<div class="d-flex justify-content-between mb-3">
-  <label>Last News Update:</label>
-  <label>
-    {{
-      currentLastNewsUpdate == null
-        ? "N/A"
-        : (currentLastNewsUpdate | date : "short")
-    }}</label
-  >
-  <button class="btn btn-primary" (click)="updateNewsData()">
-    <span class="fa fa-history"></span>
-  </button>
+<div class="row mb-3">
+  <div class="col-6">
+    <div class="d-flex justify-content-between">
+      <label>Last News Update:</label>
+      <label>
+        {{
+          currentLastNewsUpdate == null
+            ? "N/A"
+            : (currentLastNewsUpdate | date : "short")
+        }}</label
+      >
+      <button class="btn btn-primary" (click)="updateNewsData()">
+        <span class="fa fa-history"></span>
+      </button>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="d-flex justify-content-between">
+      <label>Enqueue News Default Sentiment:</label>
+      <button class="btn btn-primary" (click)="enqueueNewsDefaultSentiment()">
+        <span class="fa fa-barcode"></span>
+      </button>
+    </div>
+  </div>
 </div>
 <div class="row">
   <app-table-paginate
     [paginateFilter]="paginateFilter"
     [paginate]="newArticles"
-    [tableHeaders]="getTableHeaders()"
+    [tableHeaders]="getSentimentTableHeaders()"
     (refetchData)="fetchNewsArticles()"
   >
     <tr *ngFor="let item of newArticles.items">
@@ -31,12 +43,40 @@
       </td>
       <td>{{ item.title | truncate : 100 }}</td>
       <td>{{ item.date | date : "shortDate" }}</td>
+      <td [ngClass]="getSentimentResultColor(getLastSentimentResult(item)!)">
+        {{ sentimentToString(getLastSentimentResult(item)!) }}
+      </td>
     </tr>
   </app-table-paginate>
 </div>
 <app-modal [isOpen]="viewNewsArticle != null" (onClose)="onViewCloseClose()">
   <header>{{ viewNewsArticle?.title }}</header>
   <body>
-    <span>{{ viewNewsArticle?.text }}</span>
+    <div class="row mb-3">
+      <a
+        class="btn btn-sm btn-link"
+        target="_blank"
+        [href]="viewNewsArticle?.link"
+        >{{ viewNewsArticle?.link }}</a
+      >
+    </div>
+    <div class="row mb-3">
+      <span>{{ viewNewsArticle?.text }}</span>
+    </div>
+    <div class="row">
+      <app-table [tableHeaders]="getNewsSentimentTableHeaders()">
+        <tr *ngFor="let item of viewNewsArticle?.sentimentResults">
+          <td>{{ item.huggingFaceModel.name }}</td>
+          <td>{{ item.updatedDate | date : "shortDate" }}</td>
+          <td>{{ sentimentStatusToString(item.status) }}</td>
+          <td>{{ item.positive }}</td>
+          <td>{{ item.neutral }}</td>
+          <td>{{ item.negative }}</td>
+          <td [ngClass]="getSentimentResultColor(item.sentiment)">
+            {{ sentimentToString(item.sentiment) }}
+          </td>
+        </tr>
+      </app-table>
+    </div>
   </body>
 </app-modal>

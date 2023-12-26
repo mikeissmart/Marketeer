@@ -22,6 +22,7 @@ namespace Marketeer.Persistance.Database.Repositories
         EntityEntry<T> Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);
         void Detach(T entity);
+        void ClearTracking();
         Task<int> SaveChangesAsync();
     }
 
@@ -60,6 +61,9 @@ namespace Marketeer.Persistance.Database.Repositories
         public void Detach(T entity)
             => _dbContext.Entry(entity).State = EntityState.Detached;
 
+        public void ClearTracking()
+            => _dbContext.ChangeTracker.Clear();
+
         public async Task<int> SaveChangesAsync()
             => await _dbContext.SaveChangesAsync();
 
@@ -67,16 +71,16 @@ namespace Marketeer.Persistance.Database.Repositories
             => await query.FirstOrDefaultAsync();
 
         protected async Task<T?> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, List<Func<IQueryable<T>, IIncludableQueryable<T, object>>?>? includes = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, bool tracking = true)
-            => await GenerateQuery(predicate, include, includes, orderBy, tracking).FirstOrDefaultAsync();
+            => await GenerateQuery(predicate, include, includes, orderBy, null, tracking).FirstOrDefaultAsync();
 
         protected async Task<T?> GetSingleOrDefaultAsync(IQueryable<T> query)
             => await query.SingleOrDefaultAsync();
 
         protected async Task<T?> GetSingleOrDefaultAsync(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, List<Func<IQueryable<T>, IIncludableQueryable<T, object>>?>? includes = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, bool tracking = true)
-            => await GenerateQuery(predicate, include, includes, orderBy, tracking).SingleOrDefaultAsync();
+            => await GenerateQuery(predicate, include, includes, orderBy, null, tracking).SingleOrDefaultAsync();
 
-        protected async Task<List<T>> GetAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, List<Func<IQueryable<T>, IIncludableQueryable<T, object>>?>? includes = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, bool tracking = true)
-            => await GenerateQuery(predicate, include, includes, orderBy, tracking).ToListAsync();
+        protected async Task<List<T>> GetAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, List<Func<IQueryable<T>, IIncludableQueryable<T, object>>?>? includes = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, int? limit = null, bool tracking = true)
+            => await GenerateQuery(predicate, include, includes, orderBy, limit, tracking).ToListAsync();
 
         protected async Task<Paginate<T>> GetPaginateAsync(PaginateFilterDto paginateFilter, IQueryable<T> query)
         {
@@ -108,9 +112,9 @@ namespace Marketeer.Persistance.Database.Repositories
         }
 
         protected async Task<Paginate<T>> GetPaginateAsync(PaginateFilterDto paginateFilter, Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, List<Func<IQueryable<T>, IIncludableQueryable<T, object>>?>? includes = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, bool tracking = true)
-            => await GetPaginateAsync(paginateFilter, GenerateQuery(predicate, include, includes, orderBy, tracking));
+            => await GetPaginateAsync(paginateFilter, GenerateQuery(predicate, include, includes, orderBy, null, tracking));
 
-        protected IQueryable<T> GenerateQuery(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, List<Func<IQueryable<T>, IIncludableQueryable<T, object>>?>? includes = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, bool tracking = true)
+        protected IQueryable<T> GenerateQuery(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, List<Func<IQueryable<T>, IIncludableQueryable<T, object>>?>? includes = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, int? limit = null, bool tracking = true)
         {
             var query = _dbContext.Set<T>().AsQueryable();
 
@@ -128,6 +132,8 @@ namespace Marketeer.Persistance.Database.Repositories
             }
             if (orderBy != null)
                 query = orderBy(query);
+            if (limit != null)
+                query = query.Take(limit.Value);
             if (!tracking)
                 query = query.AsNoTracking();
 

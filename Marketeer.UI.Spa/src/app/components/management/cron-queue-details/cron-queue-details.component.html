@@ -1,0 +1,28 @@
+<div class="d-flex justify-content-end mb-3">
+  <button class="btn btn-primary" (click)="refresh()">Refresh</button>
+</div>
+<div class="row">
+  <app-table-paginate
+    [paginateFilter]="paginateFilter"
+    [paginate]="cronQueueDetails"
+    [tableHeaders]="getTableHeaders()"
+    (refetchData)="refresh()"
+  >
+    <tr *ngFor="let item of cronQueueDetails.items">
+      <td>
+        <button
+          class="btn btn-sm"
+          [ngClass]="item.isRunning ? 'btn-danger' : 'bg-success'"
+          (click)="startOrStop(item)"
+        >
+          <i class="fa-regular fa-flag"></i>
+          &nbsp;
+          {{ item.isRunning ? "Stop" : "Start" }}
+        </button>
+      </td>
+      <td>{{ item.name }}</td>
+      <td>{{ item.isRunning ? "Yes" : "No" }}</td>
+      <td>{{ item.isPendingStop ? "Yes" : "No" }}</td>
+    </tr>
+  </app-table-paginate>
+</div>
