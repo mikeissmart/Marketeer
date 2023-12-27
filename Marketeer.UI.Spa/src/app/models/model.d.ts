@@ -5,6 +5,7 @@
 import { HistoryDataIntervalEnum } from './model.enum';
 import { DelistEnum } from './model.enum';
 import { LogLevelEnum } from './model.enum';
+import { CronLogTypeEnum } from './model.enum';
 import { SentimentResultTypeEnum } from './model.enum';
 import { SentimentStatusEnum } from './model.enum';
 import { SentimentEnum } from './model.enum';
@@ -165,6 +166,7 @@ export interface ICronLog
 {
 	id: number;
 	name: string;
+	cronLogType: CronLogTypeEnum;
 	message?: string;
 	isCanceled: boolean;
 	startDate: Date;
@@ -173,6 +175,7 @@ export interface ICronLog
 export interface ICronLogFilter
 {
 	name?: string;
+	cronLogType?: CronLogTypeEnum;
 	isCanceled?: boolean;
 	minDate?: Date;
 	maxDate?: Date;

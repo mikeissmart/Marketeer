@@ -18,7 +18,7 @@ export class AppLogDetailsComponent implements OnInit {
   logs = ModelHelper.IPaginateGenericDefault<IAppLog>();
   paginateFilter =
     ModelHelper.IPaginateGenericFilterDefault() as IPaginateGenericFilter<IAppLogFilter>;
-  logLevelEnums = LogLevelEnum;
+  logLevelEnum = LogLevelEnum;
   eventIds = [] as number[];
   viewLog: IAppLog | null = null;
 
@@ -37,10 +37,6 @@ export class AppLogDetailsComponent implements OnInit {
     } else {
       this.paginateFilter.filter.logLevel = value as LogLevelEnum;
     }
-  }
-
-  getLogLevel(value: LogLevelEnum): string {
-    return LogLevelEnum[value].replaceAll('_', ' ');
   }
 
   clear(): void {

@@ -48,6 +48,8 @@ export class TickerNewsListComponent implements OnInit {
   paginateFilter =
     ModelHelper.IPaginateGenericFilterDefault() as IPaginateGenericFilter<INewsFilter>;
   viewNewsArticle: INewsArticle | null = null;
+  sentimentStatusEnum = SentimentStatusEnum;
+  sentimentEnum = SentimentEnum;
 
   constructor(
     private readonly newsApi: NewsApiService,
@@ -126,14 +128,6 @@ export class TickerNewsListComponent implements OnInit {
     } else {
       return '';
     }
-  }
-
-  sentimentToString(value: SentimentEnum | null): string {
-    return value != null ? SentimentEnum[value].replaceAll('_', ' ') : '';
-  }
-
-  sentimentStatusToString(value: SentimentStatusEnum | null): string {
-    return value != null ? SentimentStatusEnum[value].replaceAll('_', ' ') : '';
   }
 
   getNewsSentimentTableHeaders(): TableHeader[] {

@@ -30,7 +30,7 @@ namespace Marketeer.Core.Domain.Entities.AI
             get
             {
                 if (NewsArticleId != null)
-                    return SentimentResultTypeEnum.NewsArticle;
+                    return SentimentResultTypeEnum.News_Article;
                 else
                     throw new Exception($"Unknown SentimentResultType, NewsArticleId ({NewsArticleId})");
             }

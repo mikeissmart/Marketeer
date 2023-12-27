@@ -102,6 +102,7 @@ export class ApiHttpService extends HttpService<ModelStateErrors> {
         this.router.navigateByUrl('/', {
           skipLocationChange: false,
         });
+        this.securityStore.logout();
         return;
     }
     errorCallback(null);

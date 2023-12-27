@@ -38,7 +38,7 @@ namespace Marketeer.UI.Api.Controllers
             {
                 HuggingFaceModelId = defaultHuggingFace.Id,
                 ItemIds = ids,
-                SentimentResultType = SentimentResultTypeEnum.NewsArticle
+                SentimentResultType = SentimentResultTypeEnum.News_Article
             };
             var result = await _sentimentService.EnqueueSentimentAsync(queue);
             return Ok(result);
@@ -60,7 +60,7 @@ namespace Marketeer.UI.Api.Controllers
             {
                 HuggingFaceModelId = defaultHuggingFace.Id,
                 ItemIds = tickerNews.Items.Select(x => x.Id).ToList(),
-                SentimentResultType = SentimentResultTypeEnum.NewsArticle
+                SentimentResultType = SentimentResultTypeEnum.News_Article
             };
             var result = await _sentimentService.EnqueueSentimentAsync(queue);
             return Ok(result);

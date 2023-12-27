@@ -10,10 +10,10 @@
     >
       <option [ngValue]="undefined">Any</option>
       <option
-        *ngFor="let item of logLevelEnums | enumToArray"
+        *ngFor="let item of logLevelEnum | enumToArray"
         [ngValue]="item.id"
       >
-        {{ getLogLevel(item.id) }}
+        {{ item.id | enumToString : logLevelEnum }}
       </option>
     </select>
   </div>
@@ -60,7 +60,7 @@
           <i class="fa-solid fa-magnifying-glass"></i>
         </button>
       </td>
-      <td>{{ getLogLevel(item.logLevel) }}</td>
+      <td>{{ item.logLevel | enumToString : logLevelEnum }}</td>
       <td>{{ item.eventName | truncate }}</td>
       <td>{{ item.source | truncate }}</td>
       <td>{{ item.createdDate | date : "short" }}</td>
@@ -78,7 +78,7 @@
           id="logLevel"
           name="logLevel"
           type="text"
-          [value]="getLogLevel(viewLog.logLevel)"
+          [value]="viewLog.logLevel | enumToString : logLevelEnum"
           disabled
         />
       </div>

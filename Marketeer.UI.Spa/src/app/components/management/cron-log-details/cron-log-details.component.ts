@@ -5,6 +5,7 @@ import {
   IPaginateGenericFilter,
 } from 'src/app/models/model';
 import { ModelHelper } from 'src/app/models/model-helper';
+import { CronLogTypeEnum } from 'src/app/models/model.enum';
 import { TableHeader } from 'src/app/models/view-model';
 import { LogApiService } from 'src/app/services/api/log-api.service';
 
@@ -19,6 +20,7 @@ export class CronLogDetailsComponent implements OnInit {
     ModelHelper.IPaginateGenericFilterDefault() as IPaginateGenericFilter<ICronLogFilter>;
   cronNames = [] as string[];
   viewLog: ICronLog | null = null;
+  cronLogTypeEnum = CronLogTypeEnum;
 
   constructor(private readonly logApi: LogApiService) {}
 
@@ -36,6 +38,7 @@ export class CronLogDetailsComponent implements OnInit {
   getTableHeaders(): TableHeader[] {
     return [
       new TableHeader(''),
+      new TableHeader('Cron Type'),
       new TableHeader('Name', 'Name'),
       new TableHeader('Has Ouput'),
       new TableHeader('Is Canceled'),
@@ -57,6 +60,7 @@ export class CronLogDetailsComponent implements OnInit {
   }
 
   calculateRunTime(log: ICronLog): string {
+    const a = typeof log.endDate;
     const milliSeconds = log.endDate.getTime() - log.startDate.getTime();
 
     const hours = Math.floor(milliSeconds / 1000 / 60 / 60);

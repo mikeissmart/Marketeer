@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Marketeer.Core.Domain.Enums
 {
-    public enum SentimentResultTypeEnum
+    public enum CronLogTypeEnum
     {
-        News_Article
+        Cron_Job,
+        Cron_Queue
     }
 }

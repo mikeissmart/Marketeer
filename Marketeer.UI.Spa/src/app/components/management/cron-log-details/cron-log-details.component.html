@@ -9,6 +9,23 @@
     >
     </app-date-picker-range>
   </div>
+  <div class="col-4">
+    <label for="logType" class="form-label">Log Type:</label>
+    <select
+      name="logType"
+      id="logType"
+      class="form-control"
+      [(ngModel)]="paginateFilter.filter.cronLogType"
+    >
+      <option [ngValue]="null" selected>Any</option>
+      <option
+        *ngFor="let item of cronLogTypeEnum | enumToArray"
+        [ngValue]="item.id"
+      >
+        {{ item.name.replace("_", " ") }}
+      </option>
+    </select>
+  </div>
 </div>
 <div class="d-flex justify-content-end mb-3">
   <button class="btn btn-danger" (click)="clear()">Clear</button>
@@ -28,6 +45,7 @@
           <i class="fa-solid fa-magnifying-glass"></i>
         </button>
       </td>
+      <td>{{ item.cronLogType | enumToString : cronLogTypeEnum }}</td>
       <td>{{ item.name }}</td>
       <td>{{ item.message ? "Yes" : "No" }}</td>
       <td>{{ item.isCanceled ? "Yes" : "No" }}</td>

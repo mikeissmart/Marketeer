@@ -56,7 +56,8 @@ namespace Marketeer.UI.Spa.ViewModels
                     typeof(DelistEnum),
                     typeof(SentimentEnum),
                     typeof(SentimentResultTypeEnum),
-                    typeof(SentimentStatusEnum)
+                    typeof(SentimentStatusEnum),
+                    typeof(CronLogTypeEnum)
                 }, x =>
                 {
                     x.ExportTo(ENUMFILE)

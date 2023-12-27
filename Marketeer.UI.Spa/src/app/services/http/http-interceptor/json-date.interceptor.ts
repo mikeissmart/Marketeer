@@ -25,7 +25,7 @@ export class JsonDateInterceptor implements HttpInterceptor {
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
     null
   );
-  private isoDateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d*)?Z$/;
+  private isoDateFormat = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+/;
 
   constructor(private securityService: SecurityApiService) {}
 
@@ -37,9 +37,7 @@ export class JsonDateInterceptor implements HttpInterceptor {
       map((val: HttpEvent<any>) => {
         if (val instanceof HttpResponse) {
           const body = val.body;
-          // This will convert non local dates to local dates
-          // Even when there is no time
-          //this.convert(body);
+          this.convert(body);
         }
         return val;
       }),

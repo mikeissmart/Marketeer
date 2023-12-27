@@ -37,11 +37,15 @@ export enum SentimentEnum {
 	Positive = 2
 }
 export enum SentimentResultTypeEnum {
-	NewsArticle = 0
+	News_Article = 0
 }
 export enum SentimentStatusEnum {
 	Pending = 0,
 	Queued = 1,
 	Completed = 2,
 	Failed = 3
+}
+export enum CronLogTypeEnum {
+	Cron_Job = 0,
+	Cron_Queue = 1
 }

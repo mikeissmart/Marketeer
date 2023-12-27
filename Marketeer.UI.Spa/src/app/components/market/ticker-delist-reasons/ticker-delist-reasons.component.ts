@@ -37,6 +37,7 @@ export class TickerDelistReasonsComponent implements OnInit {
   currentTickerId: number | null = null;
   currentLastInfoUpdate: Date | null = null;
   currentDelistReasons: ITickerDelistReason[] | null = null;
+  delistEnum = DelistEnum;
 
   constructor(
     private readonly tickerApi: TickerApiService,
@@ -44,10 +45,6 @@ export class TickerDelistReasonsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {}
-
-  getDelist(value: DelistEnum): string {
-    return DelistEnum[value].replaceAll('_', ' ');
-  }
 
   getTableHeaders(): TableHeader[] {
     return [new TableHeader('Delist Reasons')];

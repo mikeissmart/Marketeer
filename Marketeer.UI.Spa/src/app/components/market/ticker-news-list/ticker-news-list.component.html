@@ -44,7 +44,7 @@
       <td>{{ item.title | truncate : 100 }}</td>
       <td>{{ item.date | date : "shortDate" }}</td>
       <td [ngClass]="getSentimentResultColor(getLastSentimentResult(item)!)">
-        {{ sentimentToString(getLastSentimentResult(item)!) }}
+        {{ getLastSentimentResult(item)! | enumToString : sentimentEnum }}
       </td>
     </tr>
   </app-table-paginate>
@@ -68,12 +68,12 @@
         <tr *ngFor="let item of viewNewsArticle?.sentimentResults">
           <td>{{ item.huggingFaceModel.name }}</td>
           <td>{{ item.updatedDate | date : "shortDate" }}</td>
-          <td>{{ sentimentStatusToString(item.status) }}</td>
+          <td>{{ item.status | enumToString : sentimentStatusEnum }}</td>
           <td>{{ item.positive }}</td>
           <td>{{ item.neutral }}</td>
           <td>{{ item.negative }}</td>
           <td [ngClass]="getSentimentResultColor(item.sentiment)">
-            {{ sentimentToString(item.sentiment) }}
+            {{ item.sentiment | enumToString : sentimentEnum }}
           </td>
         </tr>
       </app-table>

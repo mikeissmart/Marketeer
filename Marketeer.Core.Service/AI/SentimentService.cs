@@ -131,7 +131,7 @@ namespace Marketeer.Core.Service.AI
 
                     switch (sent.SentimentResultType)
                     {
-                        case SentimentResultTypeEnum.NewsArticle:
+                        case SentimentResultTypeEnum.News_Article:
                             dto.Text = sent.NewsArticle.Text;
                             break;
                         default:
@@ -180,7 +180,7 @@ namespace Marketeer.Core.Service.AI
                 var skipCount = 0;
                 switch (queueDto.SentimentResultType)
                 {
-                    case SentimentResultTypeEnum.NewsArticle:
+                    case SentimentResultTypeEnum.News_Article:
                         var news = await _newsArticleRepository.GetNewsArticlesByIdsAsync(queueDto.ItemIds);
                         var enqueue = news
                             .Where(x => !x.SentimentResults.Any(x => x.HuggingFaceModelId == queueDto.HuggingFaceModelId))

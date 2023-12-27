@@ -34,7 +34,8 @@ namespace Marketeer.Persistance.Database.Repositories.Logging
                     (filter.Filter.IsCanceled == null || x.IsCanceled == filter.Filter.IsCanceled.Value) &&
                     (string.IsNullOrEmpty(filter.Filter.Name) || x.Name.Contains(filter.Filter.Name)) &&
                     (filter.Filter.MinDate == null || x.StartDate < filter.Filter.MinDate.Value) &&
-                    (filter.Filter.MaxDate == null || x.StartDate >= filter.Filter.MaxDate.Value),
+                    (filter.Filter.MaxDate == null || x.StartDate >= filter.Filter.MaxDate.Value) &&
+                    (filter.Filter.CronLogType == null || x.CronLogType == filter.Filter.CronLogType),
                 orderBy: CalculateOrderBy(filter));
 
         public async Task<List<CronLog>> GetLogsBerforeDateAsync(DateTime date) =>
