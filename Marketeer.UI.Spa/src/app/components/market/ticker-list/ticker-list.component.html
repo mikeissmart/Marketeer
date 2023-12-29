@@ -62,6 +62,19 @@
       <option [ngValue]="false">No</option>
     </select>
   </div>
+  <div class="col-4">
+    <label for="isUserWatching" class="form-label">Is User Watching:</label>
+    <select
+      name="isUserWatching"
+      id="isUserWatching"
+      class="form-control"
+      [(ngModel)]="paginateFilter.filter.isUserWatching"
+    >
+      <option [ngValue]="undefined">Any</option>
+      <option [ngValue]="true">Yes</option>
+      <option [ngValue]="false">No</option>
+    </select>
+  </div>
 </div>
 <div class="d-flex justify-content-end mb-3">
   <button class="btn btn-danger" (click)="clear()">Clear</button>
@@ -91,6 +104,7 @@
       <td>{{ item.sector }}</td>
       <td>{{ item.industry }}</td>
       <td>{{ item.delistReasons.length == 0 ? "Yes" : "No" }}</td>
+      <td>{{ item.watchTickers.length > 0 ? "Yes" : "No" }}</td>
     </tr>
   </app-table-paginate>
 </div>

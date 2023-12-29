@@ -1,4 +1,5 @@
 ﻿using Marketeer.Core.Domain.Entities.News;
+using Marketeer.Core.Domain.Entities.Watch;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -46,6 +47,7 @@ namespace Marketeer.Core.Domain.Entities.Market
         public List<TickerDelistReason> DelistReasons { get; set; }
         public List<HistoryData> HistoryDatas { get; set; }
         public List<NewsArticle> NewsArticles { get; set; }
+        public List<WatchTicker> WatchTickers { get; set; }
 
         #endregion
 

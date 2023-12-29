@@ -44,7 +44,10 @@ export class TickerDelistReasonsComponent implements OnInit {
     private readonly toaster: ToasterService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // TODO
+    // Get Delist reasons
+  }
 
   getTableHeaders(): TableHeader[] {
     return [new TableHeader('Delist Reasons')];

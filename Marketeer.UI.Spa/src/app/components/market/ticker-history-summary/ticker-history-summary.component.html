@@ -1,27 +1,32 @@
-<div class="d-flex justify-content-between mb-3">
-  <label>Last History Update:</label>
-  <label>
-    {{
-      currentLastHistoryUpdate == null
-        ? "N/A"
-        : (currentLastHistoryUpdate | date : "short")
-    }}</label
-  >
-  <button class="btn btn-primary" (click)="updateHistData()">
-    <span class="fa fa-history"></span>
-  </button>
-</div>
-<div class="row">
-  <app-table [tableHeaders]="getTableHeaders()">
-    <tr *ngFor="let item of historySummary?.valueSummaries">
-      <td>{{ item.title }}</td>
-      <td>
-        {{ item.date | date : "shortDate" }}
-      </td>
-      <td>{{ item.value | currency }}</td>
-      <td [ngClass]="getDifferenceColor(item.difference)">
-        {{ item.difference | currency }}
-      </td>
-    </tr>
-  </app-table>
+<div class="card mb-3">
+  <div class="card-header">History Summary</div>
+  <div class="card-body">
+    <div class="d-flex justify-content-between mb-3">
+      <label>Last History Update:</label>
+      <label>
+        {{
+          currentLastHistoryUpdate == null
+            ? "N/A"
+            : (currentLastHistoryUpdate | date : "short")
+        }}</label
+      >
+      <button class="btn btn-primary" (click)="updateHistData()">
+        <span class="fa fa-history"></span>
+      </button>
+    </div>
+    <div class="row">
+      <app-table [tableHeaders]="getTableHeaders()">
+        <tr *ngFor="let item of historySummary?.valueSummaries">
+          <td>{{ item.title }}</td>
+          <td>
+            {{ item.date | date : "shortDate" }}
+          </td>
+          <td>{{ item.value | currency }}</td>
+          <td [ngClass]="getDifferenceColor(item.difference)">
+            {{ item.difference | currency }}
+          </td>
+        </tr>
+      </app-table>
+    </div>
+  </div>
 </div>

@@ -29,7 +29,14 @@ export class AuthGuard implements CanActivate {
     if (!this.securityStore.checkClientToken()) {
       return this.securityStore.refreshToken().pipe(
         map((result) => {
-          return this.securityStore.checkClientToken();
+          if (result != null) {
+            return this.securityStore.checkClientToken();
+          } else {
+            this.router.navigateByUrl('/', {
+              skipLocationChange: false,
+            });
+            return false;
+          }
         })
       );
     }

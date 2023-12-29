@@ -18,6 +18,7 @@ namespace Marketeer.UI.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SecurityController : ControllerBase
     {
         private readonly AppSignInManager _signInManager;
@@ -94,6 +95,7 @@ namespace Marketeer.UI.Api.Controllers
                 RefreshToken = refreshToken
             });
         }
+
         [HttpPost("Revoke")]
         [Authorize]
         public async Task<IActionResult> Revoke()

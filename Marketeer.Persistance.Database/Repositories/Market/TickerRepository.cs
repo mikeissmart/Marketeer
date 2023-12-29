@@ -24,7 +24,7 @@ namespace Marketeer.Persistance.Database.Repositories.Market
         Task<List<string>> SearchQuoteTypesAsync(string? search, int limit);
         Task<List<string>> SearchSectorsAsync(string? search, int limit);
         Task<List<string>> SearchIndustriesAsync(string? search, int limit);
-        Task<Paginate<Ticker>> GetTickerByFilterAsync(PaginateFilterDto<TickerFilterDto> filter);
+        Task<Paginate<Ticker>> GetTickerByFilterAsync(PaginateFilterDto<TickerFilterDto> filter, int userId);
     }
 
     public class TickerRepository : BaseRepository<Ticker>, ITickerRepository
@@ -120,7 +120,7 @@ namespace Marketeer.Persistance.Database.Repositories.Market
             .Take(limit)
             .ToListAsync();
 
-        public async Task<Paginate<Ticker>> GetTickerByFilterAsync(PaginateFilterDto<TickerFilterDto> filter) =>
+        public async Task<Paginate<Ticker>> GetTickerByFilterAsync(PaginateFilterDto<TickerFilterDto> filter, int userId) =>
             await GetPaginateAsync(
                 filter,
                 predicate: x =>
@@ -129,7 +129,8 @@ namespace Marketeer.Persistance.Database.Repositories.Market
                     (filter.Filter.QuoteType == null || x.QuoteType.Contains(filter.Filter.QuoteType)) &&
                     (filter.Filter.Sector == null || x.Sector!.Contains(filter.Filter.Sector)) &&
                     (filter.Filter.Industry == null || x.Industry!.Contains(filter.Filter.Industry)) &&
-                    (filter.Filter.isListed == null || x.DelistReasons.Any() != filter.Filter.isListed),
+                    (filter.Filter.IsListed == null || x.DelistReasons.Any() != filter.Filter.IsListed) &&
+                    (filter.Filter.IsUserWatching == null || x.WatchTickers.Any(x => x.Id == userId) == filter.Filter.IsUserWatching),
                 orderBy: CalculateOrderBy(filter));
 
         private Func<IQueryable<Ticker>, IOrderedQueryable<Ticker>>? CalculateOrderBy(PaginateFilterDto filter)

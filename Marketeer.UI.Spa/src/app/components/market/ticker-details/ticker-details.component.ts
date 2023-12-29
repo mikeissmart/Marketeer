@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ITicker } from 'src/app/models/model';
-import { HistoryDataApiService } from 'src/app/services/api/history-data-api.service';
-import { NewsApiService } from 'src/app/services/api/news-api.service';
 import { TickerApiService } from 'src/app/services/api/ticker-api.service';
-import { ToasterService } from 'src/app/services/toaster/toaster.service';
 
 @Component({
   selector: 'app-ticker-details',

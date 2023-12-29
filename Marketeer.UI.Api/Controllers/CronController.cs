@@ -1,12 +1,14 @@
 ﻿using Marketeer.Core.Domain.Dtos;
 using Marketeer.Core.Domain.Enums;
 using Marketeer.Core.Service.Chron;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Marketeer.UI.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CronController : ControllerBase
     {
         private readonly ICronService _cronService;

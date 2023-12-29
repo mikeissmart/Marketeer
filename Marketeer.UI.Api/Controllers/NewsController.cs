@@ -4,12 +4,14 @@ using Marketeer.Core.Domain.Dtos.News;
 using Marketeer.Core.Domain.Enums;
 using Marketeer.Core.Service.Market;
 using Marketeer.Core.Service.News;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Marketeer.UI.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class NewsController : ControllerBase
     {
         private readonly IMapper _mapper;

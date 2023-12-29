@@ -3,6 +3,7 @@ using Marketeer.Core.Domain.Entities.Auth;
 using Marketeer.Core.Domain.Entities.Logging;
 using Marketeer.Core.Domain.Entities.Market;
 using Marketeer.Core.Domain.Entities.News;
+using Marketeer.Core.Domain.Entities.Watch;
 using Marketeer.Persistance.Database.EntityConfig;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -36,6 +37,7 @@ namespace Marketeer.Persistance.Database.DbContexts
         #endregion
 
         #region Market
+
         public DbSet<HistoryData> HistoryDatas => Set<HistoryData>();
         public DbSet<JsonTickerInfo> JsonTickerInfos => Set<JsonTickerInfo>();
         public DbSet<MarketSchedule> MarketSchedules => Set<MarketSchedule>();
@@ -45,7 +47,14 @@ namespace Marketeer.Persistance.Database.DbContexts
         #endregion
 
         #region News
+
         public DbSet<NewsArticle> NewsArticles => Set<NewsArticle>();
+
+        #endregion
+
+        #region Watch
+
+        public DbSet<WatchTicker> WatchTickers => Set<WatchTicker>();
 
         #endregion
 

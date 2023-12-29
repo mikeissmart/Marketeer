@@ -8,6 +8,7 @@ namespace Marketeer.UI.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class HistoryDataController : ControllerBase
     {
         private readonly IMapper _mapper;

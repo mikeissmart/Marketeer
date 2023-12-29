@@ -7,6 +7,7 @@
         public string? QuoteType { get; set; }
         public string? Sector { get; set; }
         public string? Industry { get; set; }
-        public bool? isListed { get; set; }
+        public bool? IsListed { get; set; }
+        public bool? IsUserWatching { get; set; }
     }
 }

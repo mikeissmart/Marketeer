@@ -1,4 +1,5 @@
-﻿using Marketeer.Core.Domain.Entities.Market;
+﻿using Marketeer.Core.Domain.Dtos.Watch;
+using Marketeer.Core.Domain.Entities.Market;
 using System.ComponentModel.DataAnnotations;
 
 namespace Marketeer.Core.Domain.Dtos.Market
@@ -21,5 +22,6 @@ namespace Marketeer.Core.Domain.Dtos.Market
         public float? PayoutRatio { get; set; }
         public float? DividendRate { get; set; }
         public List<TickerDelistReasonDto> DelistReasons { get; set; }
+        public List<WatchTickerDto> WatchTickers { get; set; }
     }
 }

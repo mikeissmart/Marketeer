@@ -51,6 +51,26 @@ export interface IStringData
 {
 	data: string;
 }
+export interface IWatchTickerChange
+{
+	tickerIds: number[];
+	updateHistoryData: boolean;
+	updateNewsArticles: boolean;
+}
+export interface IWatchTicker
+{
+	updateHistoryData: boolean;
+	updateNewsArticles: boolean;
+	id: number;
+}
+export interface IWatchTickerResult
+{
+	updatedCount: number;
+	removedCount: number;
+	addedCount: number;
+	currentCount: number;
+	maxCount: number;
+}
 export interface IClientToken
 {
 	userId: number;
@@ -122,6 +142,7 @@ export interface ITicker
 	payoutRatio?: number;
 	dividendRate?: number;
 	delistReasons: ITickerDelistReason[];
+	watchTickers: IWatchTicker[];
 	id: number;
 }
 export interface ITickerFilter
@@ -132,6 +153,7 @@ export interface ITickerFilter
 	sector?: string;
 	industry?: string;
 	isListed?: boolean;
+	isUserWatching?: boolean;
 }
 export interface ITickerHistorySummary
 {

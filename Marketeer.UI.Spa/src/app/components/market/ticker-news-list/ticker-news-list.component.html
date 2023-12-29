@@ -1,53 +1,58 @@
-<div class="row mb-3">
-  <div class="col-6">
-    <div class="d-flex justify-content-between">
-      <label>Last News Update:</label>
-      <label>
-        {{
-          currentLastNewsUpdate == null
-            ? "N/A"
-            : (currentLastNewsUpdate | date : "short")
-        }}</label
-      >
-      <button class="btn btn-primary" (click)="updateNewsData()">
-        <span class="fa fa-history"></span>
-      </button>
-    </div>
-  </div>
-  <div class="col-6">
-    <div class="d-flex justify-content-between">
-      <label>Enqueue News Default Sentiment:</label>
-      <button class="btn btn-primary" (click)="enqueueNewsDefaultSentiment()">
-        <span class="fa fa-barcode"></span>
-      </button>
-    </div>
-  </div>
-</div>
-<div class="row">
-  <app-table-paginate
-    [paginateFilter]="paginateFilter"
-    [paginate]="newArticles"
-    [tableHeaders]="getSentimentTableHeaders()"
-    (refetchData)="fetchNewsArticles()"
-  >
-    <tr *ngFor="let item of newArticles.items">
-      <td>
-        <button class="btn btn-sm btn-primary" (click)="onViewNews(item)">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-      </td>
-      <td>
-        <a class="btn btn-sm btn-link" target="_blank" [href]="item.link"
-          >Url</a
+<div class="card mb-3">
+  <div class="card-header">News Articles</div>
+  <div class="card-body">
+    <div class="row mb-3">
+      <div class="d-flex justify-content-between">
+        <label>Last News Update:</label>
+        <label>
+          {{
+            currentLastNewsUpdate == null
+              ? "N/A"
+              : (currentLastNewsUpdate | date : "short")
+          }}</label
         >
-      </td>
-      <td>{{ item.title | truncate : 100 }}</td>
-      <td>{{ item.date | date : "shortDate" }}</td>
-      <td [ngClass]="getSentimentResultColor(getLastSentimentResult(item)!)">
-        {{ getLastSentimentResult(item)! | enumToString : sentimentEnum }}
-      </td>
-    </tr>
-  </app-table-paginate>
+        <button class="btn btn-primary" (click)="updateNewsData()">
+          <span class="fa fa-history"></span>
+        </button>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="d-flex justify-content-between">
+        <label>Enqueue News Default Sentiment:</label>
+        <button class="btn btn-primary" (click)="enqueueNewsDefaultSentiment()">
+          <span class="fa fa-barcode"></span>
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <app-table-paginate
+        [paginateFilter]="paginateFilter"
+        [paginate]="newArticles"
+        [tableHeaders]="getSentimentTableHeaders()"
+        (refetchData)="fetchNewsArticles()"
+      >
+        <tr *ngFor="let item of newArticles.items">
+          <td>
+            <button class="btn btn-sm btn-primary" (click)="onViewNews(item)">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </td>
+          <td>
+            <a class="btn btn-sm btn-link" target="_blank" [href]="item.link"
+              >Url</a
+            >
+          </td>
+          <td>{{ item.title | truncate : 100 }}</td>
+          <td>{{ item.date | date : "shortDate" }}</td>
+          <td
+            [ngClass]="getSentimentResultColor(getLastSentimentResult(item)!)"
+          >
+            {{ getLastSentimentResult(item)! | enumToString : sentimentEnum }}
+          </td>
+        </tr>
+      </app-table-paginate>
+    </div>
+  </div>
 </div>
 <app-modal [isOpen]="viewNewsArticle != null" (onClose)="onViewCloseClose()">
   <header>{{ viewNewsArticle?.title }}</header>

@@ -130,6 +130,7 @@ export class TickerListComponent implements OnInit {
       new TableHeader('Sector', 'Sector'),
       new TableHeader('Industry', 'Industry'),
       new TableHeader('Is Listed'),
+      new TableHeader('Is Watching'),
     ];
   }
 }

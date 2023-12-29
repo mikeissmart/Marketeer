@@ -46,6 +46,7 @@ import { TickerNewsListComponent } from './components/market/ticker-news-list/ti
 import { NewsListComponent } from './components/news/news-list/news-list.component';
 import { CronQueueDetailsComponent } from './components/management/cron-queue-details/cron-queue-details.component';
 import { EnumToStringPipe } from './pipes/enum-to-string.pipe';
+import { WatchTickerComponent } from './components/market/watch-ticker/watch-ticker.component';
 
 @NgModule({
   declarations: [
@@ -80,6 +81,7 @@ import { EnumToStringPipe } from './pipes/enum-to-string.pipe';
     NewsListComponent,
     CronQueueDetailsComponent,
     EnumToStringPipe,
+    WatchTickerComponent,
   ],
   imports: [
     ReactiveFormsModule,

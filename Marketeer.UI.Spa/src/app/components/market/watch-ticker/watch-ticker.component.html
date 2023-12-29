@@ -1,0 +1,44 @@
+<div class="card">
+  <div class="card-header">Watch Ticker</div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-6">
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            value=""
+            id="updateHistoryData"
+            [checked]="watcher!.updateHistoryData"
+            (change)="watcher!.updateHistoryData = !watcher!.updateHistoryData"
+          />
+          <label class="form-check-label" for="updateHistoryData">
+            History Data
+          </label>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            value=""
+            id="updateNewsArticles"
+            [checked]="watcher!.updateNewsArticles"
+            (change)="
+              watcher!.updateNewsArticles = !watcher!.updateNewsArticles
+            "
+          />
+          <label class="form-check-label" for="updateNewsArticles">
+            News Articles
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-success" (click)="updateWatcher()">Save</button>
+    </div>
+  </div>
+</div>

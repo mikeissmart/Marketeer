@@ -32,7 +32,7 @@ namespace Marketeer.Core.Service.Market
         Task<List<string>> SearchIndustriesAsync(string? search, int limit);
         Task<int> UpdateMultipleTickerInfoAsync();
         Task<bool> UpdateTickerInfoAsync(int tickerId);
-        Task<PaginateDto<TickerDto>> GetTickerDetailsAsync(PaginateFilterDto<TickerFilterDto> filter);
+        Task<PaginateDto<TickerDto>> GetTickerDetailsAsync(PaginateFilterDto<TickerFilterDto> filter, int userId);
     }
 
     public class TickerService : BaseCoreService, ITickerService
@@ -250,11 +250,11 @@ namespace Marketeer.Core.Service.Market
             }
         }
 
-        public async Task<PaginateDto<TickerDto>> GetTickerDetailsAsync(PaginateFilterDto<TickerFilterDto> filter)
+        public async Task<PaginateDto<TickerDto>> GetTickerDetailsAsync(PaginateFilterDto<TickerFilterDto> filter, int userId)
         {
             try
             {
-                return _mapper.Map<PaginateDto<TickerDto>>(await _tickerRepository.GetTickerByFilterAsync(filter));
+                return _mapper.Map<PaginateDto<TickerDto>>(await _tickerRepository.GetTickerByFilterAsync(filter, userId));
             }
             catch (Exception e)
             {

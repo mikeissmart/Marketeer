@@ -1,114 +1,119 @@
 <div *ngIf="tickerDetail != null">
-  <div class="row mb-3">
-    <div class="col-8">
-      <label class="form-label" for="name">Name:</label>
-      <input
-        class="form-control"
-        id="name"
-        name="name"
-        type="text"
-        [value]="tickerDetail.name"
-        disabled
-      />
-    </div>
-    <div class="col-4">
-      <label class="form-label" for="symbol">Symbol:</label>
-      <input
-        class="form-control"
-        id="symbol"
-        name="symbol"
-        type="text"
-        [value]="tickerDetail.symbol"
-        disabled
-      />
-    </div>
-    <div class="col-8">
-      <label class="form-label" for="sector">Sector:</label>
-      <input
-        class="form-control"
-        id="sector"
-        name="sector"
-        type="text"
-        [value]="tickerDetail.sector"
-        disabled
-      />
-    </div>
-    <div class="col-4">
-      <label class="form-label" for="quoteType">Quote Type:</label>
-      <input
-        class="form-control"
-        id="quoteType"
-        name="quoteType"
-        type="text"
-        [value]="tickerDetail.quoteType"
-        disabled
-      />
-    </div>
-    <div class="col-8">
-      <label class="form-label" for="industry">Industry:</label>
-      <input
-        class="form-control"
-        id="industry"
-        name="industry"
-        type="text"
-        [value]="tickerDetail.industry"
-        disabled
-      />
-    </div>
-    <div class="col-4">
-      <label class="form-label" for="exchange">Exchange:</label>
-      <input
-        class="form-control"
-        id="exchange"
-        name="exchange"
-        type="text"
-        [value]="tickerDetail.exchange"
-        disabled
-      />
-    </div>
-    <div class="col-3">
-      <label class="form-label" for="marketCap">Market Cap:</label>
-      <input
-        class="form-control"
-        id="marketCap"
-        name="marketCap"
-        type="text"
-        [value]="tickerDetail.marketCap"
-        disabled
-      />
-    </div>
-    <div class="col-3">
-      <label class="form-label" for="volume">Volume:</label>
-      <input
-        class="form-control"
-        id="volume"
-        name="volume"
-        type="text"
-        [value]="tickerDetail.volume"
-        disabled
-      />
-    </div>
-    <div class="col-3">
-      <label class="form-label" for="dividendRate">Dividend Rate:</label>
-      <input
-        class="form-control"
-        id="dividendRate"
-        name="dividendRate"
-        type="text"
-        [value]="tickerDetail.dividendRate"
-        disabled
-      />
-    </div>
-    <div class="col-3">
-      <label class="form-label" for="payoutRatio">Payout Ratio:</label>
-      <input
-        class="form-control"
-        id="payoutRatio"
-        name="payoutRatio"
-        type="text"
-        [value]="tickerDetail.payoutRatio"
-        disabled
-      />
+  <div class="card mb-3">
+    <div class="card-header">Info</div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-8">
+          <label class="form-label" for="name">Name:</label>
+          <input
+            class="form-control"
+            id="name"
+            name="name"
+            type="text"
+            [value]="tickerDetail.name"
+            disabled
+          />
+        </div>
+        <div class="col-4">
+          <label class="form-label" for="symbol">Symbol:</label>
+          <input
+            class="form-control"
+            id="symbol"
+            name="symbol"
+            type="text"
+            [value]="tickerDetail.symbol"
+            disabled
+          />
+        </div>
+        <div class="col-8">
+          <label class="form-label" for="sector">Sector:</label>
+          <input
+            class="form-control"
+            id="sector"
+            name="sector"
+            type="text"
+            [value]="tickerDetail.sector"
+            disabled
+          />
+        </div>
+        <div class="col-4">
+          <label class="form-label" for="quoteType">Quote Type:</label>
+          <input
+            class="form-control"
+            id="quoteType"
+            name="quoteType"
+            type="text"
+            [value]="tickerDetail.quoteType"
+            disabled
+          />
+        </div>
+        <div class="col-8">
+          <label class="form-label" for="industry">Industry:</label>
+          <input
+            class="form-control"
+            id="industry"
+            name="industry"
+            type="text"
+            [value]="tickerDetail.industry"
+            disabled
+          />
+        </div>
+        <div class="col-4">
+          <label class="form-label" for="exchange">Exchange:</label>
+          <input
+            class="form-control"
+            id="exchange"
+            name="exchange"
+            type="text"
+            [value]="tickerDetail.exchange"
+            disabled
+          />
+        </div>
+        <div class="col-3">
+          <label class="form-label" for="marketCap">Market Cap:</label>
+          <input
+            class="form-control"
+            id="marketCap"
+            name="marketCap"
+            type="text"
+            [value]="tickerDetail.marketCap"
+            disabled
+          />
+        </div>
+        <div class="col-3">
+          <label class="form-label" for="volume">Volume:</label>
+          <input
+            class="form-control"
+            id="volume"
+            name="volume"
+            type="text"
+            [value]="tickerDetail.volume"
+            disabled
+          />
+        </div>
+        <div class="col-3">
+          <label class="form-label" for="dividendRate">Dividend Rate:</label>
+          <input
+            class="form-control"
+            id="dividendRate"
+            name="dividendRate"
+            type="text"
+            [value]="tickerDetail.dividendRate"
+            disabled
+          />
+        </div>
+        <div class="col-3">
+          <label class="form-label" for="payoutRatio">Payout Ratio:</label>
+          <input
+            class="form-control"
+            id="payoutRatio"
+            name="payoutRatio"
+            type="text"
+            [value]="tickerDetail.payoutRatio"
+            disabled
+          />
+        </div>
+      </div>
     </div>
   </div>
   <div class="row">
@@ -126,6 +131,11 @@
         [lastHistoryUpdate]="tickerDetail.lastHistoryUpdate"
         (onUpdateHistoryData)="getTickerDetails()"
       ></app-ticker-history-summary>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-6">
+      <app-watch-ticker [tickerId]="tickerDetail.id"></app-watch-ticker>
     </div>
   </div>
   <div class="row mb-3">

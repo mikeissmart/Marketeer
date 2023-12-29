@@ -1,20 +1,25 @@
-<div class="d-flex justify-content-between mb-3">
-  <label>Last Info Update:</label>
-  <label>
-    {{
-      currentLastInfoUpdate == null
-        ? "N/A"
-        : (currentLastInfoUpdate | date : "short")
-    }}</label
-  >
-  <button class="btn btn-primary" (click)="updateInfo()">
-    <span class="fa fa-history"></span>
-  </button>
-</div>
-<div class="row">
-  <app-table [tableHeaders]="getTableHeaders()">
-    <tr *ngFor="let item of currentDelistReasons">
-      <td>{{ item.delist | enumToString : delistEnum }}</td>
-    </tr>
-  </app-table>
+<div class="card mb-3">
+  <div class="card-header">Delist Reasons</div>
+  <div class="card-body">
+    <div class="d-flex justify-content-between mb-3">
+      <label>Last Info Update:</label>
+      <label>
+        {{
+          currentLastInfoUpdate == null
+            ? "N/A"
+            : (currentLastInfoUpdate | date : "short")
+        }}</label
+      >
+      <button class="btn btn-primary" (click)="updateInfo()">
+        <span class="fa fa-history"></span>
+      </button>
+    </div>
+    <div class="row">
+      <app-table [tableHeaders]="getTableHeaders()">
+        <tr *ngFor="let item of currentDelistReasons">
+          <td>{{ item.delist | enumToString : delistEnum }}</td>
+        </tr>
+      </app-table>
+    </div>
+  </div>
 </div>

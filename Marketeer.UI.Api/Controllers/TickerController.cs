@@ -2,12 +2,15 @@
 using Marketeer.Core.Domain.Dtos;
 using Marketeer.Core.Domain.Dtos.Market;
 using Marketeer.Core.Service.Market;
+using Marketeer.UI.Api.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Marketeer.UI.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TickerController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -72,7 +75,7 @@ namespace Marketeer.UI.Api.Controllers
         [HttpPost("GetTickerDetails")]
         public async Task<IActionResult> GetTickerDetails(PaginateFilterDto<TickerFilterDto> filter)
         {
-            var result = await _tickerService.GetTickerDetailsAsync(filter);
+            var result = await _tickerService.GetTickerDetailsAsync(filter, User.GetUserId());
             return Ok(result);
         }
 
