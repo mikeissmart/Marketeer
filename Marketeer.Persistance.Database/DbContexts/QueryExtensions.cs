@@ -6,14 +6,14 @@ namespace Marketeer.Persistance.Database.DbContexts
     {
         public static IQueryable<TEntity> IsSoftDeleted<TEntity>(this IQueryable<TEntity> query) where TEntity : EntityAuditRemove
         {
-            query.Where(x => x.RemovedDate != null);
+            query.Where(x => x.RemovedDateTime != null);
 
             return query;
         }
 
         public static IQueryable<TEntity> IsNotSoftDeleted<TEntity>(this IQueryable<TEntity> query) where TEntity : EntityAuditRemove
         {
-            query.Where(x => x.RemovedDate == null);
+            query.Where(x => x.RemovedDateTime == null);
 
             return query;
         }

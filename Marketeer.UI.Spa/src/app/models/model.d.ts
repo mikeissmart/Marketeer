@@ -57,6 +57,12 @@ export interface IWatchTickerChange
 	updateHistoryData: boolean;
 	updateNewsArticles: boolean;
 }
+export interface IWatchTickerDetailsChange
+{
+	updateHistoryData: boolean;
+	updateNewsArticles: boolean;
+	filter: any;
+}
 export interface IWatchTicker
 {
 	updateHistoryData: boolean;
@@ -70,6 +76,11 @@ export interface IWatchTickerResult
 	addedCount: number;
 	currentCount: number;
 	maxCount: number;
+}
+export interface IWatchUserStatus
+{
+	watchTicerCount: number;
+	watchTicerCountMax: number;
 }
 export interface IClientToken
 {
@@ -114,9 +125,9 @@ export interface IHistoryData
 }
 export interface IMarketSchedule
 {
-	day: Date;
-	marketOpen: Date;
-	marketClose: Date;
+	date: Date;
+	marketOpenDateTime: Date;
+	marketCloseDateTime: Date;
 	id: number;
 }
 export interface ITickerDelistReason
@@ -129,9 +140,9 @@ export interface ITickerDelistReason
 export interface ITicker
 {
 	symbol: string;
-	lastHistoryUpdate?: Date;
-	lastInfoUpdate?: Date;
-	lastNewsUpdate?: Date;
+	lastHistoryUpdateDateTime?: Date;
+	lastInfoUpdateDateTime?: Date;
+	lastNewsUpdateDateTime?: Date;
 	name: string;
 	quoteType: string;
 	exchange: string;
@@ -174,7 +185,7 @@ export interface IAppLog
 	source?: string;
 	stackTrace?: string;
 	message: string;
-	createdDate: Date;
+	createdDateTime: Date;
 }
 export interface IAppLogFilter
 {
@@ -191,8 +202,8 @@ export interface ICronLog
 	cronLogType: CronLogTypeEnum;
 	message?: string;
 	isCanceled: boolean;
-	startDate: Date;
-	endDate: Date;
+	startDateTime: Date;
+	endDateTime: Date;
 }
 export interface ICronLogFilter
 {
@@ -207,8 +218,8 @@ export interface IPythonLog
 	file: string;
 	output?: string;
 	error?: string;
-	startDate: Date;
-	endDate: Date;
+	startDateTime: Date;
+	endDateTime: Date;
 }
 export interface IPythonLogFilter
 {

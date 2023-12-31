@@ -120,7 +120,7 @@
     <div class="col-6">
       <app-ticker-delist-reasons
         [tickerId]="tickerDetail.id"
-        [lastInfoUpdate]="tickerDetail.lastInfoUpdate"
+        [lastInfoUpdate]="tickerDetail.lastInfoUpdateDateTime"
         [delistReasons]="tickerDetail.delistReasons"
         (onUpdateInfo)="getTickerDetails()"
       ></app-ticker-delist-reasons>
@@ -128,7 +128,7 @@
     <div class="col-6">
       <app-ticker-history-summary
         [tickerId]="tickerDetail.id"
-        [lastHistoryUpdate]="tickerDetail.lastHistoryUpdate"
+        [lastHistoryUpdate]="tickerDetail.lastHistoryUpdateDateTime"
         (onUpdateHistoryData)="getTickerDetails()"
       ></app-ticker-history-summary>
     </div>
@@ -143,7 +143,7 @@
       <app-ticker-news-list
         [tickerId]="tickerDetail.id"
         [symbol]="tickerDetail.symbol"
-        [lastNewsUpdate]="tickerDetail.lastNewsUpdate"
+        [lastNewsUpdate]="tickerDetail.lastNewsUpdateDateTime"
         (onUpdateNewsArticles)="getTickerDetails()"
       ></app-ticker-news-list>
     </div>

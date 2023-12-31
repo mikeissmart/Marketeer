@@ -3,7 +3,9 @@ import { ApiHttpService } from '../http/api-http/api-http.service';
 import {
   IWatchTicker,
   IWatchTickerChange,
+  IWatchTickerDetailsChange,
   IWatchTickerResult,
+  IWatchUserStatus,
 } from 'src/app/models/model';
 
 @Injectable({
@@ -31,6 +33,21 @@ export class WatchApiService {
     this.apiHttp.post(
       this.uri + `UpdateWatchTickerUpdateDaily`,
       watcher,
+      callback
+    );
+  }
+
+  getWatcherUserStatus(callback: (result: IWatchUserStatus) => void): void {
+    this.apiHttp.get(this.uri + `GetWatcherUserStatus`, callback);
+  }
+
+  appendWatchTickerDetails(
+    watchTickerCange: IWatchTickerDetailsChange,
+    callback: (result: IWatchTickerResult) => void
+  ): void {
+    this.apiHttp.post(
+      this.uri + `AppendWatchTickerDetails`,
+      watchTickerCange,
       callback
     );
   }

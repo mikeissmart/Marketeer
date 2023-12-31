@@ -12,7 +12,7 @@ namespace Marketeer.Core.Domain
 
     public abstract class EntityAuditCreate : Entity
     {
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDateTime { get; set; }
     }
 
     public abstract class EntityUserAuditCreate : EntityAuditCreate
@@ -24,7 +24,7 @@ namespace Marketeer.Core.Domain
 
     public abstract class EntityAuditUpdate : Entity
     {
-        public DateTime? UpdatedDate { get; set; }
+        public DateTime? UpdatedDateTime { get; set; }
     }
 
     public abstract class EntityUserAuditUpdate : EntityAuditUpdate
@@ -36,7 +36,7 @@ namespace Marketeer.Core.Domain
 
     public abstract class EntityAuditRemove : Entity
     {
-        public DateTime? RemovedDate { get; set; }
+        public DateTime? RemovedDateTime { get; set; }
     }
 
     public abstract class EntityUserAuditRemove : EntityAuditRemove
@@ -52,8 +52,8 @@ namespace Marketeer.Core.Domain
 
     public abstract class EntityAuditCreateUpdate : Entity
     {
-        public DateTime CreatedDate { get; set; }
-        public DateTime? UpdatedDate { get; set; }
+        public DateTime CreatedDateTime { get; set; }
+        public DateTime? UpdatedDateTime { get; set; }
     }
 
     public abstract class EntityUserAuditCreateUpdate : EntityAuditCreateUpdate
@@ -68,8 +68,8 @@ namespace Marketeer.Core.Domain
 
     public abstract class EntityAuditCreateRemove : Entity
     {
-        public DateTime CreatedDate { get; set; }
-        public DateTime? RemovedDate { get; set; }
+        public DateTime CreatedDateTime { get; set; }
+        public DateTime? RemovedDateTime { get; set; }
     }
 
     public abstract class EntityUserAuditCreateRemove : EntityAuditCreateRemove
@@ -84,8 +84,8 @@ namespace Marketeer.Core.Domain
 
     public abstract class EntityAuditUpdateRemove : Entity
     {
-        public DateTime? UpdatedDate { get; set; }
-        public DateTime? RemovedDate { get; set; }
+        public DateTime? UpdatedDateTime { get; set; }
+        public DateTime? RemovedDateTime { get; set; }
     }
 
     public abstract class EntityUserAuditUpdateRemove : EntityAuditUpdateRemove
@@ -104,9 +104,9 @@ namespace Marketeer.Core.Domain
 
     public abstract class EntityAuditCreateUpdateRemove : Entity
     {
-        public DateTime CreatedDate { get; set; }
-        public DateTime? UpdatedDate { get; set; }
-        public DateTime? RemovedDate { get; set; }
+        public DateTime CreatedDateTime { get; set; }
+        public DateTime? UpdatedDateTime { get; set; }
+        public DateTime? RemovedDateTime { get; set; }
     }
 
     public abstract class EntityUserAuditCreateUpdateRemove : EntityAuditCreateUpdateRemove

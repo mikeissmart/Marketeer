@@ -26,7 +26,7 @@ export class CronLogDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.logApi.getCronNames((result) => (this.cronNames = result));
-    this.paginateFilter.orderBy = 'StartDate';
+    this.paginateFilter.orderBy = 'StartDateTime';
     this.paginateFilter.isOrderAsc = false;
     this.fetchLogs();
   }
@@ -42,8 +42,8 @@ export class CronLogDetailsComponent implements OnInit {
       new TableHeader('Name', 'Name'),
       new TableHeader('Has Ouput'),
       new TableHeader('Is Canceled'),
-      new TableHeader('Date', 'StartDate'),
-      new TableHeader(''),
+      new TableHeader('Date', 'StartDateTime'),
+      new TableHeader('Run Time'),
     ];
   }
 
@@ -60,8 +60,9 @@ export class CronLogDetailsComponent implements OnInit {
   }
 
   calculateRunTime(log: ICronLog): string {
-    const a = typeof log.endDate;
-    const milliSeconds = log.endDate.getTime() - log.startDate.getTime();
+    const a = typeof log.endDateTime;
+    const milliSeconds =
+      log.endDateTime.getTime() - log.startDateTime.getTime();
 
     const hours = Math.floor(milliSeconds / 1000 / 60 / 60);
     const minutes = Math.floor(milliSeconds / 1000 / 60 - hours * 60);

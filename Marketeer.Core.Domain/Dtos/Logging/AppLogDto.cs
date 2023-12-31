@@ -11,6 +11,6 @@ namespace Marketeer.Core.Domain.Dtos.Logging
         public string? Source { get; set; }
         public string? StackTrace { get; set; }
         public string Message { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDateTime { get; set; }
     }
 }

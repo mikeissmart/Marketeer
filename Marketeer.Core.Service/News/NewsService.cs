@@ -113,7 +113,7 @@ namespace Marketeer.Core.Service.News
                 ticker.NewsArticles.AddRange(news);
                 ticker.NewsArticles.AddRange(existingNews);
 
-                ticker.LastNewsUpdate = DateTime.Now;
+                ticker.LastNewsUpdateDateTime = DateTime.Now;
                 _tickerRepository.Update(ticker);
                 await _tickerRepository.SaveChangesAsync();
 

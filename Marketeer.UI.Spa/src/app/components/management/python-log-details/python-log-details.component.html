@@ -58,7 +58,7 @@
       <td>{{ item.file | truncate : 50 }}</td>
       <td>{{ item.output != null ? "Yes" : "No" }}</td>
       <td>{{ item.error != null ? "Yes" : "No" }}</td>
-      <td>{{ item.startDate | date : "short" }}</td>
+      <td>{{ item.startDateTime | date : "short" }}</td>
       <td>{{ calculateRunTime(item) }}</td>
     </tr>
   </app-table-paginate>
@@ -84,7 +84,7 @@
         <input
           class="form-control"
           type="text"
-          [value]="viewLog.startDate | date : 'short'"
+          [value]="viewLog.startDateTime | date : 'short'"
           disabled
         />
       </div>
@@ -93,7 +93,7 @@
         <input
           class="form-control"
           type="text"
-          [value]="viewLog.endDate | date : 'short'"
+          [value]="viewLog.endDateTime | date : 'short'"
           disabled
         />
       </div>

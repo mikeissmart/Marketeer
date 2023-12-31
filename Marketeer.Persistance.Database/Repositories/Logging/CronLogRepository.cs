@@ -33,18 +33,18 @@ namespace Marketeer.Persistance.Database.Repositories.Logging
                 predicate: x =>
                     (filter.Filter.IsCanceled == null || x.IsCanceled == filter.Filter.IsCanceled.Value) &&
                     (string.IsNullOrEmpty(filter.Filter.Name) || x.Name.Contains(filter.Filter.Name)) &&
-                    (filter.Filter.MinDate == null || x.StartDate < filter.Filter.MinDate.Value) &&
-                    (filter.Filter.MaxDate == null || x.StartDate >= filter.Filter.MaxDate.Value) &&
+                    (filter.Filter.MinDate == null || x.StartDateTime < filter.Filter.MinDate.Value) &&
+                    (filter.Filter.MaxDate == null || x.StartDateTime >= filter.Filter.MaxDate.Value) &&
                     (filter.Filter.CronLogType == null || x.CronLogType == filter.Filter.CronLogType),
                 orderBy: CalculateOrderBy(filter));
 
         public async Task<List<CronLog>> GetLogsBerforeDateAsync(DateTime date) =>
-            await GetAsync(x => x.StartDate < date);
+            await GetAsync(x => x.StartDateTime < date);
 
         public async Task<List<CronLog>> GetLastLogForCronJobsAsync(List<string> cronJobLogNames) =>
             await GenerateQuery(x => cronJobLogNames.Contains(x.Name))
                 .GroupBy(x => x.Name, x => x)
-                .Select(x => x.OrderByDescending(x => x.StartDate).First())
+                .Select(x => x.OrderByDescending(x => x.StartDateTime).First())
                 .ToListAsync();
 
         private Func<IQueryable<CronLog>, IOrderedQueryable<CronLog>>? CalculateOrderBy(PaginateFilterDto filter)
@@ -62,10 +62,10 @@ namespace Marketeer.Persistance.Database.Repositories.Logging
                         ? x => x.OrderBy(x => x.IsCanceled)
                         : x => x.OrderByDescending(x => x.IsCanceled);
                     break;
-                case nameof(CronLog.StartDate):
+                case nameof(CronLog.StartDateTime):
                     orderBy = filter.IsOrderAsc
-                        ? x => x.OrderBy(x => x.StartDate)
-                        : x => x.OrderByDescending(x => x.StartDate);
+                        ? x => x.OrderBy(x => x.StartDateTime)
+                        : x => x.OrderByDescending(x => x.StartDateTime);
                     break;
                 case null:
                     orderBy = null;

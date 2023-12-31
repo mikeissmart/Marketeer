@@ -25,8 +25,8 @@ namespace Marketeer.Persistance.Database.Repositories.Market
         public async Task<List<MarketSchedule>> GetScheduleDaysInRangeAsync(DateTime? minDate, DateTime? maxDate) =>
             await GetAsync(
                 predicate: x =>
-                    (minDate == null || x.Date.Date >= minDate.Value.Date) &&
-                    (maxDate == null || x.Date.Date <= maxDate.Value.Date),
+                    (minDate == null || x.Date > minDate.Value) &&
+                    (maxDate == null || x.Date < maxDate.Value),
                 orderBy: x => x.OrderBy(x => x.Date));
 
         public async Task<MarketSchedule?> GetLastestMarketDayAsync() =>

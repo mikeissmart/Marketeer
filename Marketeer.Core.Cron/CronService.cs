@@ -58,7 +58,7 @@ namespace Marketeer.Core.Service.Chron
                         ?.IsRunning ?? false;
                     dto.LastOccurrence = logs
                         .FirstOrDefault(x => x.Name == dto.Name)
-                        ?.StartDate;
+                        ?.StartDateTime;
                 }
 
                 switch (filter.OrderBy)

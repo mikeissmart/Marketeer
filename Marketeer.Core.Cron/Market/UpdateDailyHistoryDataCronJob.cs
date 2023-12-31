@@ -20,6 +20,7 @@ namespace Marketeer.Core.Cron.Market
         protected override async Task<string?> DoWorkAsync(IServiceScope scope, CancellationToken cancellationToken)
         {
             var historyService = scope.ServiceProvider.GetRequiredService<IHistoryDataService>();
+            await historyService.PruneOlderThanMinHistoryDataAsync();
             await historyService.UpdateDailyHistoryDataAsync();
 
             return null;

@@ -28,10 +28,10 @@ namespace Marketeer.Persistance.Database.Repositories.AI
                 predicate: x => x.Status != SentimentStatusEnum.Completed,
                 include: x => x
                     .Include(x => x.NewsArticle),
-                orderBy: x => x.OrderBy(x => x.UpdatedDate != null
-                    ? x.UpdatedDate
-                    : x.CreatedDate),
-                limit: limit,
+                orderBy: x => x.OrderBy(x => x.UpdatedDateTime != null
+                    ? x.UpdatedDateTime
+                    : x.CreatedDateTime),
+                take: limit,
                 tracking: tracking);
 
         public async Task<List<SentimentResult>> GetQueuedSentimentsAsync() =>

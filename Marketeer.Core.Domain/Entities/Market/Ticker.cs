@@ -10,9 +10,9 @@ namespace Marketeer.Core.Domain.Entities.Market
         [Required]
         [StringLength(5)]
         public string Symbol { get; set; }
-        public DateTime? LastHistoryUpdate { get; set; }
-        public DateTime? LastInfoUpdate { get; set; }
-        public DateTime? LastNewsUpdate { get; set; }
+        public DateTime? LastHistoryUpdateDateTime { get; set; }
+        public DateTime? LastInfoUpdateDateTime { get; set; }
+        public DateTime? LastNewsUpdateDateTime { get; set; }
 
         #region Info
 

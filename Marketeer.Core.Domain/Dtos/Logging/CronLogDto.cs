@@ -10,7 +10,7 @@ namespace Marketeer.Core.Domain.Dtos.Logging
         public CronLogTypeEnum CronLogType { get; set; }
         public string? Message { get; set; }
         public bool IsCanceled { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime StartDateTime { get; set; }
+        public DateTime EndDateTime { get; set; }
     }
 }

@@ -18,9 +18,5 @@ namespace Marketeer.Core.Domain.Dtos.Market
         public decimal Low { get; set; }
         public long Volume { get; set; }
         public DateTime Date { get; set; }
-
-        void IMapFrom<PythonHistoryDataDto>.MapFrom(Profile profile) =>
-            profile.CreateMap<PythonHistoryDataDto, HistoryDataDto>()
-                .ForMember(x => x.Date, x => x.MapFrom(x => x.DateTime));
     }
 }

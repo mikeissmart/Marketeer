@@ -2,6 +2,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   TemplateRef,
@@ -18,7 +19,7 @@ import {
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss'],
 })
-export class ModalComponent implements OnInit {
+export class ModalComponent implements OnInit, OnDestroy {
   _isOpen = false;
   @Input() set isOpen(value: boolean) {
     if (value != this._isOpen) {
@@ -47,7 +48,13 @@ export class ModalComponent implements OnInit {
 
   constructor(private readonly modalService: NgbModal) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.modalService.dismissAll();
+  }
+
+  ngOnDestroy(): void {
+    this.modalService.dismissAll();
+  }
 
   public openModal(): void {
     this.modalService.dismissAll();

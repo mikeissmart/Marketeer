@@ -26,7 +26,7 @@ export class AppLogDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.logApi.getAppLogEventIds((x) => (this.eventIds = x));
-    this.paginateFilter.orderBy = 'CreatedDate';
+    this.paginateFilter.orderBy = 'CreatedDateTime';
     this.paginateFilter.isOrderAsc = false;
     this.fetchLogs();
   }
@@ -49,7 +49,7 @@ export class AppLogDetailsComponent implements OnInit {
       new TableHeader('Log Level', 'LogLevel'),
       new TableHeader('Event Name', 'EventName'),
       new TableHeader('Source', 'Source'),
-      new TableHeader('Date', 'CreatedDate'),
+      new TableHeader('Date', 'CreatedDateTime'),
     ];
   }
 

@@ -11,16 +11,19 @@ namespace Marketeer.Core.Cron.Market
 {
     public class GetYearlyMarketScheduleCronJob : BaseCronJobService
     {
-        public GetYearlyMarketScheduleCronJob(CronJobConfig cronConfig, IServiceProvider services) :
+        private readonly TickerConfig _tickerConfig;
+
+        public GetYearlyMarketScheduleCronJob(CronJobConfig cronConfig, IServiceProvider services, TickerConfig tickerConfig) :
             base(cronConfig, services, nameof(CronJobConfig.GetYearlyMarketSchedule))
         {
-
+            _tickerConfig = tickerConfig;
         }
 
         protected override async Task<string?> DoWorkAsync(IServiceScope scope, CancellationToken cancellationToken)
         {
             var scheduleService = scope.ServiceProvider.GetRequiredService<IMarketScheduleService>();
-            await scheduleService.GetYearlyMarketSchedulesAsync(2);
+
+            await scheduleService.GetYearlyMarketSchedulesAsync(DateTime.Now.Year - _tickerConfig.HistoryDataKeepNowYearMinusYear, _tickerConfig.HistoryDataKeepNowYearMinusYear + 1);
 
             return null;
         }

@@ -68,64 +68,64 @@ namespace Marketeer.Persistance.Database.DbContexts
                 if (entry.State == EntityState.Added)
                 {
                     if (entry.Entity is EntityAuditCreate createAudit)
-                        createAudit.CreatedDate = nowDt;
+                        createAudit.CreatedDateTime = nowDt;
                     else if (entry.Entity is EntityAuditCreateUpdate createUpdateAudit)
-                        createUpdateAudit.CreatedDate = nowDt;
+                        createUpdateAudit.CreatedDateTime = nowDt;
                     else if (entry.Entity is EntityAuditCreateRemove createRemoveAudit)
-                        createRemoveAudit.CreatedDate = nowDt;
+                        createRemoveAudit.CreatedDateTime = nowDt;
                     else if (entry.Entity is EntityAuditCreateUpdateRemove createUpdateRemoveAudit)
-                        createUpdateRemoveAudit.CreatedDate = nowDt;
+                        createUpdateRemoveAudit.CreatedDateTime = nowDt;
 
                     else if (entry.Entity is EntityUserAuditCreate userCreateAudit)
                     {
-                        userCreateAudit.CreatedDate = nowDt;
+                        userCreateAudit.CreatedDateTime = nowDt;
                         userCreateAudit.CreatedByAppUserId = userId!.Value;
                     }
                     else if (entry.Entity is EntityUserAuditCreateUpdate userCreateUpdateAudit)
                     {
-                        userCreateUpdateAudit.CreatedDate = nowDt;
+                        userCreateUpdateAudit.CreatedDateTime = nowDt;
                         userCreateUpdateAudit.CreatedByAppUserId = userId!.Value;
                     }
                     else if (entry.Entity is EntityUserAuditCreateRemove userCreateRemoveAudit)
                     {
-                        userCreateRemoveAudit.CreatedDate = nowDt;
+                        userCreateRemoveAudit.CreatedDateTime = nowDt;
                         userCreateRemoveAudit.CreatedByAppUserId = userId!.Value;
                     }
                     else if (entry.Entity is EntityUserAuditCreateUpdateRemove userCreateUpdateRemoveAudit)
                     {
-                        userCreateUpdateRemoveAudit.CreatedDate = nowDt;
+                        userCreateUpdateRemoveAudit.CreatedDateTime = nowDt;
                         userCreateUpdateRemoveAudit.CreatedByAppUserId = userId!.Value;
                     }
                 }
                 else if (entry.State == EntityState.Modified)
                 {
                     if (entry.Entity is EntityAuditUpdate updateAudit)
-                        updateAudit.UpdatedDate = nowDt;
+                        updateAudit.UpdatedDateTime = nowDt;
                     else if (entry.Entity is EntityAuditCreateUpdate createUpdateAudit)
-                        createUpdateAudit.UpdatedDate = nowDt;
+                        createUpdateAudit.UpdatedDateTime = nowDt;
                     else if (entry.Entity is EntityAuditUpdateRemove updateRemoveAudit)
-                        updateRemoveAudit.UpdatedDate = nowDt;
+                        updateRemoveAudit.UpdatedDateTime = nowDt;
                     else if (entry.Entity is EntityAuditCreateUpdateRemove createUpdateRemoveAudit)
-                        createUpdateRemoveAudit.UpdatedDate = nowDt;
+                        createUpdateRemoveAudit.UpdatedDateTime = nowDt;
 
                     else if (entry.Entity is EntityUserAuditUpdate userUpdateAudit)
                     {
-                        userUpdateAudit.UpdatedDate = nowDt;
+                        userUpdateAudit.UpdatedDateTime = nowDt;
                         userUpdateAudit.UpdatedByAppUserId = userId!.Value;
                     }
                     else if (entry.Entity is EntityUserAuditCreateUpdate userCreateUpdateAudit)
                     {
-                        userCreateUpdateAudit.UpdatedDate = nowDt;
+                        userCreateUpdateAudit.UpdatedDateTime = nowDt;
                         userCreateUpdateAudit.UpdatedByAppUserId = userId!.Value;
                     }
                     else if (entry.Entity is EntityUserAuditUpdateRemove userUpdateRemoveAudit)
                     {
-                        userUpdateRemoveAudit.UpdatedDate = nowDt;
+                        userUpdateRemoveAudit.UpdatedDateTime = nowDt;
                         userUpdateRemoveAudit.UpdatedByAppUserId = userId!.Value;
                     }
                     else if (entry.Entity is EntityUserAuditCreateUpdateRemove userCreateUpdateRemoveAudit)
                     {
-                        userCreateUpdateRemoveAudit.UpdatedDate = nowDt;
+                        userCreateUpdateRemoveAudit.UpdatedDateTime = nowDt;
                         userCreateUpdateRemoveAudit.UpdatedByAppUserId = userId!.Value;
                     }
                 }
@@ -133,32 +133,32 @@ namespace Marketeer.Persistance.Database.DbContexts
                 {
                     // Soft delete
                     if (entry.Entity is EntityAuditRemove removeAudit)
-                        removeAudit.RemovedDate = nowDt;
+                        removeAudit.RemovedDateTime = nowDt;
                     else if (entry.Entity is EntityAuditCreateRemove createRemoveAudit)
-                        createRemoveAudit.RemovedDate = nowDt;
+                        createRemoveAudit.RemovedDateTime = nowDt;
                     else if (entry.Entity is EntityAuditUpdateRemove updateRemoveAudit)
-                        updateRemoveAudit.RemovedDate = nowDt;
+                        updateRemoveAudit.RemovedDateTime = nowDt;
                     else if (entry.Entity is EntityAuditCreateUpdateRemove createUpdateRemoveAudit)
-                        createUpdateRemoveAudit.RemovedDate = nowDt;
+                        createUpdateRemoveAudit.RemovedDateTime = nowDt;
 
                     else if (entry.Entity is EntityUserAuditRemove userRemoveAudit)
                     {
-                        userRemoveAudit.RemovedDate = nowDt;
+                        userRemoveAudit.RemovedDateTime = nowDt;
                         userRemoveAudit.RemovedByAppUserId = userId!.Value;
                     }
                     else if (entry.Entity is EntityUserAuditCreateRemove userCreateRemoveAudit)
                     {
-                        userCreateRemoveAudit.RemovedDate = nowDt;
+                        userCreateRemoveAudit.RemovedDateTime = nowDt;
                         userCreateRemoveAudit.RemovedByAppUserId = userId!.Value;
                     }
                     else if (entry.Entity is EntityUserAuditUpdateRemove userUpdateRemoveAudit)
                     {
-                        userUpdateRemoveAudit.RemovedDate = nowDt;
+                        userUpdateRemoveAudit.RemovedDateTime = nowDt;
                         userUpdateRemoveAudit.RemovedByAppUserId = userId!.Value;
                     }
                     else if (entry.Entity is EntityUserAuditCreateUpdateRemove userCreateUpdateRemoveAudit)
                     {
-                        userCreateUpdateRemoveAudit.RemovedDate = nowDt;
+                        userCreateUpdateRemoveAudit.RemovedDateTime = nowDt;
                         userCreateUpdateRemoveAudit.RemovedByAppUserId = userId!.Value;
                     }
 

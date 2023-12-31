@@ -13,7 +13,7 @@ namespace Marketeer.Infrastructure.Python.Market
     {
         Task DownloadTickerJsonInfo(List<string> tickers);
         Task<List<HistoryDataDto>> GetHistoryDataAsync(TickerDto ticker,
-            HistoryDataIntervalEnum interval, DateTime? startDate, DateTime? endDate);
+            HistoryDataIntervalEnum interval, DateTime startDate, DateTime endDate);
         Task<List<MarketScheduleDto>> GetYearlyMarketSchedule(int year);
     }
 
@@ -42,14 +42,14 @@ namespace Marketeer.Infrastructure.Python.Market
         }
 
         public async Task<List<HistoryDataDto>> GetHistoryDataAsync(TickerDto ticker,
-            HistoryDataIntervalEnum interval, DateTime? startDate, DateTime? endDate)
+            HistoryDataIntervalEnum interval, DateTime startDate, DateTime endDate)
         {
             var args = new PythonHistoryDataArgs
             {
                 Ticker = ticker.Symbol,
                 Interval = interval.ToIntervalString(),
-                StartDate = startDate?.ToString("yyyy-MM-dd"),
-                EndDate = endDate?.ToString("yyyy-MM-dd")
+                StartDate = startDate.ToString("yyyy-MM-dd"),
+                EndDate = endDate.AddDays(1).ToString("yyyy-MM-dd")
             };
             var pyHistDatas = await RunPythonScriptAsync<List<PythonHistoryDataDto>, PythonHistoryDataArgs>(
                 _config.HistoryData, args);
@@ -63,7 +63,6 @@ namespace Marketeer.Infrastructure.Python.Market
             {
                 hist.TickerId = ticker.Id;
                 hist.Interval = interval;
-                hist.Date = hist.Date.Date;
             }
 
             return histDatas;
@@ -79,14 +78,14 @@ namespace Marketeer.Infrastructure.Python.Market
             var schedules = await RunPythonScriptAsync<List<PythonMarketScheduleDto>, PythonMarketScheduleArgs>(
                 _config.GetYearlyMarketSchedule, args);
 
-            var marketSchedules = new List<MarketScheduleDto>();
+            var marketSchedules = _mapper.Map<List<MarketScheduleDto>>(schedules);
             foreach (var dto in schedules)
             {
                 var item = new MarketScheduleDto();
 
-                item.Day = dto.Day.Date;
-                item.MarketOpen = dto.MarketOpen.ToUniversalTime();
-                item.MarketClose = dto.MarketClose.ToUniversalTime();
+                item.Date = dto.Date;
+                item.MarketOpenDateTime = dto.MarketOpenDateTime.ToUniversalTime();
+                item.MarketCloseDateTime = dto.MarketCloseDateTime.ToUniversalTime();
 
                 marketSchedules.Add(item);
             }

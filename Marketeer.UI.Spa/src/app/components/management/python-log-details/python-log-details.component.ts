@@ -24,7 +24,7 @@ export class PythonLogDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.logApi.getPythonFiles((x) => (this.files = x));
-    this.paginateFilter.orderBy = 'StartDate';
+    this.paginateFilter.orderBy = 'StartDateTime';
     this.paginateFilter.isOrderAsc = false;
     this.fetchLogs();
   }
@@ -39,7 +39,7 @@ export class PythonLogDetailsComponent implements OnInit {
       new TableHeader('File', 'File'),
       new TableHeader('Has Output'),
       new TableHeader('Has Error'),
-      new TableHeader('Date', 'StartDate'),
+      new TableHeader('Date', 'StartDateTime'),
       new TableHeader('Run Time'),
     ];
   }
@@ -57,7 +57,8 @@ export class PythonLogDetailsComponent implements OnInit {
   }
 
   calculateRunTime(log: IPythonLog): string {
-    const milliSeconds = log.endDate.getTime() - log.startDate.getTime();
+    const milliSeconds =
+      log.endDateTime.getTime() - log.startDateTime.getTime();
 
     const hours = Math.floor(milliSeconds / 1000 / 60 / 60);
     const minutes = Math.floor(milliSeconds / 1000 / 60 - hours * 60);

@@ -33,12 +33,12 @@ namespace Marketeer.Persistance.Database.Repositories.Logging
                     (filter.Filter.LogLevel == null || x.LogLevel == filter.Filter.LogLevel) &&
                     (filter.Filter.EventId == null || x.EventId == filter.Filter.EventId) &&
                     (string.IsNullOrEmpty(filter.Filter.EventName) || x.EventName!.Contains(filter.Filter.EventName)) &&
-                    (filter.Filter.MinDate == null || x.CreatedDate < filter.Filter.MinDate.Value) &&
-                    (filter.Filter.MaxDate == null || x.CreatedDate >= filter.Filter.MaxDate.Value),
+                    (filter.Filter.MinDate == null || x.CreatedDateTime < filter.Filter.MinDate.Value) &&
+                    (filter.Filter.MaxDate == null || x.CreatedDateTime >= filter.Filter.MaxDate.Value),
                 orderBy: CalculateOrderBy(filter));
 
         public async Task<List<AppLog>> GetLogsBerforeDate(DateTime date) =>
-            await GetAsync(x => x.CreatedDate < date);
+            await GetAsync(x => x.CreatedDateTime < date);
 
         private Func<IQueryable<AppLog>, IOrderedQueryable<AppLog>>? CalculateOrderBy(PaginateFilterDto filter)
         {
@@ -60,10 +60,10 @@ namespace Marketeer.Persistance.Database.Repositories.Logging
                         ? x => x.OrderBy(x => x.Source)
                         : x => x.OrderByDescending(x => x.Source);
                     break;
-                case nameof(AppLog.CreatedDate):
+                case nameof(AppLog.CreatedDateTime):
                     orderBy = filter.IsOrderAsc
-                        ? x => x.OrderBy(x => x.CreatedDate)
-                        : x => x.OrderByDescending(x => x.CreatedDate);
+                        ? x => x.OrderBy(x => x.CreatedDateTime)
+                        : x => x.OrderByDescending(x => x.CreatedDateTime);
                     break;
                 case null:
                     orderBy = null;

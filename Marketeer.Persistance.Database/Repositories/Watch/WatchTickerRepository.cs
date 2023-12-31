@@ -1,5 +1,6 @@
 ﻿using Marketeer.Core.Domain.Entities.Watch;
 using Marketeer.Persistance.Database.DbContexts;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace Marketeer.Persistance.Database.Repositories.Watch
     {
         Task<WatchTicker?> GetWatchTickerUpdateTickerDailiesByTickerIdAndUserAsync(int tickerId, int userId);
         Task<List<WatchTicker>> GetWatchTickerUpdateTickerDailiesByTickerIdsAsync(List<int> tickerIds);
+        Task<int> GetUserWatchTickerCountAsync(int userId);
     }
 
     public class WatchTickerRepository : BaseRepository<WatchTicker>, IWatchTickerRepository
@@ -26,5 +28,8 @@ namespace Marketeer.Persistance.Database.Repositories.Watch
 
         public async Task<List<WatchTicker>> GetWatchTickerUpdateTickerDailiesByTickerIdsAsync(List<int> tickerIds) =>
             await GetAsync(x => tickerIds.Contains(x.Ticker.Id));
+
+        public async Task<int> GetUserWatchTickerCountAsync(int userId) =>
+            await GenerateQuery(x => x.AppUserId == userId).CountAsync();
     }
 }

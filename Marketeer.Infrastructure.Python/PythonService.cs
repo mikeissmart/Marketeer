@@ -80,7 +80,7 @@ namespace Marketeer.Infrastructure.Python
             var log = new PythonLog
             {
                 File = $"Command: {command}, Args: {args}",
-                StartDate = DateTime.Now
+                StartDateTime = DateTime.Now
             };
 
             try
@@ -116,7 +116,7 @@ namespace Marketeer.Infrastructure.Python
             }
             finally
             {
-                log.EndDate = DateTime.Now;
+                log.EndDateTime = DateTime.Now;
                 await _pythonLogRepository.AddAsync(log);
                 await _pythonLogRepository.SaveChangesAsync();
             }
@@ -127,7 +127,7 @@ namespace Marketeer.Infrastructure.Python
             var log = new PythonLog
             {
                 File = scriptFile,
-                StartDate = DateTime.Now
+                StartDateTime = DateTime.Now
             };
             var scriptFullPath = Path.Combine(_rootConfig.RootFolder, Path.Combine(_config.ScriptFolder, scriptFile));
             try
@@ -166,7 +166,7 @@ namespace Marketeer.Infrastructure.Python
             }
             finally
             {
-                log.EndDate = DateTime.Now;
+                log.EndDateTime = DateTime.Now;
                 await _pythonLogRepository.AddAsync(log);
                 await _pythonLogRepository.SaveChangesAsync();
             }

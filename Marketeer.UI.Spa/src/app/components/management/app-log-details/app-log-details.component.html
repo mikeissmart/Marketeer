@@ -63,7 +63,7 @@
       <td>{{ item.logLevel | enumToString : logLevelEnum }}</td>
       <td>{{ item.eventName | truncate }}</td>
       <td>{{ item.source | truncate }}</td>
-      <td>{{ item.createdDate | date : "short" }}</td>
+      <td>{{ item.createdDateTime | date : "short" }}</td>
     </tr>
   </app-table-paginate>
 </div>
@@ -87,7 +87,7 @@
         <input
           class="form-control"
           type="text"
-          [value]="viewLog.createdDate | date : 'short'"
+          [value]="viewLog.createdDateTime | date : 'short'"
           disabled
         />
       </div>

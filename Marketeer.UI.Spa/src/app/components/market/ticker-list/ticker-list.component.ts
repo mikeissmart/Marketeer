@@ -3,10 +3,14 @@ import {
   IPaginateGenericFilter,
   ITicker,
   ITickerFilter,
+  IWatchTickerDetailsChange,
+  IWatchUserStatus,
 } from 'src/app/models/model';
 import { ModelHelper } from 'src/app/models/model-helper';
 import { TableHeader } from 'src/app/models/view-model';
 import { TickerApiService } from 'src/app/services/api/ticker-api.service';
+import { WatchApiService } from 'src/app/services/api/watch-api.service';
+import { ToasterService } from 'src/app/services/toaster/toaster.service';
 
 @Component({
   selector: 'app-ticker-list',
@@ -23,12 +27,23 @@ export class TickerListComponent implements OnInit {
   paginateFilter =
     ModelHelper.IPaginateGenericFilterDefault() as IPaginateGenericFilter<ITickerFilter>;
   viewTicker: ITicker | null = null;
+  watchStatus = {} as IWatchUserStatus;
+  isOpenWatchModal = false;
+  watchTickerChange = {
+    updateHistoryData: false,
+    updateNewsArticles: false,
+  } as IWatchTickerDetailsChange;
 
-  constructor(private readonly tickerApi: TickerApiService) {}
+  constructor(
+    private readonly tickerApi: TickerApiService,
+    private readonly watchApi: WatchApiService,
+    private readonly toaster: ToasterService
+  ) {}
 
   ngOnInit(): void {
     this.clear();
     this.fetchTickers();
+    this.fetchWatchStatus();
   }
 
   onSearchName(searchText: string): void {
@@ -111,6 +126,41 @@ export class TickerListComponent implements OnInit {
       this.paginateFilter,
       (x) => (this.tickers = x)
     );
+  }
+
+  fetchWatchStatus(): void {
+    this.watchApi.getWatcherUserStatus(
+      (result) => (this.watchStatus = result!)
+    );
+  }
+
+  openWatchModal(): void {
+    this.watchTickerChange = {
+      updateHistoryData: false,
+      updateNewsArticles: false,
+    } as IWatchTickerDetailsChange;
+    this.isOpenWatchModal = true;
+  }
+
+  updateWatchTickers(): void {
+    this.watchTickerChange.filter = this.paginateFilter;
+    this.watchApi.appendWatchTickerDetails(this.watchTickerChange, (result) => {
+      if (
+        result.addedCount > 0 ||
+        result.updatedCount > 0 ||
+        result.removedCount > 0
+      ) {
+        this.toaster.showSuccess('Update Success');
+      } else if (result.currentCount == result.maxCount) {
+        this.toaster.showError(
+          `Unable to add any more, ${result.currentCount} of ${result.maxCount}`
+        );
+      } else {
+        this.toaster.showWarning('No changes made');
+      }
+      this.isOpenWatchModal = false;
+      this.fetchWatchStatus();
+    });
   }
 
   onViewTicker(ticker: ITicker): void {

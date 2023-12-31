@@ -18,6 +18,7 @@ namespace Marketeer.Core.Service.Watch
     {
         Task<WatchTickerDto?> GetWatchTickerUpdateDailyAsync(int tickerId, int userId);
         Task<WatchTickerResultDto> UpdateWatchTickerUpdateDailyAsync(WatchTickerChangeDto changeDto, int userId);
+        Task<WatchUserStatusDto> GetWatcherUserStatusAsync(int userId);
     }
 
     public class WatchTickerService : BaseCoreService, IWatchTickerService
@@ -88,29 +89,51 @@ namespace Marketeer.Core.Service.Watch
                     }
                 }
 
-                var newTickerIds = changeDto.TickerIds
+                if (changeDto.UpdateHistoryData || changeDto.UpdateNewsArticles)
+                {
+                    var newTickerIds = changeDto.TickerIds
                     .Where(x => !currentWatchTickers.Any(y => y.TickerId == x))
                     .ToList();
-                var newWatchTickers = new List<WatchTicker>();
-                foreach (var tickerId in newTickerIds)
-                {
-                    if (result.CurrentCount + result.AddedCount + 1 > _watchTickerConfig.MaxWatchTickerPerUser)
-                        break;
-
-                    newWatchTickers.Add(new WatchTicker
+                    var newWatchTickers = new List<WatchTicker>();
+                    foreach (var tickerId in newTickerIds)
                     {
-                        AppUserId = userId,
-                        TickerId = tickerId,
-                        UpdateHistoryData = changeDto.UpdateHistoryData,
-                        UpdateNewsArticles = changeDto.UpdateNewsArticles
-                    });
-                    result.AddedCount++;
+                        if (_watchTickerConfig.MaxWatchTickerPerUser != -1 &&
+                            result.CurrentCount + result.AddedCount + 1 > _watchTickerConfig.MaxWatchTickerPerUser)
+                            break;
+
+                        newWatchTickers.Add(new WatchTicker
+                        {
+                            AppUserId = userId,
+                            TickerId = tickerId,
+                            UpdateHistoryData = changeDto.UpdateHistoryData,
+                            UpdateNewsArticles = changeDto.UpdateNewsArticles
+                        });
+                        result.AddedCount++;
+                    }
+                    await _watchTickerRepository.AddRangeAsync(newWatchTickers);
                 }
-                await _watchTickerRepository.AddRangeAsync(newWatchTickers);
 
                 await _watchTickerRepository.SaveChangesAsync();
 
                 return result;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                throw;
+            }
+        }
+
+        public async Task<WatchUserStatusDto> GetWatcherUserStatusAsync(int userId)
+        {
+            try
+            {
+                var status = new WatchUserStatusDto();
+
+                status.WatchTicerCount = await _watchTickerRepository.GetUserWatchTickerCountAsync(userId);
+                status.WatchTicerCountMax = _watchTickerConfig.MaxWatchTickerPerUser;
+
+                return status;
             }
             catch (Exception e)
             {

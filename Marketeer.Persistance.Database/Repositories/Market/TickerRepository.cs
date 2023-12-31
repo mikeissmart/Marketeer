@@ -25,6 +25,7 @@ namespace Marketeer.Persistance.Database.Repositories.Market
         Task<List<string>> SearchSectorsAsync(string? search, int limit);
         Task<List<string>> SearchIndustriesAsync(string? search, int limit);
         Task<Paginate<Ticker>> GetTickerByFilterAsync(PaginateFilterDto<TickerFilterDto> filter, int userId);
+        Task<List<Ticker>> GetWatchedTickersWithoutDelistReasonsAsync(List<DelistEnum> delists);
     }
 
     public class TickerRepository : BaseRepository<Ticker>, ITickerRepository
@@ -40,7 +41,7 @@ namespace Marketeer.Persistance.Database.Repositories.Market
         public async Task<List<Ticker>> GetOldestListedTickerInfosAsync(int limitCount) =>
             await GenerateQuery(
                 predicate: x => !x.DelistReasons.Any(),
-                orderBy: x => x.OrderBy(x => x.LastInfoUpdate),
+                orderBy: x => x.OrderBy(x => x.LastInfoUpdateDateTime),
                 tracking: false)
                 .Take(limitCount)
                 .ToListAsync();
@@ -131,7 +132,12 @@ namespace Marketeer.Persistance.Database.Repositories.Market
                     (filter.Filter.Industry == null || x.Industry!.Contains(filter.Filter.Industry)) &&
                     (filter.Filter.IsListed == null || x.DelistReasons.Any() != filter.Filter.IsListed) &&
                     (filter.Filter.IsUserWatching == null || x.WatchTickers.Any(x => x.Id == userId) == filter.Filter.IsUserWatching),
+                include: x => x
+                    .Include(x => x.WatchTickers),
                 orderBy: CalculateOrderBy(filter));
+
+        public async Task<List<Ticker>> GetWatchedTickersWithoutDelistReasonsAsync(List<DelistEnum> delists) =>
+            await GetAsync(x => x.WatchTickers.Any() && !x.DelistReasons.Any(x => delists.Contains(x.Delist)));
 
         private Func<IQueryable<Ticker>, IOrderedQueryable<Ticker>>? CalculateOrderBy(PaginateFilterDto filter)
         {

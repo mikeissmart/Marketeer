@@ -32,12 +32,12 @@ namespace Marketeer.Persistance.Database.Repositories.Logging
                 predicate: x =>
                     (filter.Filter.HasError == null || x.Error.Length > 0) &&
                     (string.IsNullOrEmpty(filter.Filter.File) || x.File.Contains(filter.Filter.File)) &&
-                    (filter.Filter.MinDate == null || x.StartDate < filter.Filter.MinDate.Value) &&
-                    (filter.Filter.MaxDate == null || x.StartDate >= filter.Filter.MaxDate.Value),
+                    (filter.Filter.MinDate == null || x.StartDateTime < filter.Filter.MinDate.Value) &&
+                    (filter.Filter.MaxDate == null || x.StartDateTime >= filter.Filter.MaxDate.Value),
                 orderBy: CalculateOrderBy(filter));
 
         public async Task<List<PythonLog>> GetLogsBerforeDateAsync(DateTime date) =>
-            await GetAsync(x => x.StartDate < date);
+            await GetAsync(x => x.StartDateTime < date);
 
         private Func<IQueryable<PythonLog>, IOrderedQueryable<PythonLog>>? CalculateOrderBy(PaginateFilterDto filter)
         {
@@ -49,10 +49,10 @@ namespace Marketeer.Persistance.Database.Repositories.Logging
                         ? x => x.OrderBy(x => x.File)
                         : x => x.OrderByDescending(x => x.File);
                     break;
-                case nameof(PythonLog.StartDate):
+                case nameof(PythonLog.StartDateTime):
                     orderBy = filter.IsOrderAsc
-                        ? x => x.OrderBy(x => x.StartDate)
-                        : x => x.OrderByDescending(x => x.StartDate);
+                        ? x => x.OrderBy(x => x.StartDateTime)
+                        : x => x.OrderByDescending(x => x.StartDateTime);
                     break;
                 case null:
                     orderBy = null;

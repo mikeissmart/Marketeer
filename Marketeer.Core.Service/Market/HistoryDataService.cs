@@ -13,6 +13,7 @@ namespace Marketeer.Core.Service.Market
     public interface IHistoryDataService : ICoreService
     {
         Task UpdateDailyHistoryDataAsync();
+        Task<int> PruneOlderThanMinHistoryDataAsync();
         Task<bool> UpdateTickerHistoryDataAsync(int tickerId);
         Task<TickerHistorySummaryDto> GetTickerHistorySummaryAsync(int tickerId);
         Task<List<HistoryDataDto>> GetHistoryDataAsync(int tickerId, HistoryDataIntervalEnum interval);
@@ -52,7 +53,9 @@ namespace Marketeer.Core.Service.Market
         {
             try
             {
-                foreach (var ticker in await _tickerRepository.GetTickersWithoutDelistReasons(
+                var msft = await _tickerRepository.GetTickerByIdAsync(26118);
+                await FetchNewHistoryDataAsync(msft, HistoryDataIntervalEnum.One_Day, true);
+                /*foreach (var ticker in await _tickerRepository.GetWatchedTickersWithoutDelistReasonsAsync(
                     new List<DelistEnum>
                     {
                         DelistEnum.Nasdaq_Removed,
@@ -61,7 +64,20 @@ namespace Marketeer.Core.Service.Market
                     }))
                 {
                     await FetchNewHistoryDataAsync(ticker, HistoryDataIntervalEnum.One_Day, true);
-                }
+                }*/
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<int> PruneOlderThanMinHistoryDataAsync()
+        {
+            try
+            {
+                return await _historyDataRepository.DeleteHistoryDataBelowDateAync(_tickerConfig.MinHistoryDataYearlyDate);
             }
             catch (Exception ex)
             {
@@ -156,63 +172,94 @@ namespace Marketeer.Core.Service.Market
 
         private async Task<bool> FetchNewHistoryDataAsync(Ticker ticker, HistoryDataIntervalEnum interval, bool checkYfinanceRetry)
         {
+            var tickerDto = _mapper.Map<TickerDto>(ticker);
             var retryHistDays = _tickerConfig.HistoryDataRetryDays;
-            var now = DateTime.Now;
-
             var noHist = ticker.DelistReasons.FirstOrDefault(x => x.Delist == DelistEnum.Yfinance_No_History);
 
             if (checkYfinanceRetry)
             {
-                if (noHist != null && noHist.CreatedDate.AddDays(retryHistDays) < now)
+                // TODO change CreateDate to CreatedDateTime
+                if (noHist != null && noHist.CreatedDateTime.AddDays(retryHistDays) < DateTime.Now)
                     // Dont check for new history until after retryHistDays days
                     return false;
             }
 
-            var curMaxDate = await _historyDataRepository.GetMaxDateTimeByTickerIntervalAsync(ticker.Id, interval);
-            if (curMaxDate != null)
-                // Inc date so duplicate history is not fetched
-                curMaxDate = interval.AddInterval(curMaxDate.Value);
-
-            var addedHistData = false;
-            var marketDates = await _marketScheduleRepository.GetScheduleDaysInRangeAsync(curMaxDate, now);
-            if (curMaxDate == null || marketDates.Count(x => now > x.MarketClose) > 0)
+            var success = false;
+            var (curMinDate, curMaxDate) = await _historyDataRepository.GetMinMaxDateTimeByTickerIntervalAsync(ticker.Id, interval);
+            if (curMinDate == null && curMaxDate == null)
             {
-                var freshHistDatas = _mapper.Map<IEnumerable<HistoryData>>(
-                    await _marketPythonService.GetHistoryDataAsync(_mapper.Map<TickerDto>(ticker), interval,
-                    curMaxDate, interval.AddInterval(now)));
+                // No hist data
+                var fetchMinDate = _tickerConfig.MinHistoryDataYearlyDate.AddDays(-1);
+                var fetchMaxDate = DateTime.Now.Date.AddDays(1);
 
-                var addHistDatas = curMaxDate != null
-                    ? freshHistDatas.Where(x => x.Date >= curMaxDate)
-                    : freshHistDatas;
+                success = await AddFetchedHistoryDataAsync(tickerDto, interval, fetchMinDate, fetchMaxDate);
+            }
+            else
+            {
+                // Add older history datas
+                var fetchMinDate = _tickerConfig.MinHistoryDataYearlyDate.AddDays(-1);
+                var fetchMaxDate = curMinDate!.Value;
 
-                if (addHistDatas.Count() > 0)
+                success = await AddFetchedHistoryDataAsync(tickerDto, interval, fetchMinDate, fetchMaxDate);
+
+                if (success)
                 {
-                    await _historyDataRepository.AddRangeAsync(addHistDatas);
-                    if (noHist != null)
-                        // Yfinance now has history
-                        ticker.DelistReasons.Remove(noHist);
-                    addedHistData = true;
-                }
-                else if (ticker.LastHistoryUpdate == null ||
-                    checkYfinanceRetry ||
-                    ticker.LastHistoryUpdate.Value.AddDays(retryHistDays) < now)
-                {
-                    if (noHist != null)
-                    {
-                        noHist.CreatedDate = DateTime.Now;
-                        _tickerDelistReasonRepository.Update(noHist);
-                    }
-                    else
-                        await _tickerDelistReasonRepository.AddAsync(new TickerDelistReason { Delist = DelistEnum.Yfinance_No_History });
+                    // Add new history datas
+                    fetchMinDate = curMaxDate!.Value;
+                    fetchMaxDate = DateTime.Now.Date;
+
+                    success = await AddFetchedHistoryDataAsync(tickerDto, interval, fetchMinDate, fetchMaxDate);
                 }
             }
 
-            ticker.LastHistoryUpdate = DateTime.Now;
-            _tickerRepository.Update(ticker);
+            if (!success)
+            {
+                if (checkYfinanceRetry ||
+                    ticker.LastHistoryUpdateDateTime == null ||
+                    ticker.LastHistoryUpdateDateTime.Value.AddDays(retryHistDays) < DateTime.Now)
+                {
+                    if (noHist != null)
+                    {
+                        noHist.CreatedDateTime = DateTime.Now;
+                        _tickerDelistReasonRepository.Update(noHist);
+                    }
+                    else
+                        await _tickerDelistReasonRepository.AddAsync(new TickerDelistReason
+                        {
+                            TickerId = ticker.Id,
+                            Delist = DelistEnum.Yfinance_No_History
+                        });
+                }
+            }
 
+            ticker.LastHistoryUpdateDateTime = DateTime.Now;
+            _tickerRepository.Update(ticker);
             await _historyDataRepository.SaveChangesAsync();
 
-            return addedHistData;
+            return success;
+        }
+
+        private async Task<bool> AddFetchedHistoryDataAsync(TickerDto ticker, HistoryDataIntervalEnum interval, DateTime minDate, DateTime maxDate)
+        {
+            try
+            {
+                var marketDates = await _marketScheduleRepository.GetScheduleDaysInRangeAsync(minDate, maxDate);
+                if (marketDates.Count > 0)
+                {
+                    var freshHistDatas = await _marketPythonService.GetHistoryDataAsync(ticker, interval, marketDates.First().Date, marketDates.Last().Date);
+                    await _historyDataRepository.AddRangeAsync(_mapper.Map<List<HistoryData>>(freshHistDatas));
+                    await _historyDataRepository.SaveChangesAsync();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("symbol may be delisted"))
+                    return false;
+                else
+                    throw;
+            }
         }
     }
 }

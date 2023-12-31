@@ -40,8 +40,8 @@ namespace Marketeer.Persistance.Database.Repositories.News
                 filter,
                 predicate: x =>
                     (string.IsNullOrEmpty(filter.Filter.Symbol) || x.Tickers.Any(x => x.Symbol == filter.Filter.Symbol)) &&
-                    (filter.Filter.MinDate == null || x.Date.Date > filter.Filter.MinDate.Value.Date) &&
-                    (filter.Filter.MaxDate == null || x.Date.Date <= filter.Filter.MaxDate.Value.Date),
+                    (filter.Filter.MinDate == null || x.ArticleDate.Date > filter.Filter.MinDate.Value.Date) &&
+                    (filter.Filter.MaxDate == null || x.ArticleDate.Date <= filter.Filter.MaxDate.Value.Date),
                 orderBy: CalculateOrderBy(filter),
                 include: x => x
                     .Include(x => x.SentimentResults)
@@ -69,10 +69,10 @@ namespace Marketeer.Persistance.Database.Repositories.News
             Func<IQueryable<NewsArticle>, IOrderedQueryable<NewsArticle>>? orderBy = null;
             switch (filter.OrderBy)
             {
-                case nameof(NewsArticle.Date):
+                case nameof(NewsArticle.ArticleDate):
                     orderBy = filter.IsOrderAsc
-                        ? x => x.OrderBy(x => x.Date)
-                        : x => x.OrderByDescending(x => x.Date);
+                        ? x => x.OrderBy(x => x.ArticleDate)
+                        : x => x.OrderByDescending(x => x.ArticleDate);
                     break;
                 case nameof(NewsArticle.Title):
                     orderBy = filter.IsOrderAsc

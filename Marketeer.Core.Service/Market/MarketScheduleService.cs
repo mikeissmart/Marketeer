@@ -13,7 +13,7 @@ namespace Marketeer.Core.Service.Market
 {
     public interface IMarketScheduleService : ICoreService
     {
-        Task GetYearlyMarketSchedulesAsync(int numYears);
+        Task GetYearlyMarketSchedulesAsync(int minYear, int numOfYears);
     }
 
     public class MarketScheduleService : BaseCoreService, IMarketScheduleService
@@ -34,31 +34,33 @@ namespace Marketeer.Core.Service.Market
             _marketPythonService = marketPythonService;
         }
 
-        public async Task GetYearlyMarketSchedulesAsync(int numYears)
+        public async Task GetYearlyMarketSchedulesAsync(int minYear, int numOfYears)
         {
             try
             {
-                for (var i = 0; i < numYears; i++)
+                for (var i = 0; i < numOfYears + 1; i++)
                 {
-                    var minDate = new DateTime(DateTime.Now.Year + i, 1, 1);
-                    var maxDate = new DateTime(DateTime.Now.Year + i, 12, 31);
+                    var minDate = new DateTime(minYear + i - 1, 12, 31);
+                    var maxDate = new DateTime(minYear + i + 1, 1, 1);
 
                     var curSchedules = await _marketScheduleRepository.GetScheduleDaysInRangeAsync(minDate, maxDate);
 
-                    var freshSchedules = _mapper.Map<List<MarketSchedule>>(await _marketPythonService.GetYearlyMarketSchedule(minDate.Year));
+                    var freshSchedules = _mapper.Map<List<MarketSchedule>>(await _marketPythonService.GetYearlyMarketSchedule(minYear + i));
                     var addSchedules = freshSchedules
                         .Where(x => !curSchedules.Any(y =>
                             y.Date == x.Date &&
-                            y.MarketOpen == x.MarketOpen &&
-                            y.MarketClose == x.MarketClose));
+                            y.MarketOpenDateTime == x.MarketOpenDateTime &&
+                            y.MarketCloseDateTime == x.MarketCloseDateTime));
                     var removeSchedules = curSchedules
                         .Where(x => !freshSchedules.Any(y =>
                             y.Date == x.Date &&
-                            y.MarketOpen == x.MarketOpen &&
-                            y.MarketClose == x.MarketClose));
+                            y.MarketOpenDateTime == x.MarketOpenDateTime &&
+                            y.MarketCloseDateTime == x.MarketCloseDateTime));
 
-                    await _marketScheduleRepository.AddRangeAsync(addSchedules);
-                    _marketScheduleRepository.RemoveRange(removeSchedules);
+                    if (addSchedules.Count() > 0)
+                        await _marketScheduleRepository.AddRangeAsync(addSchedules);
+                    if (removeSchedules.Count() > 0)
+                        _marketScheduleRepository.RemoveRange(removeSchedules);
 
                     await _marketScheduleRepository.SaveChangesAsync();
                 }

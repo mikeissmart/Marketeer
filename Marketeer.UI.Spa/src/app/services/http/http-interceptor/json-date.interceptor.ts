@@ -18,6 +18,7 @@ import {
   throwError,
 } from 'rxjs';
 import { SecurityApiService } from '../../api/security-api.service';
+import { IToken } from 'src/app/models/model';
 
 @Injectable()
 export class JsonDateInterceptor implements HttpInterceptor {
@@ -25,7 +26,7 @@ export class JsonDateInterceptor implements HttpInterceptor {
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
     null
   );
-  private isoDateFormat = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+/;
+  private isoDateFormat = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-9]\d\.\d+/;
 
   constructor(private securityService: SecurityApiService) {}
 
@@ -47,7 +48,15 @@ export class JsonDateInterceptor implements HttpInterceptor {
           !request.url.includes('security/login') &&
           error.status == 401
         ) {
-          return this.handle401Error(request, next);
+          return this.handle401Error(request, next).pipe(
+            map((val: HttpEvent<any>) => {
+              if (val instanceof HttpResponse) {
+                const body = val.body;
+                this.convert(body);
+              }
+              return val;
+            })
+          );
         }
         return throwError(() => error);
       })
@@ -81,7 +90,10 @@ export class JsonDateInterceptor implements HttpInterceptor {
     }
   }
 
-  private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
+  private handle401Error(
+    request: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<unknown>> {
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null);
@@ -90,24 +102,24 @@ export class JsonDateInterceptor implements HttpInterceptor {
         switchMap((token) => {
           this.isRefreshing = false;
           this.refreshTokenSubject.next(token);
-          return next.handle(this.addToken(request, token!.accessToken));
+          return next.handle(this.addToken(request, token!));
         })
       );
     } else {
       return this.refreshTokenSubject.pipe(
         filter((token) => token != null),
         take(1),
-        switchMap((jwt) => {
-          return next.handle(this.addToken(request, jwt));
+        switchMap((token) => {
+          return next.handle(this.addToken(request, token!));
         })
       );
     }
   }
 
-  private addToken(request: HttpRequest<any>, token: string) {
+  private addToken(request: HttpRequest<any>, token: IToken) {
     return request.clone({
       setHeaders: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token.accessToken}`,
       },
     });
   }
