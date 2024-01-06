@@ -5,11 +5,7 @@ import {
   INewsFilter,
 } from 'src/app/models/model';
 import { ModelHelper } from 'src/app/models/model-helper';
-import {
-  SentimentEnum,
-  SentimentResultTypeEnum,
-  SentimentStatusEnum,
-} from 'src/app/models/model.enum';
+import { SentimentEnum, SentimentStatusEnum } from 'src/app/models/model.enum';
 import { TableHeader } from 'src/app/models/view-model';
 import { AiApiService } from 'src/app/services/api/ai-api.service';
 import { NewsApiService } from 'src/app/services/api/news-api.service';

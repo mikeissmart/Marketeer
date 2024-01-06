@@ -59,7 +59,7 @@ export class TickerNewsListComponent implements OnInit {
 
   ngOnInit(): void {
     this.paginateFilter.filter.symbol = this.currentSymbol!;
-    this.paginateFilter.orderBy = 'Date';
+    this.paginateFilter.orderBy = 'ArticleDate';
     this.paginateFilter.isOrderAsc = false;
     if (this.currentLastNewsUpdate != null) {
       this.fetchNewsArticles();
@@ -71,7 +71,7 @@ export class TickerNewsListComponent implements OnInit {
       new TableHeader(''),
       new TableHeader(''),
       new TableHeader('Title', 'Title'),
-      new TableHeader('Date', 'Date'),
+      new TableHeader('Date', 'ArticleDate'),
       new TableHeader('Last Sentiment'),
     ];
   }

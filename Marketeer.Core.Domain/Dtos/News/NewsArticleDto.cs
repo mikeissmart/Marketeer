@@ -17,7 +17,7 @@ namespace Marketeer.Core.Domain.Dtos.News
         public string Title { get; set; }
         public string Link { get; set; }
         public string Text { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime ArticleDate { get; set; }
         public List<SentimentResultDto> SentimentResults { get; set; }
     }
 }

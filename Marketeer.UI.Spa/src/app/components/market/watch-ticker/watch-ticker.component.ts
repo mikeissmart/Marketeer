@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { IWatchTickerChange } from 'src/app/models/model';
+import { IWatchTickerChange, IWatchUserStatus } from 'src/app/models/model';
 import { WatchApiService } from 'src/app/services/api/watch-api.service';
 import { ToasterService } from 'src/app/services/toaster/toaster.service';
 
@@ -18,32 +18,37 @@ export class WatchTickerComponent implements OnInit {
   }
 
   currentTickerId: number | null = null;
-  watcher: IWatchTickerChange | null = null;
+  watchTicker: IWatchTickerChange | null = null;
+  watchStatus = {} as IWatchUserStatus;
 
   constructor(
-    private readonly watcherApi: WatchApiService,
+    private readonly watchApi: WatchApiService,
     private readonly toaster: ToasterService
   ) {}
 
   ngOnInit(): void {
     this.getWatcher();
+    this.getWatchStatus();
   }
 
   getWatcher(): void {
-    this.watcherApi.getWatchTickerUpdateDaily(
-      this.currentTickerId!,
-      (result) => {
-        this.watcher = {} as IWatchTickerChange;
-        this.watcher.tickerIds = [];
-        this.watcher.tickerIds.push(this.currentTickerId!);
-        this.watcher.updateHistoryData = result!.updateHistoryData;
-        this.watcher.updateNewsArticles = result!.updateNewsArticles;
-      }
+    this.watchApi.getWatchTickerUpdateDaily(this.currentTickerId!, (result) => {
+      this.watchTicker = {} as IWatchTickerChange;
+      this.watchTicker.tickerIds = [];
+      this.watchTicker.tickerIds.push(this.currentTickerId!);
+      this.watchTicker.updateHistoryData = result!.updateHistoryData;
+      this.watchTicker.updateNewsArticles = result!.updateNewsArticles;
+    });
+  }
+
+  getWatchStatus(): void {
+    this.watchApi.getWatcherUserStatus(
+      (result) => (this.watchStatus = result!)
     );
   }
 
   updateWatcher(): void {
-    this.watcherApi.updateWatchTickerUpdateDaily(this.watcher!, (result) => {
+    this.watchApi.updateWatchTickerUpdateDaily(this.watchTicker!, (result) => {
       if (
         result.addedCount > 0 ||
         result.updatedCount > 0 ||
@@ -58,6 +63,13 @@ export class WatchTickerComponent implements OnInit {
         this.toaster.showWarning('No changes made');
       }
       this.getWatcher();
+      this.getWatchStatus();
     });
+  }
+
+  stopWatching(): void {
+    this.watchTicker!.updateHistoryData = false;
+    this.watchTicker!.updateNewsArticles = false;
+    this.updateWatcher();
   }
 }

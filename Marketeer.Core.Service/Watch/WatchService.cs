@@ -131,7 +131,7 @@ namespace Marketeer.Core.Service.Watch
                 var status = new WatchUserStatusDto();
 
                 status.WatchTicerCount = await _watchTickerRepository.GetUserWatchTickerCountAsync(userId);
-                status.WatchTicerCountMax = _watchTickerConfig.MaxWatchTickerPerUser;
+                status.WatchTickerCountMax = _watchTickerConfig.MaxWatchTickerPerUser;
 
                 return status;
             }

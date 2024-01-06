@@ -48,7 +48,7 @@ namespace Marketeer.Infrastructure.Python.News
 
                 item.Title = dto.Title;
                 item.Link = dto.Link;
-                item.Date = dto.Date;
+                item.ArticleDate = dto.Date;
 
                 newsResults.Add(item);
             }

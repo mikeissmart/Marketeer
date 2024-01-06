@@ -1,7 +1,19 @@
 <div class="card">
-  <div class="card-header">Watch Ticker</div>
+  <div class="card-header">
+    <div class="d-flex justify-content-between">
+      <div>Watch Ticker</div>
+      <div class="">
+        Watching {{ watchStatus.watchTicerCount }} of
+        {{
+          watchStatus.watchTickerCountMax == -1
+            ? "Unlimited"
+            : watchStatus.watchTickerCountMax
+        }}
+      </div>
+    </div>
+  </div>
   <div class="card-body">
-    <div class="row" *ngIf="watcher != null">
+    <div class="row" *ngIf="watchTicker != null">
       <div class="col-6">
         <div class="form-check">
           <input
@@ -9,8 +21,10 @@
             type="checkbox"
             value=""
             id="updateHistoryData"
-            [checked]="watcher!.updateHistoryData"
-            (change)="watcher!.updateHistoryData = !watcher!.updateHistoryData"
+            [checked]="watchTicker!.updateHistoryData"
+            (change)="
+              watchTicker!.updateHistoryData = !watchTicker!.updateHistoryData
+            "
           />
           <label class="form-check-label" for="updateHistoryData">
             History Data
@@ -24,9 +38,9 @@
             type="checkbox"
             value=""
             id="updateNewsArticles"
-            [checked]="watcher!.updateNewsArticles"
+            [checked]="watchTicker!.updateNewsArticles"
             (change)="
-              watcher!.updateNewsArticles = !watcher!.updateNewsArticles
+              watchTicker!.updateNewsArticles = !watchTicker!.updateNewsArticles
             "
           />
           <label class="form-check-label" for="updateNewsArticles">
@@ -37,7 +51,10 @@
     </div>
   </div>
   <div class="card-footer">
-    <div class="d-flex justify-content-end">
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-danger" (click)="stopWatching()">
+        Stop Watching
+      </button>
       <button class="btn btn-success" (click)="updateWatcher()">Save</button>
     </div>
   </div>

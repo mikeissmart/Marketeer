@@ -80,7 +80,7 @@ export interface IWatchTickerResult
 export interface IWatchUserStatus
 {
 	watchTicerCount: number;
-	watchTicerCountMax: number;
+	watchTickerCountMax: number;
 }
 export interface IClientToken
 {
@@ -101,7 +101,7 @@ export interface INewsArticle
 	title: string;
 	link: string;
 	text: string;
-	date: Date;
+	articleDate: Date;
 	sentimentResults: ISentimentResult[];
 	id: number;
 }

@@ -131,6 +131,7 @@ namespace Marketeer.Core.Service.Market
                                 GenerateSummary("1 Year", DateTime.Now.Date.AddYears(-1), latestHistData, query),
                                 GenerateSummary("3 Years", DateTime.Now.Date.AddYears(-3), latestHistData, query),
                                 GenerateSummary("5 Years", DateTime.Now.Date.AddYears(-5), latestHistData, query),
+                                GenerateSummary("10 Years", DateTime.Now.Date.AddYears(-10), latestHistData, query),
                             }
                         };
                     }

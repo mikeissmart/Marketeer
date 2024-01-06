@@ -43,7 +43,7 @@
             >
           </td>
           <td>{{ item.title | truncate : 100 }}</td>
-          <td>{{ item.date | date : "shortDate" }}</td>
+          <td>{{ item.articleDate | date : "shortDate" }}</td>
           <td
             [ngClass]="getSentimentResultColor(getLastSentimentResult(item)!)"
           >
