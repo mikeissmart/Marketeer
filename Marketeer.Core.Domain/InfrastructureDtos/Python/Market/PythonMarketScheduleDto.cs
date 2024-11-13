@@ -9,7 +9,5 @@ namespace Marketeer.Core.Domain.InfrastructureDtos.Python.Market
     public class PythonMarketScheduleDto
     {
         public DateTime Date { get; set; }
-        public DateTime MarketOpenDateTime { get; set; }
-        public DateTime MarketCloseDateTime { get; set; }
     }
 }

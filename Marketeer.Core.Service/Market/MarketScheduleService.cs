@@ -38,6 +38,7 @@ namespace Marketeer.Core.Service.Market
         {
             try
             {
+                // +1 for this year
                 for (var i = 0; i < numOfYears + 1; i++)
                 {
                     var minDate = new DateTime(minYear + i - 1, 12, 31);
@@ -47,15 +48,9 @@ namespace Marketeer.Core.Service.Market
 
                     var freshSchedules = _mapper.Map<List<MarketSchedule>>(await _marketPythonService.GetYearlyMarketSchedule(minYear + i));
                     var addSchedules = freshSchedules
-                        .Where(x => !curSchedules.Any(y =>
-                            y.Date == x.Date &&
-                            y.MarketOpenDateTime == x.MarketOpenDateTime &&
-                            y.MarketCloseDateTime == x.MarketCloseDateTime));
+                        .Where(x => !curSchedules.Any(y => y.Date == x.Date));
                     var removeSchedules = curSchedules
-                        .Where(x => !freshSchedules.Any(y =>
-                            y.Date == x.Date &&
-                            y.MarketOpenDateTime == x.MarketOpenDateTime &&
-                            y.MarketCloseDateTime == x.MarketCloseDateTime));
+                        .Where(x => !freshSchedules.Any(y => y.Date == x.Date));
 
                     if (addSchedules.Count() > 0)
                         await _marketScheduleRepository.AddRangeAsync(addSchedules);

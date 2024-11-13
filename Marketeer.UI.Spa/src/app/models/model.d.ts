@@ -79,7 +79,7 @@ export interface IWatchTickerResult
 }
 export interface IWatchUserStatus
 {
-	watchTicerCount: number;
+	watchTickerCount: number;
 	watchTickerCountMax: number;
 }
 export interface IClientToken
@@ -126,8 +126,6 @@ export interface IHistoryData
 export interface IMarketSchedule
 {
 	date: Date;
-	marketOpenDateTime: Date;
-	marketCloseDateTime: Date;
 	id: number;
 }
 export interface ITickerDelistReason

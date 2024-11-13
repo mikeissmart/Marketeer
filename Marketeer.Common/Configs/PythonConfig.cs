@@ -3,6 +3,6 @@
     public abstract class PythonConfig
     {
         public string ScriptFolder { get; set; }
-        public string DataFolder { get; set; }
+        public string DataFolder { get => Path.Combine(ScriptFolder, "Data"); }
     }
 }

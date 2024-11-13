@@ -34,7 +34,7 @@ export class NewsListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.paginateFilter.orderBy = 'Date';
+    this.paginateFilter.orderBy = 'ArticleDate';
     this.paginateFilter.isOrderAsc = false;
     this.fetchNewsArticles();
   }
@@ -57,7 +57,7 @@ export class NewsListComponent implements OnInit {
       new TableHeader(''),
       new TableHeader(''),
       new TableHeader('Title', 'Title'),
-      new TableHeader('Date', 'Date'),
+      new TableHeader('Date', 'ArticleDate'),
       new TableHeader('Last Sentiment'),
     ];
   }

@@ -14,7 +14,5 @@ namespace Marketeer.Core.Domain.Dtos.Market
         IMapTo<MarketSchedule>
     {
         public DateTime Date { get; set; }
-        public DateTime MarketOpenDateTime { get; set; }
-        public DateTime MarketCloseDateTime { get; set; }
     }
 }

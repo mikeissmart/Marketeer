@@ -33,7 +33,7 @@ namespace Marketeer.Infrastructure.Python
             _config = config;
         }
 
-        public string GetDataFolder() => Path.Combine(_rootConfig.RootFolder, _config.DataFolder);
+        public string GetDataFolder() => Path.Combine(_rootConfig.ScriptsPath, _config.DataFolder);
 
         protected async Task RunPythonScriptAsync(string scriptFile)
         {
@@ -88,7 +88,7 @@ namespace Marketeer.Infrastructure.Python
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = useVenv
-                        ? Path.Combine(_rootConfig.RootVenvPath, "Scripts\\" + command)
+                        ? Path.Combine(_rootConfig.VenvPath, "Scripts\\" + command)
                         : command,
                     Arguments = args,
                     CreateNoWindow = true,
@@ -129,12 +129,12 @@ namespace Marketeer.Infrastructure.Python
                 File = scriptFile,
                 StartDateTime = DateTime.Now
             };
-            var scriptFullPath = Path.Combine(_rootConfig.RootFolder, Path.Combine(_config.ScriptFolder, scriptFile));
+            var scriptFullPath = Path.Combine(_rootConfig.ScriptsPath, Path.Combine(_config.ScriptFolder, scriptFile));
             try
             {
                 var startInfo = new ProcessStartInfo
                 {
-                    FileName = _rootConfig.PythonRootVenvPath,
+                    FileName = _rootConfig.PythonVenvPath,
                     Arguments = argsFile != null
                         ? $"\"{scriptFullPath}\" \"{argsFile}\""
                         : $"\"{scriptFullPath}\"",
@@ -153,8 +153,11 @@ namespace Marketeer.Infrastructure.Python
                     await process.WaitForExitAsync();
                 }
 
-                if (!string.IsNullOrEmpty(log.Error))
-                    throw new Exception(log.Error);
+                // Commenting for now
+                // Lots of false positive errors
+                // Even warnings produce error output
+                //if (!string.IsNullOrEmpty(log.Error))
+                //    throw new Exception(log.Error);
             }
             catch (Exception ex)
             {

@@ -3,7 +3,7 @@
     <div class="d-flex justify-content-between">
       <div>Watch Ticker</div>
       <div class="">
-        Watching {{ watchStatus.watchTicerCount }} of
+        Watching {{ watchStatus.watchTickerCount }} of
         {{
           watchStatus.watchTickerCountMax == -1
             ? "Unlimited"
@@ -51,10 +51,7 @@
     </div>
   </div>
   <div class="card-footer">
-    <div class="d-flex justify-content-between">
-      <button class="btn btn-danger" (click)="stopWatching()">
-        Stop Watching
-      </button>
+    <div class="d-flex justify-content-end">
       <button class="btn btn-success" (click)="updateWatcher()">Save</button>
     </div>
   </div>

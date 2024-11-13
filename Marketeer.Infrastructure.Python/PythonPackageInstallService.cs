@@ -25,15 +25,15 @@ namespace Marketeer.Infrastructure.Python
 
         public async Task CreatePythonEnvironmentAsync()
         {
-            Directory.CreateDirectory(_rootConfig.RootVenvPath);
+            Directory.CreateDirectory(_rootConfig.VenvPath);
 
-            var args = $" -m venv \"{_rootConfig.RootVenvPath}\"";
-            await RunCommandAsync("python.exe", false, args, false);
+            var args = $" -m venv \"{_rootConfig.VenvPath}\"";
+            await RunCommandAsync(_rootConfig.PythonRootPath, false, args, true);
         }
 
         public async Task InstallPackagesAsync()
         {
-            var pipPath = Path.Combine(_rootConfig.RootVenvPath, "Scripts\\pip.exe");
+            var pipPath = Path.Combine(_rootConfig.VenvPath, "Scripts\\pip.exe");
             foreach (var package in _rootConfig.Packages)
             {
                 var args = $" {pipPath} install \"{package}\"";

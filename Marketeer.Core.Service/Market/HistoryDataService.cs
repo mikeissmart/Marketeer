@@ -53,9 +53,15 @@ namespace Marketeer.Core.Service.Market
         {
             try
             {
-                var msft = await _tickerRepository.GetTickerByIdAsync(26118);
-                await FetchNewHistoryDataAsync(msft, HistoryDataIntervalEnum.One_Day, true);
-                /*foreach (var ticker in await _tickerRepository.GetWatchedTickersWithoutDelistReasonsAsync(
+                var a = await _tickerRepository.GetWatchedTickersWithoutDelistReasonsAsync(
+                    new List<DelistEnum>
+                    {
+                        DelistEnum.Nasdaq_Removed,
+                        DelistEnum.Yfinance_No_Ticker,
+                        DelistEnum.Yfinance_No_Info
+                    });
+                var b = a.ToList();
+                foreach (var ticker in await _tickerRepository.GetWatchedTickersWithoutDelistReasonsAsync(
                     new List<DelistEnum>
                     {
                         DelistEnum.Nasdaq_Removed,
@@ -64,7 +70,7 @@ namespace Marketeer.Core.Service.Market
                     }))
                 {
                     await FetchNewHistoryDataAsync(ticker, HistoryDataIntervalEnum.One_Day, true);
-                }*/
+                }
             }
             catch (Exception ex)
             {
@@ -180,7 +186,7 @@ namespace Marketeer.Core.Service.Market
             if (checkYfinanceRetry)
             {
                 // TODO change CreateDate to CreatedDateTime
-                if (noHist != null && noHist.CreatedDateTime.AddDays(retryHistDays) < DateTime.Now)
+                if (noHist != null && noHist.CreatedDateTime > DateTime.Now.AddDays(-retryHistDays))
                     // Dont check for new history until after retryHistDays days
                     return false;
             }
@@ -256,7 +262,7 @@ namespace Marketeer.Core.Service.Market
             }
             catch (Exception ex)
             {
-                if (ex.Message.Contains("symbol may be delisted"))
+                if (ex.Message.Contains("Symbol may be delisted"))
                     return false;
                 else
                     throw;

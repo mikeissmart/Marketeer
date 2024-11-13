@@ -51,9 +51,13 @@ namespace Marketeer.Infrastructure.Python.Market
                 StartDate = startDate.ToString("yyyy-MM-dd"),
                 EndDate = endDate.AddDays(1).ToString("yyyy-MM-dd")
             };
-            var pyHistDatas = await RunPythonScriptAsync<List<PythonHistoryDataDto>, PythonHistoryDataArgs>(
+            var pyHistData = await RunPythonScriptAsync<PythonHistoryDataResultDto, PythonHistoryDataArgs>(
                 _config.HistoryData, args);
-            var histDatas = _mapper.Map<List<HistoryDataDto>>(pyHistDatas.Where(x =>
+
+            if (pyHistData.Error.Length > 0)
+                throw new Exception(pyHistData.Error);
+
+            var histDatas = _mapper.Map<List<HistoryDataDto>>(pyHistData.Output.Where(x =>
                 x.Open.HasValue &&
                 x.Close.HasValue &&
                 x.High.HasValue &&
@@ -78,19 +82,7 @@ namespace Marketeer.Infrastructure.Python.Market
             var schedules = await RunPythonScriptAsync<List<PythonMarketScheduleDto>, PythonMarketScheduleArgs>(
                 _config.GetYearlyMarketSchedule, args);
 
-            var marketSchedules = _mapper.Map<List<MarketScheduleDto>>(schedules);
-            foreach (var dto in schedules)
-            {
-                var item = new MarketScheduleDto();
-
-                item.Date = dto.Date;
-                item.MarketOpenDateTime = dto.MarketOpenDateTime.ToUniversalTime();
-                item.MarketCloseDateTime = dto.MarketCloseDateTime.ToUniversalTime();
-
-                marketSchedules.Add(item);
-            }
-
-            return marketSchedules;
+            return _mapper.Map<List<MarketScheduleDto>>(schedules);
         }
     }
 }

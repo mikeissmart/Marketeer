@@ -15,4 +15,10 @@ namespace Marketeer.Core.Domain.InfrastructureDtos.Python.Market
         public long? Volume { get; set; }
         public DateTime Date { get; set; }
     }
+
+    public class PythonHistoryDataResultDto
+    {
+        public string Error { get; set; }
+        public List<PythonHistoryDataDto> Output { get; set; }
+    }
 }

@@ -23,7 +23,7 @@ namespace Marketeer.Core.Cron.Market
         {
             var scheduleService = scope.ServiceProvider.GetRequiredService<IMarketScheduleService>();
 
-            await scheduleService.GetYearlyMarketSchedulesAsync(DateTime.Now.Year - _tickerConfig.HistoryDataKeepNowYearMinusYear, _tickerConfig.HistoryDataKeepNowYearMinusYear + 1);
+            await scheduleService.GetYearlyMarketSchedulesAsync(DateTime.Now.Year - _tickerConfig.HistoryDataKeepNowYearMinusYear, _tickerConfig.HistoryDataKeepNowYearMinusYear);
 
             return null;
         }

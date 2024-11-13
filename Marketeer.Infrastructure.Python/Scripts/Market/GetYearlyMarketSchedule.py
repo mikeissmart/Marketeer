@@ -10,9 +10,7 @@ year = data['Year']
 
 nyse = mcal.get_calendar('NYSE')
 data = nyse.schedule(start_date=str(year) + "-01-01", end_date=str(year) + "-12-31")
-data['Date'] = data.index.strftime('%Y-%m-%dT')
-data['MarketOpen'] = data['market_open'].dt.strftime('%Y-%m-%dT%H:%M:%S')
-data['MarketClose'] = data['market_close'].dt.strftime('%Y-%m-%dT%H:%M:%S')
+data['Date'] = data.index.strftime('%Y-%m-%d')
 out_data = data.to_json(orient='records')
 
 fp.seek(0)
